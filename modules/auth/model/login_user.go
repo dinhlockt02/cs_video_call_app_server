@@ -3,14 +3,12 @@ package authmodel
 import (
 	"errors"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
-	"github.com/dinhlockt02/cs_video_call_app_server/modules/device/model"
 	"strings"
 )
 
 type LoginUser struct {
-	Email    string              `json:"email" bson:"email"`
-	Password string              `json:"password" json:"password"`
-	Device   *devicemodel.Device `json:"device" bson:"-"`
+	Email    string `json:"email" bson:"email"`
+	Password string `json:"password" json:"password"`
 }
 
 func (LoginUser) CollectionName() string {
@@ -30,14 +28,6 @@ func (u *LoginUser) Process() error {
 
 	if len(strings.TrimSpace(u.Password)) > 50 {
 		errs = append(errs, errors.New("password must be at most 50 character"))
-	}
-
-	if u.Device == nil {
-		errs = append(errs, errors.New("device must not be null"))
-	}
-
-	if err := u.Device.Process(); err != nil {
-		errs = append(errs, err)
 	}
 
 	if len(errs) > 0 {

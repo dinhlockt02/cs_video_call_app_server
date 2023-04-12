@@ -5,9 +5,9 @@ import (
 	"github.com/dinhlockt02/cs_video_call_app_server/components/appcontext"
 	authbiz "github.com/dinhlockt02/cs_video_call_app_server/modules/auth/biz"
 	usermodel "github.com/dinhlockt02/cs_video_call_app_server/modules/auth/model"
+	authstore "github.com/dinhlockt02/cs_video_call_app_server/modules/auth/store"
 	devicemodel "github.com/dinhlockt02/cs_video_call_app_server/modules/device/model"
 	devicestore "github.com/dinhlockt02/cs_video_call_app_server/modules/device/store"
-	userstore "github.com/dinhlockt02/cs_video_call_app_server/modules/user/store"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -30,9 +30,9 @@ func Login(appCtx appcontext.AppContext) gin.HandlerFunc {
 			return
 		}
 
-		userStore := userstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
+		authStore := authstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		deviceStore := devicestore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
-		biz := authbiz.NewLoginBiz(appCtx.TokenProvider(), userStore, deviceStore, appCtx.Hasher())
+		biz := authbiz.NewLoginBiz(appCtx.TokenProvider(), authStore, deviceStore, appCtx.Hasher())
 		result, err := biz.Login(context.Request.Context(), &body.Data, &body.Device)
 		if err != nil {
 			panic(err)

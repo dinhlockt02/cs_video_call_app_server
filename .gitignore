@@ -25,3 +25,9 @@ go.work
 .DS_Store
 
 .env
+
+
+firebase-debug.log
+ui-debug.log
+
+service-account-key.json

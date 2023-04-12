@@ -11,6 +11,8 @@ type RegisterUser struct {
 	common.MongoModel `bson:"inline"`
 	Email             string `json:"email" bson:"email"`
 	Password          string `json:"password" bson:"password"`
+	EmailVerified     bool   `json:"email_verified" bson:"email_verified"`
+	ProfileUpdated    bool   `json:"profile_updated" bson:"profile_updated"`
 }
 
 func (RegisterUser) CollectionName() string {

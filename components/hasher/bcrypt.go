@@ -1,6 +1,8 @@
 package hasher
 
 import (
+	"errors"
+	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 )
@@ -29,6 +31,12 @@ func (b *bcryptHasher) Hash(data string) (string, error) {
 }
 
 func (b *bcryptHasher) Compare(data string, hashedData string) (bool, error) {
+	if len(data) < 8 || len(data) > 50 {
+		return false, common.ErrInvalidRequest(errors.New("invalid raw data"))
+	}
+	if len(hashedData) < 8 || len(hashedData) > 50 {
+		return false, common.ErrInvalidRequest(errors.New("invalid hashed data"))
+	}
 	if err := bcrypt.CompareHashAndPassword([]byte(hashedData), []byte(data)); err != nil {
 		return false, err
 	}

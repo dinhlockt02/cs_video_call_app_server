@@ -8,17 +8,13 @@ import (
 	"github.com/dinhlockt02/cs_video_call_app_server/components/tokenprovider"
 	authmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/auth/model"
 	devicemodel "github.com/dinhlockt02/cs_video_call_app_server/modules/device/model"
-	usermodel "github.com/dinhlockt02/cs_video_call_app_server/modules/user/model"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
 
-type RegisterUserStore interface {
-	Find(ctx context.Context, filter map[string]interface{}) (*usermodel.User, error)
-}
-
 type RegisterAuthStore interface {
-	CreateEmailAndPasswordUser(ctx context.Context, data *authmodel.RegisterUser) (*primitive.ObjectID, error)
+	CreateEmailAndPasswordUser(ctx context.Context, data *authmodel.RegisterUser) (*authmodel.User, error)
+	Find(ctx context.Context, filter map[string]interface{}) (*authmodel.User, error)
 }
 
 type RegisterDeviceStore interface {
@@ -27,7 +23,6 @@ type RegisterDeviceStore interface {
 
 type registerBiz struct {
 	tokenProvider  tokenprovider.TokenProvider
-	userStore      RegisterUserStore
 	passwordHasher hasher.Hasher
 	deviceStore    RegisterDeviceStore
 	authStore      RegisterAuthStore
@@ -35,14 +30,12 @@ type registerBiz struct {
 
 func NewRegisterBiz(
 	tokenProvider tokenprovider.TokenProvider,
-	userStore RegisterUserStore,
 	passwordHasher hasher.Hasher,
 	deviceStore RegisterDeviceStore,
 	authStore RegisterAuthStore,
 ) *registerBiz {
 	return &registerBiz{
 		tokenProvider:  tokenProvider,
-		userStore:      userStore,
 		passwordHasher: passwordHasher,
 		deviceStore:    deviceStore,
 		authStore:      authStore,
@@ -59,11 +52,13 @@ func (biz *registerBiz) Register(ctx context.Context, data *authmodel.RegisterUs
 		return nil, common.ErrInvalidRequest(err)
 	}
 
-	existedUser, err := biz.userStore.Find(ctx, map[string]interface{}{
+	existedUser, err := biz.authStore.Find(ctx, map[string]interface{}{
 		"email": data.Email,
 	})
 	if err != nil {
-		return nil, err
+		if err != authmodel.ErrUserNotFound {
+			return nil, err
+		}
 	}
 	if existedUser != nil {
 		return nil, common.ErrInvalidRequest(errors.New("user existed"))
@@ -76,7 +71,7 @@ func (biz *registerBiz) Register(ctx context.Context, data *authmodel.RegisterUs
 
 	data.Password = hashedPassword
 
-	id, err := biz.authStore.CreateEmailAndPasswordUser(ctx, data)
+	user, err := biz.authStore.CreateEmailAndPasswordUser(ctx, data)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +85,7 @@ func (biz *registerBiz) Register(ctx context.Context, data *authmodel.RegisterUs
 	}
 
 	accessToken, err := biz.tokenProvider.Generate(
-		&tokenprovider.TokenPayload{UserId: id.Hex()},
+		&tokenprovider.TokenPayload{UserId: user.Id},
 		common.AccessTokenExpiry,
 	)
 

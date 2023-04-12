@@ -7,4 +7,3 @@ const (
 
 var AppDatabase string
 var AccessTokenExpiry int
-var RefreshTokenExpiry int
