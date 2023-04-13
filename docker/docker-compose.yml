@@ -8,7 +8,13 @@ services:
       - cs-video-call-app:/bitnami/mongodb
     env_file:
       - ./docker.env
-
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    env_file:
+      - docker.env
   redis:
     image: docker.io/bitnami/redis:7.0
     environment:
@@ -27,7 +33,7 @@ services:
       - "8080:8080"
 #    volumes:
 #      - ./service-account-key.json:/service-account-key.json:ro
-#    command: ["sleep", "100"]
+    command: ["/app/main"]
 volumes:
   cs-video-call-app:
   cs-video-call-app-redis:

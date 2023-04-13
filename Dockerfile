@@ -18,13 +18,15 @@ RUN apt-get install -y ca-certificates
 
 RUN update-ca-certificates
 
-WORKDIR /
+WORKDIR /app
 
-COPY --from=builder /app/main /bin
+COPY --from=builder /app/main .
+
+COPY .firebaserc firebase.json ./
 
 ENV SERVER_PORT=8080
 ENV GIN_MODE=release
 
 EXPOSE 8080
 
-CMD ["main"]
+CMD ["/app/main"]

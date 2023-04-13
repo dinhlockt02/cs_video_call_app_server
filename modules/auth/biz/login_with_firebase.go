@@ -122,7 +122,9 @@ func (biz *loginWithFirebaseBiz) LoginWithFirebase(ctx context.Context, idToken 
 	)
 
 	return &authmodel.AuthToken{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
+		AccessToken:    accessToken,
+		RefreshToken:   refreshToken,
+		EmailVerified:  existedUser.EmailVerified,
+		ProfileUpdated: existedUser.ProfileUpdated,
 	}, nil
 }
