@@ -7,7 +7,7 @@ services:
     volumes:
       - cs-video-call-app:/bitnami/mongodb
     env_file:
-      - docker.env
+      - ../docker.env
   redis:
     image: docker.io/bitnami/redis:7.0
     environment:
@@ -18,7 +18,13 @@ services:
       - '6379:6379'
     volumes:
       - 'cs-video-call-app-redis:/bitnami/redis/data'
-
+  server:
+    image: dinhlockt02/cs_video_call_app_server:dev-bulleye-slim
+    env_file:
+      - docker.server.env
+    ports:
+      - "8080:8080"
+#    command: ["sleep", "100"]
 volumes:
   cs-video-call-app:
   cs-video-call-app-redis:

@@ -10,13 +10,14 @@ import (
 	"github.com/dinhlockt02/cs_video_call_app_server/components/hasher"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/tokenprovider/jwt"
 	"github.com/dinhlockt02/cs_video_call_app_server/middleware"
-	"github.com/dinhlockt02/cs_video_call_app_server/modules/auth/transport/gin"
+	v1 "github.com/dinhlockt02/cs_video_call_app_server/route/v1"
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"google.golang.org/api/option"
-	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -25,14 +26,15 @@ import (
 
 func init() {
 
+	setupLogger()
+
 	var err error
 
 	common.AppDatabase = os.Getenv("MONGO_DB")
 	common.AccessTokenExpiry, err = strconv.Atoi(os.Getenv("ACCESS_TOKEN_EXPIRY"))
-	common.RefreshTokenExpiry, err = strconv.Atoi(os.Getenv("REFRESH_TOKEN_EXPIRY"))
 
 	if err != nil {
-		log.Fatalln("Invalid TOKEN_EXPIRY enviroment")
+		log.Panic().Msg(err.Error())
 	}
 }
 
@@ -43,7 +45,7 @@ func main() {
 	defer cancel()
 	client, err := connectMongoDB(ctx)
 	if err != nil {
-		log.Fatalln(err)
+		log.Panic().Msg(err.Error())
 	}
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
@@ -63,7 +65,7 @@ func main() {
 	opt := option.WithCredentialsFile("./service-account-key.json")
 	fa, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
-		log.Fatalln(err)
+		log.Panic().Msg(err.Error())
 	}
 	app := fbs.NewFirebaseApp(fa)
 
@@ -77,19 +79,13 @@ func main() {
 	}
 	port := fmt.Sprintf(":%v", envport)
 
-	r := gin.Default()
+	r := gin.New()
+
+	r.Use(gin.Recovery())
 
 	r.Use(middleware.Recover(appCtx))
 
-	v1 := r.Group("/v1")
-	{
-		auth := v1.Group("/auth")
-		{
-			auth.POST("/register", authgin.Register(appCtx))
-			auth.POST("/login", authgin.Login(appCtx))
-			auth.POST("/login-with-firebase", authgin.LoginWithFirebase(appCtx))
-		}
-	}
+	v1.InitRoute(r, appCtx)
 
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
@@ -97,7 +93,7 @@ func main() {
 		})
 	})
 	if err := r.Run(port); err != nil {
-		log.Fatalln(err)
+		log.Panic().Msg(err.Error())
 	}
 }
 
@@ -110,6 +106,14 @@ func connectMongoDB(ctx context.Context) (*mongo.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Println("Connect to mongodb successful")
+	log.Info().Msg("Connect to mongodb successful")
 	return client, nil
+}
+
+func setupLogger() {
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	if gin.Mode() == gin.DebugMode {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	}
 }
