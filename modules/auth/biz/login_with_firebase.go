@@ -14,6 +14,7 @@ import (
 type LoginWithFirebaseAuthStore interface {
 	CreateFirebaseUser(ctx context.Context, data *authmodel.RegisterFirebaseUser) (*authmodel.User, error)
 	Find(ctx context.Context, filter map[string]interface{}) (*authmodel.User, error)
+	DeleteUser(ctx context.Context, filter map[string]interface{}) error
 }
 
 type LoginWithFirebaseDeviceStore interface {
@@ -79,8 +80,31 @@ func (biz *loginWithFirebaseBiz) LoginWithFirebase(ctx context.Context, idToken 
 		if err != nil {
 			return nil, err
 		}
-	}
+	} else if existedUser != nil && existedUser.EmailVerified == false {
 
+		err = biz.authStore.DeleteUser(ctx, map[string]interface{}{
+			"email": *email,
+		})
+
+		if err != nil {
+			return nil, err
+		}
+
+		createdUser := &authmodel.RegisterFirebaseUser{
+			Email: *email,
+		}
+
+		err = createdUser.Process()
+		if err != nil {
+			return nil, common.ErrInternal(err)
+		}
+
+		existedUser, err = biz.authStore.CreateFirebaseUser(ctx, createdUser)
+		if err != nil {
+			return nil, err
+		}
+	}
+	device.UserId = existedUser.Id
 	_, err = biz.deviceStore.Create(ctx, device)
 	if err != nil {
 		return nil, err

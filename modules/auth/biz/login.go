@@ -75,6 +75,7 @@ func (biz *loginBiz) Login(ctx context.Context, data *authmodel.RegisterUser, de
 		return nil, common.ErrInvalidRequest(errors.New("invalid email or password"))
 	}
 
+	device.UserId = existedUser.Id
 	deviceId, err := biz.deviceStore.Create(ctx, device)
 	if err != nil {
 		return nil, err

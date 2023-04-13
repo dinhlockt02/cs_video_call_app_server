@@ -76,6 +76,7 @@ func (biz *registerBiz) Register(ctx context.Context, data *authmodel.RegisterUs
 		return nil, err
 	}
 
+	device.UserId = user.Id
 	deviceId, err := biz.deviceStore.Create(ctx, device)
 
 	now := time.Now()
