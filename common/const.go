@@ -5,5 +5,7 @@ const (
 	Female = "female"
 )
 
+const CurrentUser = "current-user"
+
 var AppDatabase string
 var AccessTokenExpiry int

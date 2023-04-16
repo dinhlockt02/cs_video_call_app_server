@@ -9,16 +9,18 @@ import (
 )
 
 type UpdateUser struct {
-	common.MongoTimestamp `json:"inline" bson:"inline"`
-	Name                  string              `json:"name" bson:"name"`
-	Email                 string              `json:"email" bson:"email"`
-	Password              string              `bson:"password" json:"password"`
-	ImageUrl              string              `json:"imageUrl" bson:"imageUrl"`
-	Address               string              `bson:"address" json:"address"`
-	Phone                 string              `json:"phone" bson:"phone"`
-	Gender                string              `json:"gender" bson:"gender"`
-	Birthday              *time.Time          `json:"birthday" bson:"-"`
-	MongoBirthday         *primitive.DateTime `bson:"birthday" json:"-"`
+	common.MongoModel `json:"inline" bson:"inline"`
+	Name              string              `json:"name" bson:"name"`
+	ImageUrl          string              `json:"imageUrl" bson:"imageUrl"`
+	Address           string              `bson:"address" json:"address"`
+	Phone             string              `json:"phone" bson:"phone"`
+	Gender            string              `json:"gender" bson:"gender"`
+	Birthday          *time.Time          `json:"birthday" bson:"-"`
+	MongoBirthday     *primitive.DateTime `bson:"birthday" json:"-"`
+}
+
+func (UpdateUser) EntityName() string {
+	return "User"
 }
 
 func (UpdateUser) CollectionName() string {
@@ -29,18 +31,6 @@ func (u *UpdateUser) Process() error {
 	var errs = make([]error, 0)
 	if strings.TrimSpace(u.Name) == "" {
 		errs = append(errs, errors.New("name must not be empty"))
-	}
-
-	if !common.EmailRegexp.Match([]byte(u.Email)) {
-		errs = append(errs, errors.New("invalid email"))
-	}
-
-	if len(strings.TrimSpace(u.Password)) < 8 {
-		errs = append(errs, errors.New("password must be at least 8 character"))
-	}
-
-	if len(strings.TrimSpace(u.Password)) > 50 {
-		errs = append(errs, errors.New("password must be at most 50 character"))
 	}
 
 	if !common.URLRegexp.Match([]byte(u.ImageUrl)) {
@@ -61,12 +51,17 @@ func (u *UpdateUser) Process() error {
 		errs = append(errs, errors.New("phone number must not be empty"))
 	}
 
+	//if u.Birthday == nil {
+	//	errs = append(errs, errors.New("birthday must not be empty"))
+	//}
+
 	now := time.Now()
-	u.CreatedAt = &now
 	u.UpdatedAt = &now
 
 	u.MongoTimestamp.Process()
 	u.Birthday, u.MongoBirthday = common.MongoProcessTime(u.Birthday, u.MongoBirthday)
+	u.CreatedAt = nil
+	u.MongoCreatedAt = nil
 
 	if len(errs) > 0 {
 		return common.ValidationError(errs)

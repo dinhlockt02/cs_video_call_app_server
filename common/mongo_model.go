@@ -11,8 +11,8 @@ type MongoModel struct {
 }
 
 type MongoTimestamp struct {
-	MongoCreatedAt *primitive.DateTime `json:"-" bson:"created_at"`
-	MongoUpdatedAt *primitive.DateTime `json:"-" bson:"updated_at"`
+	MongoCreatedAt *primitive.DateTime `json:"-" bson:"created_at,omitempty"`
+	MongoUpdatedAt *primitive.DateTime `json:"-" bson:"updated_at,omitempty"`
 	CreatedAt      *time.Time          `bson:"-" json:"created_at"`
 	UpdatedAt      *time.Time          `bson:"-" json:"update_at"`
 }

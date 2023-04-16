@@ -31,3 +31,7 @@ func (u *User) Process() {
 	u.MongoModel.Process()
 	u.Birthday, u.MongoBirthday = common.MongoProcessTime(u.Birthday, u.MongoBirthday)
 }
+
+func (u *User) GetId() string {
+	return u.Id.Hex()
+}

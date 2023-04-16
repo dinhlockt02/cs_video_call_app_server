@@ -13,7 +13,7 @@ type jwtTokenProvider struct {
 
 type AppClaims struct {
 	jwt.RegisteredClaims
-	payload *tokenprovider.TokenPayload
+	Payload *tokenprovider.TokenPayload `json:"payload"`
 }
 
 func (j *jwtTokenProvider) Generate(payload *tokenprovider.TokenPayload, expiry int) (*tokenprovider.Token, error) {
@@ -22,10 +22,9 @@ func (j *jwtTokenProvider) Generate(payload *tokenprovider.TokenPayload, expiry 
 	claims := AppClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expire),
-			NotBefore: nil,
 			IssuedAt:  jwt.NewNumericDate(now),
 		},
-		payload: payload,
+		Payload: payload,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(j.secret))
@@ -40,8 +39,18 @@ func (j *jwtTokenProvider) Generate(payload *tokenprovider.TokenPayload, expiry 
 }
 
 func (j *jwtTokenProvider) Validate(token string) (*tokenprovider.TokenPayload, error) {
-	//TODO implement me
-	panic("implement me")
+	tk, err := jwt.ParseWithClaims(token, &AppClaims{Payload: &tokenprovider.TokenPayload{}}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(j.secret), nil
+	})
+	if err != nil {
+		return nil, common.ErrInternal(err)
+	}
+
+	if claims, ok := tk.Claims.(*AppClaims); ok && tk.Valid {
+		return claims.Payload, nil
+	} else {
+		return nil, common.ErrInvalidRequest(nil)
+	}
 }
 
 func NewJwtTokenProvider(secret string) *jwtTokenProvider {

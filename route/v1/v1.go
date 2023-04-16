@@ -10,5 +10,6 @@ func InitRoute(e *gin.Engine, appCtx appcontext.AppContext) {
 	v1 := e.Group("/v1")
 	{
 		internal.InitAuthRoute(v1, appCtx)
+		internal.InitUserRoute(v1, appCtx)
 	}
 }
