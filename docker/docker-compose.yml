@@ -31,8 +31,8 @@ services:
       - docker.server.env
     ports:
       - "8080:8080"
-#    volumes:
-#      - ./service-account-key.json:/service-account-key.json:ro
+    volumes:
+      - ./service-account-key.json:/app/service-account-key.json:ro
     command: ["/app/main"]
 volumes:
   cs-video-call-app:
