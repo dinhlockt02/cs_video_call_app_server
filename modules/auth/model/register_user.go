@@ -8,11 +8,13 @@ import (
 )
 
 type RegisterUser struct {
-	common.MongoModel `bson:"inline"`
-	Email             string `json:"email" bson:"email"`
-	Password          string `json:"password" bson:"password"`
-	EmailVerified     bool   `json:"email_verified" bson:"email_verified"`
-	ProfileUpdated    bool   `json:"profile_updated" bson:"profile_updated"`
+	common.MongoModel              `bson:"inline"`
+	common.MongoCreatedAtTimestamp `bson:"inline" json:"inline"`
+	common.MongoUpdatedAtTimestamp `bson:"inline" json:"inline"`
+	Email                          string `json:"email" bson:"email"`
+	Password                       string `json:"password" bson:"password"`
+	EmailVerified                  bool   `json:"email_verified" bson:"email_verified"`
+	ProfileUpdated                 bool   `json:"profile_updated" bson:"profile_updated"`
 }
 
 func (RegisterUser) CollectionName() string {
@@ -37,8 +39,6 @@ func (u *RegisterUser) Process() error {
 	now := time.Now()
 	u.CreatedAt = &now
 	u.UpdatedAt = &now
-
-	u.MongoTimestamp.Process()
 
 	if len(errs) > 0 {
 		return common.ValidationError(errs)

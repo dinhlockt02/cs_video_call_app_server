@@ -8,9 +8,11 @@ import (
 )
 
 type Device struct {
-	common.MongoModel `bson:"inline"`
-	Name              string `bson:"name" json:"name"`
-	UserId            string `bson:"user_id" json:"-"`
+	common.MongoModel              `bson:"inline"`
+	common.MongoCreatedAtTimestamp `bson:"inline" json:"inline"`
+	common.MongoUpdatedAtTimestamp `bson:"inline" json:"inline"`
+	Name                           string `bson:"name" json:"name"`
+	UserId                         string `bson:"user_id" json:"-"`
 }
 
 func (d *Device) Process() error {
@@ -27,8 +29,6 @@ func (d *Device) Process() error {
 	now := time.Now()
 	d.CreatedAt = &now
 	d.UpdatedAt = &now
-
-	d.MongoTimestamp.Process()
 
 	return nil
 }

@@ -1,23 +1,24 @@
 package common
 
 import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
 
 type MongoModel struct {
-	Id             *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	MongoTimestamp `bson:"inline"`
+	Id *string `json:"id" bson:"_id,omitempty"`
 }
 
-type MongoTimestamp struct {
-	MongoCreatedAt *primitive.DateTime `json:"-" bson:"created_at,omitempty"`
-	MongoUpdatedAt *primitive.DateTime `json:"-" bson:"updated_at,omitempty"`
-	CreatedAt      *time.Time          `bson:"-" json:"created_at"`
-	UpdatedAt      *time.Time          `bson:"-" json:"update_at"`
+//type MongoTimestamp struct {
+//	MongoCreatedAt *primitive.DateTime `json:"-" bson:"created_at,omitempty"`
+//	MongoUpdatedAt *primitive.DateTime `json:"-" bson:"updated_at,omitempty"`
+//	CreatedAt      *time.Time          `bson:"-" json:"created_at"`
+//	UpdatedAt      *time.Time          `bson:"-" json:"update_at"`
+//}
+
+type MongoCreatedAtTimestamp struct {
+	CreatedAt *time.Time `bson:"created_at" json:"created_at,omitempty"`
 }
 
-func (m *MongoTimestamp) Process() {
-	m.CreatedAt, m.MongoCreatedAt = MongoProcessTime(m.CreatedAt, m.MongoCreatedAt)
-	m.UpdatedAt, m.MongoUpdatedAt = MongoProcessTime(m.UpdatedAt, m.MongoUpdatedAt)
+type MongoUpdatedAtTimestamp struct {
+	UpdatedAt *time.Time `bson:"updated_at" json:"update_at,omitempty"`
 }

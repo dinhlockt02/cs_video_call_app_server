@@ -1,0 +1,372 @@
+{
+	"info": {
+		"_postman_id": "660a4ba1-834f-4753-8d3a-ab3b3bf0a615",
+		"name": "Video Call App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18854090"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"email\": \"test1@gmail.com\",\n        \"password\": \"12345678\"\n    },\n    \"device\": {\n        \"name\": \"xiaomi\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/v1/auth/register",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"email\": \"test@gmail.com\",\n        \"password\": \"12345678\"\n    },\n    \"device\": {\n        \"name\": \"xiaomi\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/v1/auth/login",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login With Firebase",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_token\": \"eyJhbGciOiJSUzI1NiIsImtpZCI6IjE2ZGE4NmU4MWJkNTllMGE4Y2YzNTgwNTJiYjUzYjUzYjE4MzA3NzMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vY3MtdmlkZW8tY2FsbCIsImF1ZCI6ImNzLXZpZGVvLWNhbGwiLCJhdXRoX3RpbWUiOjE2ODE5Nzk1MzQsInVzZXJfaWQiOiJ4T2FKVzBSWXZMZGh6d2JyRkxHZ0l5eU9jb3kxIiwic3ViIjoieE9hSlcwUll2TGRoendickZMR2dJeXlPY295MSIsImlhdCI6MTY4MTk3OTUzNCwiZXhwIjoxNjgxOTgzMTM0LCJlbWFpbCI6ImRpbmhsb2NrdDAyQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJkaW5obG9ja3QwMkBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.H-h8rPges1vy-8clxx0e7i7OdUv1Bg8qIuqWzfy06qcj6H3eXFIKtsKN6V-QWHuTjMqq7J3-KJ9P_H9V38-mnq7tK26stDG11PmFENhawsjYoXrDNyyVtNA36QXzp37sfcthgZbL0dz6HtzHyo8n_barXdRjBTuyHn65AChA3bog3ABtWOf9Tsra0YunQz8qMI36cNFnd3YmpRUq66n2HB6L2diw0FT_a1BRTlLrZQGVU3sNqLqu7cwiBfpOqz8WZcjLCvomom8-chHXVgAE5jxnzKTrhP0gs9VtOfkHUOUmBh0nOKORvgr0X83E5WFfUT19btEIvN1WCSYyAjrzbw\",\n    \"device\": {\n        \"name\": \"xiaomi\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/v1/auth/login-with-firebase",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"login-with-firebase"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Update Self",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"loc tran\",\n    \"avatar\": \"http://google.com/a.jpg\",\n    \"address\": \"123\",\n    \"gender\": \"male\",\n    \"phone\": \"12345\",\n    \"birthday\": \"2002-03-25T17:00:00.000Z\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/user/self",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"user",
+								"self"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Friend",
+			"item": [
+				{
+					"name": "Send Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/v1/friend/request/:id",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"v1",
+								"friend",
+								"request",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "64426539edd4f7bee44467bb"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sent Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/v1/friend/request/sent",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"v1",
+								"friend",
+								"request",
+								"sent"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recall Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/v1/friend/request/:id",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"v1",
+								"friend",
+								"request",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "6442652aedd4f7bee44467b9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Received Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/v1/friend/request/received",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"v1",
+								"friend",
+								"request",
+								"received"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accept Received Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/v1/friend/request/:id/accept",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"v1",
+								"friend",
+								"request",
+								":id",
+								"accept"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "64428d920215e38b4857b5bc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Received Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/v1/friend/request/:id/reject",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"v1",
+								"friend",
+								"request",
+								":id",
+								"reject"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "64426539edd4f7bee44467bb"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ping",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{DOMAIN}}/ping",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"ping"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

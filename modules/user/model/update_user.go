@@ -3,20 +3,20 @@ package usermodel
 import (
 	"errors"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"strings"
 	"time"
 )
 
 type UpdateUser struct {
-	common.MongoModel `json:"inline" bson:"inline"`
-	Name              string              `json:"name" bson:"name"`
-	ImageUrl          string              `json:"imageUrl" bson:"imageUrl"`
-	Address           string              `bson:"address" json:"address"`
-	Phone             string              `json:"phone" bson:"phone"`
-	Gender            string              `json:"gender" bson:"gender"`
-	Birthday          *time.Time          `json:"birthday" bson:"-"`
-	MongoBirthday     *primitive.DateTime `bson:"birthday" json:"-"`
+	common.MongoModel              `json:"inline" bson:"inline"`
+	common.MongoUpdatedAtTimestamp `json:"inline" bson:"inline"`
+	Name                           string     `json:"name" bson:"name"`
+	Avatar                         string     `json:"avatar" bson:"avatar"`
+	Address                        string     `bson:"address" json:"address"`
+	Phone                          string     `json:"phone" bson:"phone"`
+	Gender                         string     `json:"gender" bson:"gender"`
+	Birthday                       *time.Time `json:"birthday" bson:"birthday"`
+	//MongoBirthday     *primitive.DateTime `bson:"birthday" json:"-"`
 }
 
 func (UpdateUser) EntityName() string {
@@ -33,7 +33,7 @@ func (u *UpdateUser) Process() error {
 		errs = append(errs, errors.New("name must not be empty"))
 	}
 
-	if !common.URLRegexp.Match([]byte(u.ImageUrl)) {
+	if !common.URLRegexp.Match([]byte(u.Avatar)) {
 		errs = append(errs, errors.New("invalid image url"))
 	}
 
@@ -57,11 +57,6 @@ func (u *UpdateUser) Process() error {
 
 	now := time.Now()
 	u.UpdatedAt = &now
-
-	u.MongoTimestamp.Process()
-	u.Birthday, u.MongoBirthday = common.MongoProcessTime(u.Birthday, u.MongoBirthday)
-	u.CreatedAt = nil
-	u.MongoCreatedAt = nil
 
 	if len(errs) > 0 {
 		return common.ValidationError(errs)

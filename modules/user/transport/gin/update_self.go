@@ -19,6 +19,7 @@ func UpdateSelf(appCtx appcontext.AppContext) gin.HandlerFunc {
 		var updateData usermodel.UpdateUser
 
 		err := context.ShouldBind(&updateData)
+
 		if err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}

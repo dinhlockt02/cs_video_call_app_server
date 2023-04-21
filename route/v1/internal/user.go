@@ -13,8 +13,8 @@ func InitUserRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
 
 	userStore := userstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 
-	auth := g.Group("/user", middleware.Authentication(appCtx, userStore))
+	user := g.Group("/user", middleware.Authentication(appCtx, userStore))
 	{
-		auth.PUT("/self", usergin.UpdateSelf(appCtx))
+		user.PUT("/self", usergin.UpdateSelf(appCtx))
 	}
 }

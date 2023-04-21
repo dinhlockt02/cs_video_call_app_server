@@ -77,3 +77,5 @@ func ErrInternal(err error) *AppError {
 func ErrEntityNotFound(entity string, err error) *AppError {
 	return NewFullErrorResponse(http.StatusNotFound, err, fmt.Sprintf("%v not found", entity), err.Error(), "ErrNotfound")
 }
+
+var ErrInvalidObjectId = errors.New("invalid object id")
