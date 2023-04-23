@@ -1,6 +1,7 @@
 package usermodel
 
 import (
+	"errors"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	"time"
 )
@@ -31,3 +32,5 @@ func (u *User) Process() {
 func (u *User) GetId() string {
 	return *u.Id
 }
+
+var ErrUserNotFound = errors.New("user not found")
