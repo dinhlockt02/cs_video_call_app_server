@@ -12,7 +12,7 @@ type RequestUser struct {
 }
 
 type Request struct {
-	Id        *string     `json:"id" bson:"_id,omitempty"`
+	Id        *string     `json:"-" bson:"_id,omitempty"`
 	Sender    RequestUser `json:"sender" bson:"sender"`
 	Receiver  RequestUser `json:"receiver" bson:"receiver"`
 	CreatedAt *time.Time  `bson:"created_at" json:"created_at,omitempty"`

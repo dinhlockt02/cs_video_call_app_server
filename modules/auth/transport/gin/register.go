@@ -4,7 +4,7 @@ import (
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/appcontext"
 	authbiz "github.com/dinhlockt02/cs_video_call_app_server/modules/auth/biz"
-	usermodel "github.com/dinhlockt02/cs_video_call_app_server/modules/auth/model"
+	authmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/auth/model"
 	authstore "github.com/dinhlockt02/cs_video_call_app_server/modules/auth/store"
 	devicemodel "github.com/dinhlockt02/cs_video_call_app_server/modules/device/model"
 	devicestore "github.com/dinhlockt02/cs_video_call_app_server/modules/device/store"
@@ -16,12 +16,12 @@ func Register(appCtx appcontext.AppContext) gin.HandlerFunc {
 	return func(context *gin.Context) {
 
 		type Body struct {
-			Data   usermodel.RegisterUser `json:"data"`
+			Data   authmodel.RegisterUser `json:"data"`
 			Device devicemodel.Device     `json:"device"`
 		}
 
 		var body = Body{
-			Data:   usermodel.RegisterUser{},
+			Data:   authmodel.RegisterUser{},
 			Device: devicemodel.Device{},
 		}
 

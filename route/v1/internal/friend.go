@@ -16,7 +16,7 @@ func InitFriendRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
 	friend := g.Group("/friend", middleware.Authentication(appCtx, userStore))
 	{
 		friend.GET("/", friendgin.FindFriend(appCtx))
-		friendRequest := g.Group("/request")
+		friendRequest := friend.Group("/request")
 		{
 			friendRequest.GET("/sent", friendgin.GetSentRequest(appCtx))
 			friendRequest.GET("/received", friendgin.GetReceivedRequest(appCtx))
@@ -25,6 +25,8 @@ func InitFriendRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
 			friendRequest.POST("/:id/accept", friendgin.AcceptRequest(appCtx))
 			friendRequest.DELETE("/:id/reject", friendgin.RejectRequest(appCtx))
 		}
-
+		friend.DELETE("/:id", friendgin.Unfriend(appCtx))
+		friend.PUT("/:id/block", friendgin.Block(appCtx))
+		friend.PUT("/:id/unblock", friendgin.Unblock(appCtx))
 	}
 }
