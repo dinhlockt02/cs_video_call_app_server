@@ -62,7 +62,8 @@ func (r *userDetailRepository) GetUserDetail(ctx context.Context, userId string,
 
 	for _, friend := range friendStoreUser.Friends {
 		if friend == otherId {
-			userDetail.IsFriend = true
+			t := true
+			userDetail.IsFriend = &t
 		}
 		userFriendMap[friend] = struct{}{}
 	}
@@ -86,7 +87,8 @@ func (r *userDetailRepository) GetUserDetail(ctx context.Context, userId string,
 		}
 	}
 	userDetail.CommonFriend = commonFriend
-	userDetail.CommonFriendCount = len(commonFriend)
+	commonFriendCount := len(commonFriend)
+	userDetail.CommonFriendCount = &commonFriendCount
 
 	return userDetail, nil
 }

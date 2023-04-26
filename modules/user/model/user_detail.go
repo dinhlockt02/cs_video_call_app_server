@@ -11,8 +11,8 @@ type UserDetail struct {
 	Gender            string     `json:"gender" bson:"gender"`
 	Birthday          *time.Time `json:"birthday" bson:"birthday"`
 	CommonFriend      []string   `json:"-"`
-	CommonFriendCount int        `json:"common_friend_count"`
-	IsFriend          bool       `json:"is_friend"`
+	CommonFriendCount *int       `json:"common_friend_count,omitempty"`
+	IsFriend          *bool      `json:"is_friend,omitempty"`
 }
 
 func NewUserDetail(u *User) *UserDetail {
@@ -25,7 +25,7 @@ func NewUserDetail(u *User) *UserDetail {
 		Gender:            u.Gender,
 		Birthday:          u.Birthday,
 		CommonFriend:      nil,
-		CommonFriendCount: 0,
-		IsFriend:          false,
+		CommonFriendCount: new(int),
+		IsFriend:          new(bool),
 	}
 }

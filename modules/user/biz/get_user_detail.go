@@ -20,8 +20,9 @@ func NewUserDetailBiz(repo UserDetailRepo) *userDetailBiz {
 func (biz *userDetailBiz) GetUserDetail(ctx context.Context, userId string, requesterId string) (*usermodel.UserDetail, error) {
 	user, err := biz.repo.GetUserDetail(ctx, userId, requesterId)
 	if userId == requesterId {
-		user.CommonFriendCount = 0
+		user.CommonFriendCount = nil
 		user.CommonFriend = nil
+		user.IsFriend = nil
 	}
 	return user, err
 }

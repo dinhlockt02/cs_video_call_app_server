@@ -16,6 +16,8 @@ func InitUserRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
 	user := g.Group("/user", middleware.Authentication(appCtx, userStore))
 	{
 		user.PUT("/self", usergin.UpdateSelf(appCtx))
+		user.GET("/self", usergin.GetSelfDetail(appCtx))
 		user.GET("/:id", usergin.GetUserDetail(appCtx))
+
 	}
 }
