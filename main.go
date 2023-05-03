@@ -8,10 +8,12 @@ import (
 	"github.com/dinhlockt02/cs_video_call_app_server/components/appcontext"
 	fbs "github.com/dinhlockt02/cs_video_call_app_server/components/firebase"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/hasher"
+	"github.com/dinhlockt02/cs_video_call_app_server/components/mailer"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/tokenprovider/jwt"
 	"github.com/dinhlockt02/cs_video_call_app_server/middleware"
 	v1 "github.com/dinhlockt02/cs_video_call_app_server/route/v1"
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -61,6 +63,14 @@ func main() {
 
 	bcryptHasher := hasher.NewBcryptHasher()
 
+	// Create mailer
+
+	sendgridMailer := mailer.NewSendGridMailer(
+		os.Getenv("SENDGRID_SENDER_NAME"),
+		os.Getenv("SENDGRID_SENDER_EMAIL"),
+		os.Getenv("SENDGRID_API_KEY"),
+	)
+
 	// Create Firebase App
 	opt := option.WithCredentialsFile("./service-account-key.json")
 	fa, err := firebase.NewApp(context.Background(), nil, opt)
@@ -69,9 +79,16 @@ func main() {
 	}
 	app := fbs.NewFirebaseApp(fa)
 
+	// Create redis client
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     os.Getenv("REDIS_ADDR"),
+		Password: os.Getenv("REDIS_PASSWORD"), // no password set
+		DB:       0,                           // use default DB
+	})
+
 	// Create app context
 
-	appCtx := appcontext.NewAppContext(client, tokenProvider, bcryptHasher, app)
+	appCtx := appcontext.NewAppContext(client, tokenProvider, bcryptHasher, app, sendgridMailer, redisClient)
 
 	envport := os.Getenv("SERVER_PORT")
 	if envport == "" {
