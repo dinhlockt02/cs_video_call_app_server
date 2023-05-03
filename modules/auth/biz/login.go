@@ -42,7 +42,7 @@ func NewLoginBiz(
 	}
 }
 
-func (biz *loginBiz) Login(ctx context.Context, data *authmodel.RegisterUser, device *devicemodel.Device) (*authmodel.AuthToken, error) {
+func (biz *loginBiz) Login(ctx context.Context, data *authmodel.LoginUser, device *devicemodel.Device) (*authmodel.AuthToken, error) {
 
 	if err := data.Process(); err != nil {
 		return nil, common.ErrInvalidRequest(err)

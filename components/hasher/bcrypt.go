@@ -39,6 +39,9 @@ func (b *bcryptHasher) Compare(data string, hashedData string) (bool, error) {
 		return false, common.ErrInvalidRequest(errors.New("invalid hashed data"))
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(hashedData), []byte(data)); err != nil {
+		if err == bcrypt.ErrMismatchedHashAndPassword {
+			return false, nil
+		}
 		return false, err
 	}
 	return true, nil
