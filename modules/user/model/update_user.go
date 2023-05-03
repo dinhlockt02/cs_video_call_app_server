@@ -16,7 +16,6 @@ type UpdateUser struct {
 	Phone                          string     `json:"phone" bson:"phone"`
 	Gender                         string     `json:"gender" bson:"gender"`
 	Birthday                       *time.Time `json:"birthday" bson:"birthday"`
-	//MongoBirthday     *primitive.DateTime `bson:"birthday" json:"-"`
 }
 
 func (UpdateUser) EntityName() string {

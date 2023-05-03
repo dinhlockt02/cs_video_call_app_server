@@ -6,11 +6,12 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (s *mongoStore) Create(ctx context.Context, data *devicemodel.Device) (*primitive.ObjectID, error) {
+func (s *mongoStore) Create(ctx context.Context, data *devicemodel.Device) error {
 	result, err := s.database.Collection(data.CollectionName()).InsertOne(ctx, data)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	id := result.InsertedID.(primitive.ObjectID)
-	return &id, nil
+	id := result.InsertedID.(primitive.ObjectID).Hex()
+	data.Id = &id
+	return nil
 }

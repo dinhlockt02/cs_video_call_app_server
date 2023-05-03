@@ -7,7 +7,6 @@ import (
 	"github.com/dinhlockt02/cs_video_call_app_server/components/tokenprovider"
 	authmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/auth/model"
 	devicemodel "github.com/dinhlockt02/cs_video_call_app_server/modules/device/model"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
 
@@ -18,7 +17,7 @@ type LoginWithFirebaseAuthStore interface {
 }
 
 type LoginWithFirebaseDeviceStore interface {
-	Create(ctx context.Context, data *devicemodel.Device) (*primitive.ObjectID, error)
+	Create(ctx context.Context, data *devicemodel.Device) error
 }
 
 type loginWithFirebaseBiz struct {
@@ -105,19 +104,19 @@ func (biz *loginWithFirebaseBiz) LoginWithFirebase(ctx context.Context, idToken 
 		}
 	}
 	device.UserId = existedUser.Id
-	_, err = biz.deviceStore.Create(ctx, device)
+	err = biz.deviceStore.Create(ctx, device)
 	if err != nil {
 		return nil, err
 	}
 
 	now := time.Now()
-	refreshToken := &tokenprovider.Token{Token: existedUser.Id, CreatedAt: &now, ExpiredAt: nil}
+	refreshToken := &tokenprovider.Token{Token: *device.Id, CreatedAt: &now, ExpiredAt: nil}
 	if err != nil {
 		return nil, err
 	}
 
 	accessToken, err := biz.tokenProvider.Generate(
-		&tokenprovider.TokenPayload{UserId: existedUser.Id},
+		&tokenprovider.TokenPayload{Id: *device.Id},
 		common.AccessTokenExpiry,
 	)
 

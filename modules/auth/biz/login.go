@@ -8,7 +8,6 @@ import (
 	"github.com/dinhlockt02/cs_video_call_app_server/components/tokenprovider"
 	authmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/auth/model"
 	devicemodel "github.com/dinhlockt02/cs_video_call_app_server/modules/device/model"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"strings"
 	"time"
 )
@@ -18,7 +17,7 @@ type LoginAuthStore interface {
 }
 
 type LoginDeviceStore interface {
-	Create(ctx context.Context, data *devicemodel.Device) (*primitive.ObjectID, error)
+	Create(ctx context.Context, data *devicemodel.Device) error
 }
 
 type loginBiz struct {
@@ -76,19 +75,19 @@ func (biz *loginBiz) Login(ctx context.Context, data *authmodel.LoginUser, devic
 	}
 
 	device.UserId = existedUser.Id
-	deviceId, err := biz.deviceStore.Create(ctx, device)
+	err = biz.deviceStore.Create(ctx, device)
 	if err != nil {
 		return nil, err
 	}
 
 	now := time.Now()
-	refreshToken := &tokenprovider.Token{Token: deviceId.Hex(), CreatedAt: &now, ExpiredAt: nil}
+	refreshToken := &tokenprovider.Token{Token: *device.Id, CreatedAt: &now, ExpiredAt: nil}
 	if err != nil {
 		return nil, err
 	}
 
 	accessToken, err := biz.tokenProvider.Generate(
-		&tokenprovider.TokenPayload{UserId: existedUser.Id},
+		&tokenprovider.TokenPayload{Id: *device.Id},
 		common.AccessTokenExpiry,
 	)
 
