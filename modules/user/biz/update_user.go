@@ -8,7 +8,7 @@ import (
 
 type UpdateUserStore interface {
 	Find(ctx context.Context, filter map[string]interface{}) (*usermodel.User, error)
-	Update(ctx context.Context, updatedUser *usermodel.UpdateUser) error
+	Update(ctx context.Context, filter map[string]interface{}, updatedUser *usermodel.UpdateUser) error
 }
 
 type updateUserBiz struct {
@@ -31,10 +31,9 @@ func (biz *updateUserBiz) Update(ctx context.Context, filter map[string]interfac
 	}
 
 	if existedUser == nil {
-		return common.ErrEntityNotFound(data.EntityName(), nil)
+		return common.ErrEntityNotFound(data.EntityName(), usermodel.ErrUserNotFound)
 	}
-	data.Id = existedUser.Id
-	err = biz.updateUserStore.Update(ctx, data)
+	err = biz.updateUserStore.Update(ctx, filter, data)
 	if err != nil {
 		return err
 	}

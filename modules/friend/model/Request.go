@@ -1,7 +1,7 @@
 package friendmodel
 
 import (
-	"errors"
+	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	"time"
 )
 
@@ -12,20 +12,15 @@ type RequestUser struct {
 }
 
 type Request struct {
-	Id        *string     `json:"-" bson:"_id,omitempty"`
-	Sender    RequestUser `json:"sender" bson:"sender"`
-	Receiver  RequestUser `json:"receiver" bson:"receiver"`
-	CreatedAt *time.Time  `bson:"created_at" json:"created_at,omitempty"`
+	Id                             *string     `json:"-" bson:"_id,omitempty"`
+	Sender                         RequestUser `json:"sender" bson:"sender"`
+	Receiver                       RequestUser `json:"receiver" bson:"receiver"`
+	common.MongoCreatedAtTimestamp `json:",inline" bson:",inline"`
 }
 
 func (Request) CollectionName() string {
 	return "requests"
 }
-
-var ErrRequestExists = errors.New("request exists")
-var ErrRequestNotFound = errors.New("request not found")
-var ErrHasBeenFriend = errors.New("has been friend")
-
 func (r *Request) Process() {
 	now := time.Now()
 	r.CreatedAt = &now
