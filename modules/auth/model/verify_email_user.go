@@ -6,8 +6,8 @@ import (
 )
 
 type EmailVerifiedUser struct {
-	EmailVerified                  bool `json:"email_verified" bson:"email_verified"`
-	common.MongoUpdatedAtTimestamp `bson:",inline"`
+	EmailVerified         bool `json:"email_verified" bson:"email_verified"`
+	common.MongoUpdatedAt `bson:",inline"`
 }
 
 func (EmailVerifiedUser) CollectionName() string {

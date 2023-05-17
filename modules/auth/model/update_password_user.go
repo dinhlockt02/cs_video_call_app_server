@@ -8,8 +8,8 @@ import (
 )
 
 type UpdatePasswordUser struct {
-	Password                       string `bson:"password" json:"password"`
-	common.MongoUpdatedAtTimestamp `bson:",inline"`
+	Password              string `bson:"password" json:"password"`
+	common.MongoUpdatedAt `bson:",inline"`
 }
 
 func (UpdatePasswordUser) CollectionName() string {

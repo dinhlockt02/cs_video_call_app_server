@@ -5,15 +5,15 @@ import (
 	"time"
 )
 
-type MongoModel struct {
+type MongoId struct {
 	Id *string `json:"id" bson:"_id,omitempty"`
 }
 
-type MongoCreatedAtTimestamp struct {
+type MongoCreatedAt struct {
 	CreatedAt *time.Time `bson:"created_at" json:"created_at,omitempty"`
 }
 
-type MongoUpdatedAtTimestamp struct {
+type MongoUpdatedAt struct {
 	UpdatedAt *time.Time `bson:"updated_at" json:"update_at,omitempty"`
 }
 

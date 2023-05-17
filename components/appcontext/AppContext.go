@@ -4,6 +4,7 @@ import (
 	fbs "github.com/dinhlockt02/cs_video_call_app_server/components/firebase"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/hasher"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/mailer"
+	notirepo "github.com/dinhlockt02/cs_video_call_app_server/components/notification/repository"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/tokenprovider"
 	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,6 +17,7 @@ type AppContext interface {
 	Mailer() mailer.Mailer
 	Redis() *redis.Client
 	FirebaseApp() fbs.FirebaseApp
+	Notification() notirepo.NotificationRepository
 }
 
 type appContext struct {
@@ -25,6 +27,7 @@ type appContext struct {
 	rds           *redis.Client
 	fa            fbs.FirebaseApp
 	mailer        mailer.Mailer
+	notification  notirepo.NotificationRepository
 }
 
 func NewAppContext(
@@ -34,6 +37,7 @@ func NewAppContext(
 	fa fbs.FirebaseApp,
 	mailer mailer.Mailer,
 	rds *redis.Client,
+	notification notirepo.NotificationRepository,
 ) *appContext {
 	return &appContext{
 		mongoClient:   mongoClient,
@@ -42,6 +46,7 @@ func NewAppContext(
 		fa:            fa,
 		mailer:        mailer,
 		rds:           rds,
+		notification:  notification,
 	}
 }
 
@@ -67,4 +72,8 @@ func (a *appContext) FirebaseApp() fbs.FirebaseApp {
 
 func (a *appContext) Mailer() mailer.Mailer {
 	return a.mailer
+}
+
+func (a *appContext) Notification() notirepo.NotificationRepository {
+	return a.Notification()
 }

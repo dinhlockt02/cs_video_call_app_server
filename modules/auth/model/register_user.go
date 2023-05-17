@@ -8,13 +8,13 @@ import (
 )
 
 type RegisterUser struct {
-	common.MongoModel              `bson:"inline"`
-	common.MongoCreatedAtTimestamp `bson:"inline" json:"inline"`
-	common.MongoUpdatedAtTimestamp `bson:"inline" json:"inline"`
-	Email                          string `json:"email" bson:"email"`
-	Password                       string `json:"password" bson:"password"`
-	EmailVerified                  bool   `json:"email_verified" bson:"email_verified"`
-	ProfileUpdated                 bool   `json:"profile_updated" bson:"profile_updated"`
+	common.MongoId        `bson:"inline"`
+	common.MongoCreatedAt `bson:"inline" json:"inline"`
+	common.MongoUpdatedAt `bson:"inline" json:"inline"`
+	Email                 string `json:"email" bson:"email"`
+	Password              string `json:"password" bson:"password"`
+	EmailVerified         bool   `json:"email_verified" bson:"email_verified"`
+	ProfileUpdated        bool   `json:"profile_updated" bson:"profile_updated"`
 }
 
 func (RegisterUser) CollectionName() string {

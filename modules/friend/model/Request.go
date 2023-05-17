@@ -12,10 +12,10 @@ type RequestUser struct {
 }
 
 type Request struct {
-	Id                             *string     `json:"-" bson:"_id,omitempty"`
-	Sender                         RequestUser `json:"sender" bson:"sender"`
-	Receiver                       RequestUser `json:"receiver" bson:"receiver"`
-	common.MongoCreatedAtTimestamp `json:",inline" bson:",inline"`
+	Id                    *string     `json:"-" bson:"_id,omitempty"`
+	Sender                RequestUser `json:"sender" bson:"sender"`
+	Receiver              RequestUser `json:"receiver" bson:"receiver"`
+	common.MongoCreatedAt `json:",inline" bson:",inline"`
 }
 
 func (Request) CollectionName() string {

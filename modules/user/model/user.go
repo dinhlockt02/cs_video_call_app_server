@@ -8,19 +8,19 @@ import (
 )
 
 type User struct {
-	common.MongoModel              `json:",inline" bson:",inline,omitempty"`
-	common.MongoUpdatedAtTimestamp `json:",inline" bson:",inline,omitempty"`
-	Name                           string               `json:"name" bson:"name"`
-	Email                          string               `json:"email" bson:"email"`
-	Password                       string               `bson:"password" json:"-"`
-	Avatar                         string               `json:"avatar" bson:"avatar"`
-	Phone                          string               `json:"phone" bson:"phone"`
-	Gender                         string               `json:"gender" bson:"gender"`
-	Birthday                       *time.Time           `json:"birthday" bson:"birthday"`
-	Bio                            string               `json:"bio" bson:"bio"`
-	CommonFriend                   []string             `json:"-"`
-	CommonFriendCount              *int                 `json:"common_friend_count,omitempty"`
-	Relation                       friendmodel.Relation `json:"relation"`
+	common.MongoId        `json:",inline" bson:",inline,omitempty"`
+	common.MongoUpdatedAt `json:",inline" bson:",inline,omitempty"`
+	Name                  string               `json:"name" bson:"name"`
+	Email                 string               `json:"email" bson:"email"`
+	Password              string               `bson:"password" json:"-"`
+	Avatar                string               `json:"avatar" bson:"avatar"`
+	Phone                 string               `json:"phone" bson:"phone"`
+	Gender                string               `json:"gender" bson:"gender"`
+	Birthday              *time.Time           `json:"birthday" bson:"birthday"`
+	Bio                   string               `json:"bio" bson:"bio"`
+	CommonFriend          []string             `json:"-"`
+	CommonFriendCount     *int                 `json:"common_friend_count,omitempty"`
+	Relation              friendmodel.Relation `json:"relation"`
 }
 
 func (User) EntityName() string {

@@ -7,16 +7,13 @@ import (
 	"time"
 )
 
-type Device struct {
-	common.MongoId        `bson:",inline"`
-	common.MongoCreatedAt `bson:",inline" json:",inline"`
+type UpdateDevice struct {
 	common.MongoUpdatedAt `bson:",inline" json:",inline"`
 	Name                  string `bson:"name" json:"name"`
-	UserId                string `bson:"user_id,omitempty" json:"-"`
 	PushNotificationToken string `json:"push_notification_token" bson:"push_notification_token"`
 }
 
-func (d *Device) Process() error {
+func (d *UpdateDevice) Process() error {
 	var errs = make([]error, 0)
 
 	if len(strings.TrimSpace(d.Name)) == 0 {
@@ -28,12 +25,11 @@ func (d *Device) Process() error {
 	}
 
 	now := time.Now()
-	d.CreatedAt = &now
 	d.UpdatedAt = &now
 
 	return nil
 }
 
-func (Device) CollectionName() string {
+func (UpdateDevice) CollectionName() string {
 	return "devices"
 }

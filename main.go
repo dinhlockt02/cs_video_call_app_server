@@ -9,6 +9,9 @@ import (
 	fbs "github.com/dinhlockt02/cs_video_call_app_server/components/firebase"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/hasher"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/mailer"
+	notirepo "github.com/dinhlockt02/cs_video_call_app_server/components/notification/repository"
+	notiservice "github.com/dinhlockt02/cs_video_call_app_server/components/notification/service"
+	notistore "github.com/dinhlockt02/cs_video_call_app_server/components/notification/store"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/tokenprovider/jwt"
 	"github.com/dinhlockt02/cs_video_call_app_server/middleware"
 	v1 "github.com/dinhlockt02/cs_video_call_app_server/route/v1"
@@ -86,9 +89,18 @@ func main() {
 		DB:       0,                           // use default DB
 	})
 
+	// Create notification service
+	firebaseNotificationClient, err := fa.Messaging(context.Background())
+	if err != nil {
+		log.Panic().Err(err)
+	}
+	ntsv := notiservice.NewFirebaseNotificationService(firebaseNotificationClient)
+	store := notistore.NewMongoStore(client.Database(common.AppDatabase))
+	notification := notirepo.NewNotificationRepository(ntsv, store)
+
 	// Create app context
 
-	appCtx := appcontext.NewAppContext(client, tokenProvider, bcryptHasher, app, sendgridMailer, redisClient)
+	appCtx := appcontext.NewAppContext(client, tokenProvider, bcryptHasher, app, sendgridMailer, redisClient, notification)
 
 	envport := os.Getenv("SERVER_PORT")
 	if envport == "" {
