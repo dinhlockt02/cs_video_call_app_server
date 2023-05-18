@@ -72,6 +72,8 @@ func (builder *notificationBuilder) Build() *Notification {
 		Direct:         builder.Direct,
 		Indirect:       builder.Indirect,
 		Prep:           builder.Prep,
+		Owner:          builder.Owner,
+		Action:         builder.Action,
 	}
 }
 
@@ -79,7 +81,15 @@ func (builder *notificationBuilder) Build() *Notification {
 // is title and the content of the notification.
 func (n *Notification) GetMessage() (title string, body string) {
 	if n.Action == AcceptRequest {
-		return "Accept friend request", fmt.Sprintf("%s accept your friend request", n.Subject.Name)
+
 	}
-	return "", ""
+	switch n.Action {
+	case AcceptRequest:
+		return "Accept friend request", fmt.Sprintf("%s accept your friend request", n.Subject.Name)
+	case ReceiveFriendRequest:
+		return "Friend request received", fmt.Sprintf("%s want to be friend with you", n.Prep.Name)
+	default:
+		return "", ""
+	}
+
 }

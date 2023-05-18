@@ -10,18 +10,18 @@ import (
 )
 
 func GetReceivedRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
-	return func(context *gin.Context) {
-		u, _ := context.Get(common.CurrentUser)
+	return func(c *gin.Context) {
+		u, _ := c.Get(common.CurrentUser)
 		requester := u.(common.Requester)
 
 		receivedId := requester.GetId()
 
 		friendStore := friendstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		getReceivedRequestsBiz := friendbiz.NewGetReceivedRequestBiz(friendStore)
-		result, err := getReceivedRequestsBiz.GetReceivedRequest(context.Request.Context(), receivedId)
+		result, err := getReceivedRequestsBiz.GetReceivedRequest(c.Request.Context(), receivedId)
 		if err != nil {
 			panic(err)
 		}
-		context.JSON(http.StatusOK, gin.H{"data": result})
+		c.JSON(http.StatusOK, gin.H{"data": result})
 	}
 }

@@ -75,5 +75,5 @@ func (a *appContext) Mailer() mailer.Mailer {
 }
 
 func (a *appContext) Notification() notirepo.NotificationRepository {
-	return a.Notification()
+	return a.notification
 }

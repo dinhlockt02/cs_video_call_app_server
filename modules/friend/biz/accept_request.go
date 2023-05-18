@@ -4,7 +4,10 @@ import (
 	"context"
 	"errors"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
+	notimodel "github.com/dinhlockt02/cs_video_call_app_server/components/notification/model"
+	notirepo "github.com/dinhlockt02/cs_video_call_app_server/components/notification/repository"
 	friendmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
+	"github.com/rs/zerolog/log"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -16,12 +19,17 @@ type AcceptRequestFriendStore interface {
 }
 
 type acceptRequestBiz struct {
-	friendStore AcceptRequestFriendStore
+	friendStore  AcceptRequestFriendStore
+	notification notirepo.NotificationRepository
 }
 
-func NewAcceptRequestBiz(friendStore AcceptRequestFriendStore) *acceptRequestBiz {
+func NewAcceptRequestBiz(
+	friendStore AcceptRequestFriendStore,
+	notification notirepo.NotificationRepository,
+) *acceptRequestBiz {
 	return &acceptRequestBiz{
-		friendStore: friendStore,
+		friendStore:  friendStore,
+		notification: notification,
 	}
 }
 
@@ -73,5 +81,22 @@ func (biz *acceptRequestBiz) AcceptRequest(ctx context.Context, senderId string,
 	if err != nil {
 		return err
 	}
+
+	go func() {
+		e := biz.notification.CreateAcceptFriendNotification(ctx, senderId, &notimodel.NotificationObject{
+			Id:    senderId,
+			Name:  sender.Name,
+			Image: &sender.Avatar,
+			Type:  notimodel.User,
+		}, &notimodel.NotificationObject{
+			Id:    receiverId,
+			Name:  receiver.Name,
+			Image: &receiver.Avatar,
+			Type:  notimodel.User,
+		})
+		if e != nil {
+			log.Err(e)
+		}
+	}()
 	return nil
 }

@@ -9,5 +9,6 @@ const (
 type NotificationActionType string
 
 const (
-	AcceptRequest NotificationActionType = "accept-request"
+	AcceptRequest        NotificationActionType = "accept-request"
+	ReceiveFriendRequest                        = "send-friend-request"
 )

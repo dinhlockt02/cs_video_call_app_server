@@ -11,12 +11,12 @@ import (
 )
 
 func SendRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
-	return func(context *gin.Context) {
-		u, _ := context.Get(common.CurrentUser)
+	return func(c *gin.Context) {
+		u, _ := c.Get(common.CurrentUser)
 		requester := u.(common.Requester)
 
 		senderId := requester.GetId()
-		receiverId := context.Param("id")
+		receiverId := c.Param("id")
 
 		if !primitive.IsValidObjectID(senderId) {
 			panic(common.ErrInvalidRequest(common.ErrInvalidObjectId))
@@ -26,10 +26,11 @@ func SendRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
 		}
 
 		friendStore := friendstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
-		sendRequestBiz := friendbiz.NewSendRequestBiz(friendStore)
-		if err := sendRequestBiz.SendRequest(context.Request.Context(), senderId, receiverId); err != nil {
+		sendRequestBiz := friendbiz.NewSendRequestBiz(friendStore, appCtx.Notification())
+		if err := sendRequestBiz.SendRequest(c.Request.Context(), senderId, receiverId); err != nil {
 			panic(err)
 		}
-		context.JSON(http.StatusOK, gin.H{"data": true})
+
+		c.JSON(http.StatusOK, gin.H{"data": true})
 	}
 }

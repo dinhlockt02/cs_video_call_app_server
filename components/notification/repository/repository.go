@@ -31,6 +31,25 @@ func (repo *notificationRepository) CreateAcceptFriendNotification(
 		SetIndirect(indirect).
 		Build()
 
+	return repo.createNotification(ctx, noti)
+}
+
+func (repo *notificationRepository) CreateReceiveFriendRequestNotification(
+	ctx context.Context,
+	owner string,
+	subject *notimodel.NotificationObject,
+	prep *notimodel.NotificationObject,
+) error {
+	noti := notimodel.
+		NewNotificationBuilder(notimodel.ReceiveFriendRequest, owner).
+		SetSubject(subject).
+		SetPrep(prep).
+		Build()
+
+	return repo.createNotification(ctx, noti)
+}
+
+func (repo *notificationRepository) createNotification(ctx context.Context, noti *notimodel.Notification) error {
 	err := repo.store.Create(ctx, noti)
 	if err != nil {
 		return common.ErrInternal(err)
@@ -38,7 +57,7 @@ func (repo *notificationRepository) CreateAcceptFriendNotification(
 
 	go func() {
 		devices, e := repo.store.FindDevice(ctx, map[string]interface{}{
-			"user_id": owner,
+			"user_id": noti.Owner,
 		})
 		if e != nil {
 			log.Err(e)

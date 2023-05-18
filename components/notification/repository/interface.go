@@ -15,4 +15,14 @@ type NotificationRepository interface {
 		subject *notimodel.NotificationObject,
 		indirect *notimodel.NotificationObject,
 	) error
+
+	// CreateReceiveFriendRequestNotification is a method that will create, store and push notification
+	//
+	// It should be used when the Subject (aka owner) received the friend request from Prep's
+	CreateReceiveFriendRequestNotification(
+		ctx context.Context,
+		owner string,
+		subject *notimodel.NotificationObject,
+		prep *notimodel.NotificationObject,
+	) error
 }
