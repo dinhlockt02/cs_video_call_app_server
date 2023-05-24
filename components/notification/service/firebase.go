@@ -23,10 +23,22 @@ func NewFirebaseNotificationService(client *messaging.Client) firebaseNotificati
 func (service firebaseNotificationService) Push(ctx context.Context, token []string, notification *notimodel.Notification) error {
 	title, body := notification.GetMessage()
 
-	marshaledNotification, err := json.Marshal(notification)
+	content, err := notification.GetContent()
 	if err != nil {
 		return common.ErrInternal(err)
 	}
+
+	marshaledContent, err := json.Marshal(content)
+
+	if err != nil {
+		return common.ErrInternal(err)
+	}
+
+	marshaledActionButton, err := json.Marshal(notification.GetActionButton())
+	if err != nil {
+		return common.ErrInternal(err)
+	}
+
 	zeroDuration := time.Duration(0)
 
 	msg := &messaging.MulticastMessage{
@@ -34,11 +46,11 @@ func (service firebaseNotificationService) Push(ctx context.Context, token []str
 		Android: &messaging.AndroidConfig{
 			Priority: "high",
 			TTL:      &zeroDuration,
-			Notification: &messaging.AndroidNotification{
-				Title:    title,
-				Body:     body,
-				ImageURL: *notification.Prep.Image,
-			},
+			//Notification: &messaging.AndroidNotification{
+			//	Title:    title,
+			//	Body:     body,
+			//	ImageURL: *notification.Prep.Image,
+			//},
 		},
 		Notification: &messaging.Notification{
 			Title:    title,
@@ -46,7 +58,8 @@ func (service firebaseNotificationService) Push(ctx context.Context, token []str
 			ImageURL: *notification.Prep.Image,
 		},
 		Data: map[string]string{
-			"notification": string(marshaledNotification),
+			"content":       string(marshaledContent),
+			"actionButtons": string(marshaledActionButton),
 		},
 	}
 

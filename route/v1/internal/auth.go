@@ -19,6 +19,6 @@ func InitAuthRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
 		auth.GET("/verify-email", authgin.VerifyEmail(appCtx))
 		auth.POST("/access-token", authgin.NewAccessToken(appCtx))
 		auth.POST("/logout", authmiddleware.Authentication(appCtx), authgin.Logout(appCtx))
-
+		auth.GET("/is-email-verified", authmiddleware.Authentication(appCtx), authgin.IsEmailVerified(appCtx))
 	}
 }
