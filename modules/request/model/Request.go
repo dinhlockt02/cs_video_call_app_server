@@ -1,4 +1,4 @@
-package friendmodel
+package requestmdl
 
 import (
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
@@ -15,6 +15,7 @@ type Request struct {
 	Id                    *string     `json:"-" bson:"_id,omitempty"`
 	Sender                RequestUser `json:"sender" bson:"sender"`
 	Receiver              RequestUser `json:"receiver" bson:"receiver"`
+	GroupId               string      `bson:"group_id" json:"group_id"`
 	common.MongoCreatedAt `json:",inline" bson:",inline"`
 }
 

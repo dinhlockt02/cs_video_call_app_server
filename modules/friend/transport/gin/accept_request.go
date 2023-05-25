@@ -4,7 +4,9 @@ import (
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/appcontext"
 	friendbiz "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/biz"
+	friendrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/repository"
 	friendstore "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/store"
+	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
@@ -26,7 +28,9 @@ func AcceptRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
 		}
 
 		friendStore := friendstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
-		acceptRequestBiz := friendbiz.NewAcceptRequestBiz(friendStore, appCtx.Notification())
+		requestStore := requeststore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
+		friendRepo := friendrepo.NewFriendRepository(friendStore, requestStore)
+		acceptRequestBiz := friendbiz.NewAcceptRequestBiz(friendRepo, appCtx.Notification())
 		if err := acceptRequestBiz.AcceptRequest(context.Request.Context(), senderId, receiverId); err != nil {
 			panic(err)
 		}

@@ -2,27 +2,23 @@ package friendbiz
 
 import (
 	"context"
-	"github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
+	friendrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/repository"
+	requestmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/request/model"
+	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
 )
 
-type GetSentRequestFriendStore interface {
-	FindRequests(ctx context.Context, filter map[string]interface{}) ([]friendmodel.Request, error)
-}
-
 type getSentRequestBiz struct {
-	friendStore GetSentRequestFriendStore
+	friendRepo friendrepo.Repository
 }
 
-func NewGetSentRequestBiz(friendStore GetSentRequestFriendStore) *getSentRequestBiz {
+func NewGetSentRequestBiz(friendRepo friendrepo.Repository) *getSentRequestBiz {
 	return &getSentRequestBiz{
-		friendStore: friendStore,
+		friendRepo: friendRepo,
 	}
 }
 
-func (biz *getSentRequestBiz) GetSentRequest(ctx context.Context, senderId string) ([]friendmodel.Request, error) {
-	requests, err := biz.friendStore.FindRequests(ctx, map[string]interface{}{
-		"sender.id": senderId,
-	})
+func (biz *getSentRequestBiz) GetSentRequest(ctx context.Context, senderId string) ([]requestmdl.Request, error) {
+	requests, err := biz.friendRepo.FindRequests(ctx, requeststore.GetRequestSenderIdFilter(senderId))
 	if err != nil {
 		return nil, err
 	}

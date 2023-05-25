@@ -2,27 +2,23 @@ package friendbiz
 
 import (
 	"context"
-	"github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
+	friendrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/repository"
+	requestmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/request/model"
+	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
 )
 
-type GetReceivedRequestFriendStore interface {
-	FindRequests(ctx context.Context, filter map[string]interface{}) ([]friendmodel.Request, error)
-}
-
 type getReceivedRequestBiz struct {
-	friendStore GetReceivedRequestFriendStore
+	friendRepo friendrepo.Repository
 }
 
-func NewGetReceivedRequestBiz(friendStore GetReceivedRequestFriendStore) *getReceivedRequestBiz {
+func NewGetReceivedRequestBiz(friendRepo friendrepo.Repository) *getReceivedRequestBiz {
 	return &getReceivedRequestBiz{
-		friendStore: friendStore,
+		friendRepo: friendRepo,
 	}
 }
 
-func (biz *getReceivedRequestBiz) GetReceivedRequest(ctx context.Context, receiverId string) ([]friendmodel.Request, error) {
-	requests, err := biz.friendStore.FindRequests(ctx, map[string]interface{}{
-		"receiver.id": receiverId,
-	})
+func (biz *getReceivedRequestBiz) GetReceivedRequest(ctx context.Context, receiverId string) ([]requestmdl.Request, error) {
+	requests, err := biz.friendRepo.FindRequests(ctx, requeststore.GetRequestReceiverIdFilter(receiverId))
 	if err != nil {
 		return nil, err
 	}

@@ -2,86 +2,76 @@ package friendbiz
 
 import (
 	"context"
+	"errors"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	notimodel "github.com/dinhlockt02/cs_video_call_app_server/components/notification/model"
 	notirepo "github.com/dinhlockt02/cs_video_call_app_server/components/notification/repository"
 	friendmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
+	friendrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/repository"
+	request2 "github.com/dinhlockt02/cs_video_call_app_server/modules/request/model"
 	"github.com/rs/zerolog/log"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type FriendStore interface {
-	CreateRequest(ctx context.Context, request *friendmodel.Request) error
-	FindRequest(ctx context.Context, userId string, otherId string) (*friendmodel.Request, error)
-	FindUser(ctx context.Context, filter map[string]interface{}) (*friendmodel.User, error)
-}
-
 type sendRequestBiz struct {
-	friendStore  FriendStore
+	friendRepo   friendrepo.Repository
 	notification notirepo.NotificationRepository
 }
 
 func NewSendRequestBiz(
-	friendStore FriendStore,
+	friendRepo friendrepo.Repository,
 	notification notirepo.NotificationRepository,
 ) *sendRequestBiz {
 	return &sendRequestBiz{
-		friendStore:  friendStore,
+		friendRepo:   friendRepo,
 		notification: notification,
 	}
 }
 
 func (biz *sendRequestBiz) SendRequest(ctx context.Context, senderId string, receiverId string) error {
-	existedRequest, err := biz.friendStore.FindRequest(ctx, senderId, receiverId)
+	// Find exists request
+	existedRequest, err := biz.friendRepo.FindRequest(ctx, senderId, receiverId)
 	if err != nil {
 		return err
 	}
 	if existedRequest != nil {
 		return common.ErrInvalidRequest(friendmodel.ErrRequestExists)
 	}
-	id, _ := primitive.ObjectIDFromHex(senderId)
-	sender, err := biz.friendStore.FindUser(ctx, map[string]interface{}{
-		"_id": id,
-	})
+
+	// Find sender
+	filter := make(map[string]interface{})
+	err = common.AddIdFilter(filter, senderId)
+	sender, err := biz.friendRepo.FindUser(ctx, filter)
 	if err != nil {
 		return err
 	}
 	if sender == nil {
-		return common.ErrEntityNotFound("User", nil)
+		return common.ErrEntityNotFound("User", errors.New("sender not found"))
 	}
 
-	for i := range sender.Friends {
-		if sender.Friends[i] == receiverId {
-			return common.ErrInvalidRequest(friendmodel.ErrHasBeenFriend)
-		}
-	}
-
-	id, _ = primitive.ObjectIDFromHex(receiverId)
-	receiver, err := biz.friendStore.FindUser(ctx, map[string]interface{}{
-		"_id": id,
-	})
-	if err != nil {
-		return err
-	}
+	// Find Receiver
+	filter = make(map[string]interface{})
+	err = common.AddIdFilter(filter, receiverId)
+	receiver, err := biz.friendRepo.FindUser(ctx, filter)
 	if receiver == nil {
-		return common.ErrEntityNotFound("User", nil)
+		return common.ErrEntityNotFound("User", errors.New("receiver not found"))
 	}
-	senderRequestUser := friendmodel.RequestUser{
+
+	senderRequestUser := request2.RequestUser{
 		Id:     senderId,
 		Name:   sender.Name,
 		Avatar: sender.Avatar,
 	}
-	receiverRequestUser := friendmodel.RequestUser{
+	receiverRequestUser := request2.RequestUser{
 		Id:     receiverId,
 		Name:   receiver.Name,
 		Avatar: receiver.Avatar,
 	}
-	request := friendmodel.Request{
+	request := request2.Request{
 		Sender:   senderRequestUser,
 		Receiver: receiverRequestUser,
 	}
 	request.Process()
-	err = biz.friendStore.CreateRequest(ctx, &request)
+	err = biz.friendRepo.CreateRequest(ctx, &request)
 	if err != nil {
 		return err
 	}

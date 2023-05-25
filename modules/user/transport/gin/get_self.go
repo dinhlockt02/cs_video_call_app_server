@@ -5,6 +5,7 @@ import (
 	"github.com/dinhlockt02/cs_video_call_app_server/components/appcontext"
 	friendrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/repository"
 	friendstore "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/store"
+	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
 	userbiz "github.com/dinhlockt02/cs_video_call_app_server/modules/user/biz"
 	userrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/user/repository"
 	userstore "github.com/dinhlockt02/cs_video_call_app_server/modules/user/store"
@@ -20,8 +21,8 @@ func GetSelf(appCtx appcontext.AppContext) gin.HandlerFunc {
 
 		userStore := userstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		friendStore := friendstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
-
-		friendRepo := friendrepo.NewFindUserRepository(friendStore)
+		requestStore := requeststore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
+		friendRepo := friendrepo.NewFriendRepository(friendStore, requestStore)
 		findUserRepo := userrepo.NewFindUserRepo(userStore, friendRepo)
 		findUserBiz := userbiz.NewFindUserBiz(findUserRepo)
 
