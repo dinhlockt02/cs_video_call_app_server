@@ -3,7 +3,7 @@ package friendstore
 import (
 	"context"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
-	friendmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
+	"github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
 	"github.com/rs/zerolog/log"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"

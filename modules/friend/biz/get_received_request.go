@@ -2,7 +2,7 @@ package friendbiz
 
 import (
 	"context"
-	friendmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
+	"github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
 )
 
 type GetReceivedRequestFriendStore interface {
