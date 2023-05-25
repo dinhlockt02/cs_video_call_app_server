@@ -32,3 +32,11 @@ func GetAndFilter(filters ...map[string]interface{}) map[string]interface{} {
 		"$and": filters,
 	}
 }
+
+func GetExistsFilter(fieldName string, exists bool) map[string]interface{} {
+	return map[string]interface{}{
+		fieldName: map[string]interface{}{
+			"$exists": exists,
+		},
+	}
+}

@@ -15,7 +15,7 @@ type Request struct {
 	Id                    *string     `json:"-" bson:"_id,omitempty"`
 	Sender                RequestUser `json:"sender" bson:"sender"`
 	Receiver              RequestUser `json:"receiver" bson:"receiver"`
-	GroupId               string      `bson:"group_id" json:"group_id"`
+	Group                 string      `bson:"group" json:"group"`
 	common.MongoCreatedAt `json:",inline" bson:",inline"`
 }
 
