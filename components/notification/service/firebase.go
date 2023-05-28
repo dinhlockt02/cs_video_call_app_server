@@ -53,9 +53,8 @@ func (service firebaseNotificationService) Push(ctx context.Context, token []str
 			//},
 		},
 		Notification: &messaging.Notification{
-			Title:    title,
-			Body:     body,
-			ImageURL: *notification.Prep.Image,
+			Title: title,
+			Body:  body,
 		},
 		Data: map[string]string{
 			"content":       string(marshaledContent),

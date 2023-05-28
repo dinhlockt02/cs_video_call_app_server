@@ -49,6 +49,51 @@ func (repo *notificationRepository) CreateReceiveFriendRequestNotification(
 	return repo.createNotification(ctx, noti)
 }
 
+func (repo *notificationRepository) CreateIncomingCallNotification(
+	ctx context.Context,
+	owner string,
+	subject *notimodel.NotificationObject,
+	direct *notimodel.NotificationObject,
+	prep *notimodel.NotificationObject,
+) error {
+	noti := notimodel.
+		NewNotificationBuilder(notimodel.InComingCall, owner).
+		SetSubject(subject).
+		SetPrep(prep).
+		SetDirect(direct).
+		Build()
+
+	return repo.createNotification(ctx, noti)
+}
+
+func (repo *notificationRepository) CreateRejectIncomingCallNotification(ctx context.Context, owner string, subject *notimodel.NotificationObject, direct *notimodel.NotificationObject, prep *notimodel.NotificationObject) error {
+	noti := notimodel.
+		NewNotificationBuilder(notimodel.RejectCall, owner).
+		SetSubject(subject).
+		SetPrep(prep).
+		SetDirect(direct).
+		Build()
+
+	return repo.createNotification(ctx, noti)
+}
+
+func (repo *notificationRepository) CreateAbandonIncomingCallNotification(
+	ctx context.Context,
+	owner string,
+	subject *notimodel.NotificationObject,
+	direct *notimodel.NotificationObject,
+	prep *notimodel.NotificationObject,
+) error {
+	noti := notimodel.
+		NewNotificationBuilder(notimodel.RejectCall, owner).
+		SetSubject(subject).
+		SetPrep(prep).
+		SetDirect(direct).
+		Build()
+
+	return repo.createNotification(ctx, noti)
+}
+
 func (repo *notificationRepository) createNotification(ctx context.Context, noti *notimodel.Notification) error {
 	err := repo.store.Create(ctx, noti)
 	if err != nil {
@@ -56,7 +101,7 @@ func (repo *notificationRepository) createNotification(ctx context.Context, noti
 	}
 
 	go func() {
-		devices, e := repo.store.FindDevice(ctx, map[string]interface{}{
+		devices, e := repo.store.FindDevice(context.Background(), map[string]interface{}{
 			"user_id": noti.Owner,
 		})
 		if e != nil {

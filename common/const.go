@@ -15,4 +15,5 @@ var AccessTokenExpiry int
 const (
 	GroupCollectionName = "groups"
 	UserCollectionName  = "users"
+	CallCollectionName  = "calls"
 )

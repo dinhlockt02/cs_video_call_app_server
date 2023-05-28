@@ -25,4 +25,31 @@ type NotificationRepository interface {
 		subject *notimodel.NotificationObject,
 		prep *notimodel.NotificationObject,
 	) error
+
+	// CreateIncomingCallNotification should be used when the Subject call the Direct (aka owner) in a room (Prep)
+	CreateIncomingCallNotification(
+		ctx context.Context,
+		owner string,
+		subject *notimodel.NotificationObject,
+		direct *notimodel.NotificationObject,
+		prep *notimodel.NotificationObject,
+	) error
+
+	// CreateRejectIncomingCallNotification should be used when the Subject reject the Direct (aka owner) in a room (Prep)
+	CreateRejectIncomingCallNotification(
+		ctx context.Context,
+		owner string,
+		subject *notimodel.NotificationObject,
+		direct *notimodel.NotificationObject,
+		prep *notimodel.NotificationObject,
+	) error
+
+	// CreateAbandonIncomingCallNotification should be used when the Subject abandon call before the Direct (aka owner) answer in a room (Prep)
+	CreateAbandonIncomingCallNotification(
+		ctx context.Context,
+		owner string,
+		subject *notimodel.NotificationObject,
+		direct *notimodel.NotificationObject,
+		prep *notimodel.NotificationObject,
+	) error
 }

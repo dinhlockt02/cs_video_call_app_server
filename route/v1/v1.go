@@ -14,5 +14,6 @@ func InitRoute(e *gin.Engine, appCtx appcontext.AppContext) {
 		internal.InitFriendRoute(v1, appCtx)
 		internal.InitDeviceRoute(v1, appCtx)
 		internal.InitGroupRoute(v1, appCtx)
+		internal.InitCallRoute(v1, appCtx)
 	}
 }
