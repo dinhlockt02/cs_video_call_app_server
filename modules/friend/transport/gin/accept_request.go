@@ -27,6 +27,9 @@ func AcceptRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
 			panic(common.ErrInvalidRequest(common.ErrInvalidObjectId))
 		}
 
+		session, _ := appCtx.MongoClient().StartSession()
+		_ = session.StartTransaction()
+
 		friendStore := friendstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		requestStore := requeststore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		friendRepo := friendrepo.NewFriendRepository(friendStore, requestStore)

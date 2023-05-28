@@ -1,7 +1,6 @@
 package groupgin
 
 import (
-	"context"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/appcontext"
 	groupbiz "github.com/dinhlockt02/cs_video_call_app_server/modules/group/biz"
@@ -10,22 +9,13 @@ import (
 	groupstore "github.com/dinhlockt02/cs_video_call_app_server/modules/group/store"
 	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
 	"github.com/gin-gonic/gin"
-	"github.com/rs/zerolog/log"
 	"net/http"
-	"sync"
 )
 
-func CreateGroup(appCtx appcontext.AppContext) gin.HandlerFunc {
+func GetReceiveRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var data *groupmdl.Group
-
-		if err := c.ShouldBind(&data); err != nil {
-			panic(common.ErrInvalidRequest(err))
-		}
 
 		requester := c.MustGet(common.CurrentUser).(common.Requester)
-
-		invitedMembers := data.Members
 
 		groupStore := groupstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		requestStore := requeststore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
@@ -33,32 +23,12 @@ func CreateGroup(appCtx appcontext.AppContext) gin.HandlerFunc {
 			groupStore,
 			requestStore,
 		)
-		createGroupBiz := groupbiz.NewCreateGroupBiz(groupRepo)
-
-		if err := createGroupBiz.Create(c.Request.Context(), requester.GetId(), data); err != nil {
+		getGroupRequestBiz := groupbiz.NewGetGroupRequestBiz(groupRepo)
+		reqs, err := getGroupRequestBiz.GetRequest(c.Request.Context(), requester.GetId(), groupmdl.Receive)
+		if err != nil {
 			panic(err)
 		}
 
-		go func() {
-			defer common.Recovery()
-			wg := sync.WaitGroup{}
-			sendGroupRequestBiz := groupbiz.NewSendGroupRequestBiz(groupRepo)
-			for _, member := range invitedMembers {
-				if member != requester.GetId() {
-					go func() {
-						wg.Add(1)
-						defer wg.Done()
-						defer common.Recovery()
-						err := sendGroupRequestBiz.SendRequest(context.Background(), requester.GetId(), member, data)
-						if err != nil {
-							log.Error().Msgf("%v\n", err)
-						}
-					}()
-				}
-			}
-			wg.Wait()
-		}()
-
-		c.JSON(http.StatusCreated, gin.H{"data": data.Id})
+		c.JSON(http.StatusCreated, gin.H{"data": reqs})
 	}
 }

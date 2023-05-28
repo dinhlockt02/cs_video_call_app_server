@@ -40,3 +40,11 @@ func GetExistsFilter(fieldName string, exists bool) map[string]interface{} {
 		},
 	}
 }
+
+func GetInFilter(fieldName string, values ...interface{}) map[string]interface{} {
+	return map[string]interface{}{
+		fieldName: map[string]interface{}{
+			"$in": values,
+		},
+	}
+}

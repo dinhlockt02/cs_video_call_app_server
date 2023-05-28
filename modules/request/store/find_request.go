@@ -4,13 +4,11 @@ import (
 	"context"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	requestmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/request/model"
-	"github.com/rs/zerolog/log"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func (s *mongoStore) FindRequests(ctx context.Context, filter map[string]interface{}) ([]requestmdl.Request, error) {
 	var request []requestmdl.Request
-	log.Info().Msgf("%v", filter)
 	cursor, err := s.database.Collection(requestmdl.Request{}.CollectionName()).Find(ctx, filter)
 	if err != nil {
 		return nil, common.ErrInternal(err)

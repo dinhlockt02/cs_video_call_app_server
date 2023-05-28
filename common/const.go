@@ -13,5 +13,6 @@ var AccessTokenExpiry int
 
 // GroupCollectionName declares names of collections in the mongodb database
 const (
-	GroupCollectionName = "group"
+	GroupCollectionName = "groups"
+	UserCollectionName  = "users"
 )
