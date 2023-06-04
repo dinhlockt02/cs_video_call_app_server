@@ -20,7 +20,6 @@ func NewGetGroupBiz(groupRepo grouprepo.Repository) *getGroupBiz {
 
 // GetById returns a group by id.
 func (biz *getGroupBiz) GetById(ctx context.Context, groupId string) (*groupmdl.Group, error) {
-
 	// Find Group
 	filter := make(map[string]interface{})
 	err := common.AddIdFilter(filter, groupId)
