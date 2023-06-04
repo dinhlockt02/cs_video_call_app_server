@@ -21,11 +21,8 @@ func NewFindFriendBiz(friendStore FindFriendFriendStore) *findFriendBiz {
 	return &findFriendBiz{friendStore: friendStore}
 }
 
-func (biz *findFriendBiz) FindFriend(ctx context.Context, userId string) ([]friendmodel.FriendUser, error) {
-	id, _ := primitive.ObjectIDFromHex(userId)
-	user, err := biz.friendStore.FindUser(ctx, map[string]interface{}{
-		"_id": id,
-	})
+func (biz *findFriendBiz) FindFriend(ctx context.Context, filter map[string]interface{}, friendFilter map[string]interface{}) ([]friendmodel.FriendUser, error) {
+	user, err := biz.friendStore.FindUser(ctx, filter)
 
 	if err != nil {
 		return nil, err
@@ -35,19 +32,17 @@ func (biz *findFriendBiz) FindFriend(ctx context.Context, userId string) ([]frie
 		return nil, common.ErrEntityNotFound("User", errors.New("user not found"))
 	}
 
-	var ids = make([]primitive.ObjectID, 0, len(user.Friends))
+	var ids = make([]interface{}, 0, len(user.Friends))
 	for _, friend := range user.Friends {
-		id, err = primitive.ObjectIDFromHex(friend)
-		if err != nil {
-			return nil, common.ErrInternal(err)
-		}
+		id, _ := primitive.ObjectIDFromHex(friend)
 		ids = append(ids, id)
 	}
-	friends, err := biz.friendStore.FindFriend(ctx, map[string]interface{}{
-		"_id": map[string]interface{}{
-			"$in": ids,
-		},
-	})
+	friends, err := biz.friendStore.FindFriend(ctx,
+		common.GetAndFilter(
+			common.GetInFilter("_id", ids...),
+			friendFilter,
+		),
+	)
 	if err != nil {
 		return nil, err
 	}

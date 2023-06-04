@@ -48,3 +48,13 @@ func GetInFilter(fieldName string, values ...interface{}) map[string]interface{}
 		},
 	}
 }
+
+func GetTextSearch(value string, caseSensitive bool, diacriticSensitive bool) map[string]interface{} {
+	return map[string]interface{}{
+		"$text": map[string]interface{}{
+			"$search":             value,
+			"$caseSensitive":      caseSensitive,
+			"$diacriticSensitive": diacriticSensitive,
+		},
+	}
+}

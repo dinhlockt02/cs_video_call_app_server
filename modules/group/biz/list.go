@@ -16,7 +16,7 @@ func NewListGroupBiz(groupRepo grouprepo.Repository) *createGroupBiz {
 	return &createGroupBiz{groupRepo: groupRepo}
 }
 
-func (biz *createGroupBiz) List(ctx context.Context, requesterId string) ([]groupmdl.Group, error) {
+func (biz *createGroupBiz) List(ctx context.Context, requesterId string, groupFilter map[string]interface{}) ([]groupmdl.Group, error) {
 
 	filter := make(map[string]interface{})
 	_ = common.AddIdFilter(filter, requesterId)
@@ -28,6 +28,6 @@ func (biz *createGroupBiz) List(ctx context.Context, requesterId string) ([]grou
 
 	filter = groupstore.GetGroupIdInIdListFilter(user.Groups...)
 
-	return biz.groupRepo.List(ctx, filter)
+	return biz.groupRepo.List(ctx, common.GetAndFilter(filter, groupFilter))
 
 }

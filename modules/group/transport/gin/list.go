@@ -23,7 +23,7 @@ func ListGroup(appCtx appcontext.AppContext) gin.HandlerFunc {
 			requestStore,
 		)
 		listGroupBiz := groupbiz.NewListGroupBiz(groupRepo)
-		groups, err := listGroupBiz.List(c.Request.Context(), requester.GetId())
+		groups, err := listGroupBiz.List(c.Request.Context(), requester.GetId(), map[string]interface{}{})
 		if err != nil {
 			panic(err)
 		}
