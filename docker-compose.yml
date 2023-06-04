@@ -18,7 +18,6 @@ services:
       - '6379:6379'
     volumes:
       - 'cs-video-call-app-redis:/bitnami/redis/data'
-
 volumes:
   cs-video-call-app:
   cs-video-call-app-redis:

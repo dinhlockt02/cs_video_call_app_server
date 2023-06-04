@@ -8,7 +8,7 @@ import (
 	notirepo "github.com/dinhlockt02/cs_video_call_app_server/components/notification/repository"
 	friendmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
 	friendrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/repository"
-	request "github.com/dinhlockt02/cs_video_call_app_server/modules/request/model"
+	requestmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/request/model"
 	"github.com/rs/zerolog/log"
 )
 
@@ -56,17 +56,17 @@ func (biz *sendRequestBiz) SendRequest(ctx context.Context, senderId string, rec
 		return common.ErrEntityNotFound("User", errors.New("receiver not found"))
 	}
 
-	senderRequestUser := request.RequestUser{
+	senderRequestUser := requestmdl.RequestUser{
 		Id:     senderId,
 		Name:   sender.Name,
 		Avatar: sender.Avatar,
 	}
-	receiverRequestUser := request.RequestUser{
+	receiverRequestUser := requestmdl.RequestUser{
 		Id:     receiverId,
 		Name:   receiver.Name,
 		Avatar: receiver.Avatar,
 	}
-	request := request.Request{
+	request := requestmdl.Request{
 		Sender:   senderRequestUser,
 		Receiver: receiverRequestUser,
 	}

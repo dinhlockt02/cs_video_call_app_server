@@ -1,0 +1,4 @@
+#!/bin/zsh
+
+docker buildx build --push --platform linux/arm64 -t dinhlockt02/cs_video_call_app_server:dev-alpine .
+docker buildx build --push --platform linux/arm64 -t dinhlockt02/cs_video_call_app_server:dev-alpine-amd .

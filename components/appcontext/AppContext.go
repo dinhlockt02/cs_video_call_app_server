@@ -3,8 +3,10 @@ package appcontext
 import (
 	fbs "github.com/dinhlockt02/cs_video_call_app_server/components/firebase"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/hasher"
+	lksv "github.com/dinhlockt02/cs_video_call_app_server/components/livekit_service"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/mailer"
 	notirepo "github.com/dinhlockt02/cs_video_call_app_server/components/notification/repository"
+	"github.com/dinhlockt02/cs_video_call_app_server/components/pubsub"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/tokenprovider"
 	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,16 +20,20 @@ type AppContext interface {
 	Redis() *redis.Client
 	FirebaseApp() fbs.FirebaseApp
 	Notification() notirepo.NotificationRepository
+	LiveKitService() lksv.LiveKitService
+	PubSub() pubsub.PubSub
 }
 
 type appContext struct {
-	mongoClient   *mongo.Client
-	tokenProvider tokenprovider.TokenProvider
-	hasher        hasher.Hasher
-	rds           *redis.Client
-	fa            fbs.FirebaseApp
-	mailer        mailer.Mailer
-	notification  notirepo.NotificationRepository
+	mongoClient    *mongo.Client
+	tokenProvider  tokenprovider.TokenProvider
+	hasher         hasher.Hasher
+	rds            *redis.Client
+	fa             fbs.FirebaseApp
+	mailer         mailer.Mailer
+	notification   notirepo.NotificationRepository
+	livekitService lksv.LiveKitService
+	pubsub         pubsub.PubSub
 }
 
 func NewAppContext(
@@ -38,15 +44,19 @@ func NewAppContext(
 	mailer mailer.Mailer,
 	rds *redis.Client,
 	notification notirepo.NotificationRepository,
+	livekitService lksv.LiveKitService,
+	pubsub pubsub.PubSub,
 ) *appContext {
 	return &appContext{
-		mongoClient:   mongoClient,
-		tokenProvider: tokenProvider,
-		hasher:        hasher,
-		fa:            fa,
-		mailer:        mailer,
-		rds:           rds,
-		notification:  notification,
+		mongoClient:    mongoClient,
+		tokenProvider:  tokenProvider,
+		hasher:         hasher,
+		fa:             fa,
+		mailer:         mailer,
+		rds:            rds,
+		notification:   notification,
+		livekitService: livekitService,
+		pubsub:         pubsub,
 	}
 }
 
@@ -76,4 +86,12 @@ func (a *appContext) Mailer() mailer.Mailer {
 
 func (a *appContext) Notification() notirepo.NotificationRepository {
 	return a.notification
+}
+
+func (a *appContext) LiveKitService() lksv.LiveKitService {
+	return a.livekitService
+}
+
+func (a *appContext) PubSub() pubsub.PubSub {
+	return a.pubsub
 }
