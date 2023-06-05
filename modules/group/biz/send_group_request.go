@@ -69,7 +69,7 @@ func (biz *sendGroupRequestBiz) SendRequest(ctx context.Context, requester strin
 	}
 	groupRequest := requestmdl.RequestGroup{
 		Id:       *group.Id,
-		Name:     group.Name,
+		Name:     *group.Name,
 		ImageUrl: *group.ImageUrl,
 	}
 	req := requestmdl.Request{

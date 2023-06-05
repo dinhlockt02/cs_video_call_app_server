@@ -7,9 +7,9 @@ import (
 
 type Group struct {
 	common.MongoId `json:",inline,omitempty" bson:",inline,omitempty"`
-	Name           string   `bson:"name" json:"name"`
-	Members        []string `bson:"members" json:"members,omitempty"`
-	ImageUrl       *string  `json:"image_url" bson:"image_url"`
+	Name           *string  `bson:"name,omitempty" json:"name,omitempty"`
+	Members        []string `bson:"members,omitempty" json:"members,omitempty"`
+	ImageUrl       *string  `json:"image_url,omitempty" bson:"image_url,omitempty"`
 }
 
 func (Group) CollectionName() string {
@@ -18,10 +18,10 @@ func (Group) CollectionName() string {
 
 func (g *Group) Process() error {
 	errs := common.ValidationError{}
-	if !common.URLRegexp.Match([]byte(*g.ImageUrl)) {
+	if g.ImageUrl != nil && !common.URLRegexp.Match([]byte(*g.ImageUrl)) {
 		errs = append(errs, errors.New("invalid group image url"))
 	}
-	if len(g.Name) <= 0 {
+	if len(*g.Name) <= 0 {
 		errs = append(errs, errors.New("invalid group name"))
 	}
 	if len(errs) > 0 {
