@@ -55,6 +55,10 @@ type Repository interface {
 		ctx context.Context,
 		filter map[string]interface{},
 	) ([]groupmdl.User, error)
+	DeleteOne(
+		ctx context.Context,
+		filter map[string]interface{},
+	) error
 }
 
 type groupRepository struct {

@@ -25,5 +25,6 @@ func InitGroupRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
 		group.GET("", groupgin.ListGroup(appCtx))
 		group.GET("/:groupId", groupgin.GetGroup(appCtx))
 		group.PUT("/:groupId", groupgin.UpdateGroup(appCtx))
+		group.DELETE("/:groupId/leave", groupgin.LeaveGroup(appCtx))
 	}
 }
