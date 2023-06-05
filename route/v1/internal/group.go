@@ -19,6 +19,7 @@ func InitGroupRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
 			groupRequest.DELETE("/:groupId/reject", groupgin.RejectRequest(appCtx))
 
 			groupRequest.POST("/:groupId/:friendId", groupgin.SendGroupRequest(appCtx))
+			groupRequest.POST("/:groupId", groupgin.SendGroupRequests(appCtx))
 			groupRequest.DELETE("/:groupId/:friendId", groupgin.RecallRequest(appCtx))
 		}
 		group.POST("", groupgin.CreateGroup(appCtx))
