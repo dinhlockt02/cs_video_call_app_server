@@ -3,13 +3,14 @@ package devicebiz
 import (
 	"context"
 	devicemodel "github.com/dinhlockt02/cs_video_call_app_server/modules/device/model"
+	devicestore "github.com/dinhlockt02/cs_video_call_app_server/modules/device/store"
 )
 
 type createDeviceBiz struct {
-	store DeviceStore
+	store devicestore.Store
 }
 
-func NewUpdateDeviceBiz(store DeviceStore) *createDeviceBiz {
+func NewUpdateDeviceBiz(store devicestore.Store) *createDeviceBiz {
 	return &createDeviceBiz{store: store}
 }
 
