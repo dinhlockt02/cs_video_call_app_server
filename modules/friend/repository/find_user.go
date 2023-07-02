@@ -9,7 +9,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// FindUser is a method of finding a user
+// FindUser is a method of finding a user.
 func (repo *FriendRepository) FindUser(
 	ctx context.Context,
 	filter map[string]interface{},
@@ -42,7 +42,7 @@ type FindUserOption func(ctx context.Context, repo *FriendRepository, u *friendm
 // It will use the requesterId to query the relation of user with requester
 // The relation includes
 // [friendmodel.Self], [friendmodel.Friend], [friendmodel.Blocked],
-// [friendmodel.Non], [friendmodel.Sent], [friendmodel.Received],
+// [friendmodel.Non], [friendmodel.Sent], [friendmodel.Received].
 func WithRelation(requesterId string) FindUserOption {
 	return func(ctx context.Context, repo *FriendRepository, user *friendmodel.User) error {
 		log.Debug().Msg("add relation to user model")

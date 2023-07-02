@@ -12,7 +12,7 @@ type LoginUser struct {
 }
 
 func (LoginUser) CollectionName() string {
-	return "users"
+	return common.UserCollectionName
 }
 
 func (u *LoginUser) Process() error {

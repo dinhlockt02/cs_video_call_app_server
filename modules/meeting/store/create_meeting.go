@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (s *mongoStore) CreateMeeting(ctx context.Context, meeting *meetingmodel.Meeting) error {
+func (s *MongoStore) CreateMeeting(ctx context.Context, meeting *meetingmodel.Meeting) error {
 	log.Debug().Any("meeting", meeting).Msg("create meeting")
 	result, err := s.database.Collection(meeting.CollectionName()).InsertOne(ctx, meeting)
 	if err != nil {

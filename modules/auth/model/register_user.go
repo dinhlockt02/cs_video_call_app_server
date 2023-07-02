@@ -18,7 +18,7 @@ type RegisterUser struct {
 }
 
 func (RegisterUser) CollectionName() string {
-	return "users"
+	return common.UserCollectionName
 }
 
 func (u *RegisterUser) Process() error {

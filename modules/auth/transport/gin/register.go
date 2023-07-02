@@ -15,7 +15,6 @@ import (
 
 func Register(appCtx appcontext.AppContext) gin.HandlerFunc {
 	return func(context *gin.Context) {
-
 		type Body struct {
 			Data   authmodel.RegisterUser `json:"data"`
 			Device devicemodel.Device     `json:"device"`

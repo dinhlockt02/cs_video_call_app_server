@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (s *mongoStore) UpdateMeeting(
+func (s *MongoStore) UpdateMeeting(
 	ctx context.Context,
 	filter map[string]interface{},
 	updatedMeeting *meetingmodel.UpdateMeeting,

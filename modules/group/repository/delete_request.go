@@ -4,8 +4,8 @@ import (
 	"context"
 )
 
-// DeleteRequest delete requests that matches filter
-func (repo *groupRepository) DeleteRequest(
+// DeleteRequest delete requests that matches filter.
+func (repo *GroupRepository) DeleteRequest(
 	ctx context.Context,
 	filter map[string]interface{},
 ) error {

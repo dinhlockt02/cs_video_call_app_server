@@ -17,7 +17,6 @@ import (
 
 func JoinMeeting(appCtx appcontext.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		requester := c.MustGet(common.CurrentUser).(common.Requester)
 
 		groupId := c.Param("groupId")

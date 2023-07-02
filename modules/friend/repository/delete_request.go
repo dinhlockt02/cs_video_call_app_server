@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-// DeleteRequest delete requests that matches filter
+// DeleteRequest delete requests that matches filter.
 func (repo *FriendRepository) DeleteRequest(
 	ctx context.Context,
 	filter map[string]interface{},

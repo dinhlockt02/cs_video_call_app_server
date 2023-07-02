@@ -10,17 +10,18 @@ import (
 	"time"
 )
 
-type firebaseNotificationService struct {
+type FirebaseNotificationService struct {
 	client *messaging.Client
 }
 
-func NewFirebaseNotificationService(client *messaging.Client) firebaseNotificationService {
-	return firebaseNotificationService{
+func NewFirebaseNotificationService(client *messaging.Client) FirebaseNotificationService {
+	return FirebaseNotificationService{
 		client: client,
 	}
 }
 
-func (service firebaseNotificationService) Push(ctx context.Context, token []string, notification *notimodel.Notification) error {
+func (service FirebaseNotificationService) Push(ctx context.Context,
+	token []string, notification *notimodel.Notification) error {
 	title, body := notification.GetMessage()
 
 	content, err := notification.GetContent()

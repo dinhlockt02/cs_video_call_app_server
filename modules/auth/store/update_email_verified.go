@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (s *mongoStore) UpdateEmailVerified(ctx context.Context, filter map[string]interface{}) error {
+func (s *MongoStore) UpdateEmailVerified(ctx context.Context, filter map[string]interface{}) error {
 	log.Debug().Any("filter", filter).Msg("update user's email verify status")
 	// TODO: move this up to biz
 	var updateEmailVerifiedUser authmodel.EmailVerifiedUser

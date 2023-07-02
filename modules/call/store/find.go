@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func (s *mongoStore) FindCall(ctx context.Context, filter map[string]interface{}) (*callmdl.Call, error) {
+func (s *MongoStore) FindCall(ctx context.Context, filter map[string]interface{}) (*callmdl.Call, error) {
 	log.Debug().Any("filter", filter).Msg("find a call")
 	var call callmdl.Call
 	result := s.database.Collection(call.CollectionName()).FindOne(ctx, filter)

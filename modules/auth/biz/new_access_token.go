@@ -7,20 +7,19 @@ import (
 	"github.com/pkg/errors"
 )
 
-type accessTokenBiz struct {
+type AccessTokenBiz struct {
 	tokenProvider tokenprovider.TokenProvider
 }
 
 func NewAccessTokenBiz(
 	tokenprovider tokenprovider.TokenProvider,
-) *accessTokenBiz {
-	return &accessTokenBiz{
+) *AccessTokenBiz {
+	return &AccessTokenBiz{
 		tokenProvider: tokenprovider,
 	}
 }
 
-func (biz *accessTokenBiz) New(ctx context.Context, refreshToken string) (*tokenprovider.Token, error) {
-
+func (biz *AccessTokenBiz) New(_ context.Context, refreshToken string) (*tokenprovider.Token, error) {
 	accessToken, err := biz.tokenProvider.Generate(
 		&tokenprovider.TokenPayload{Id: refreshToken},
 		common.AccessTokenExpiry,

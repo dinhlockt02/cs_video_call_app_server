@@ -35,5 +35,5 @@ func (d *Device) Process() error {
 }
 
 func (Device) CollectionName() string {
-	return "devices"
+	return common.DevicesCollectionName
 }

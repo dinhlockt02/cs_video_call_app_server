@@ -9,15 +9,15 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type getDevicesBiz struct {
+type GetDevicesBiz struct {
 	store devicestore.Store
 }
 
-func NewGetDevicesBiz(store devicestore.Store) *getDevicesBiz {
-	return &getDevicesBiz{store: store}
+func NewGetDevicesBiz(store devicestore.Store) *GetDevicesBiz {
+	return &GetDevicesBiz{store: store}
 }
 
-func (biz *getDevicesBiz) Get(ctx context.Context, filter map[string]interface{}) ([]*devicemodel.GetDeviceDto, error) {
+func (biz *GetDevicesBiz) Get(ctx context.Context, filter map[string]interface{}) ([]*devicemodel.GetDeviceDto, error) {
 	log.Debug().Any("filter", filter).Msg("get devices")
 	devices, err := biz.store.Get(ctx, filter)
 	if err != nil {

@@ -18,20 +18,20 @@ type AppContext interface {
 	Hasher() hasher.Hasher
 	Mailer() mailer.Mailer
 	Redis() *redis.Client
-	FirebaseApp() fbs.FirebaseApp
-	Notification() notirepo.NotificationRepository
+	FirebaseApp() fbs.App
+	Notification() notirepo.Repository
 	LiveKitService() lksv.LiveKitService
 	PubSub() pubsub.PubSub
 }
 
-type appContext struct {
+type AppCtx struct {
 	mongoClient    *mongo.Client
 	tokenProvider  tokenprovider.TokenProvider
 	hasher         hasher.Hasher
 	rds            *redis.Client
-	fa             fbs.FirebaseApp
+	fa             fbs.App
 	mailer         mailer.Mailer
-	notification   notirepo.NotificationRepository
+	notification   notirepo.Repository
 	livekitService lksv.LiveKitService
 	pubsub         pubsub.PubSub
 }
@@ -40,14 +40,14 @@ func NewAppContext(
 	mongoClient *mongo.Client,
 	tokenProvider tokenprovider.TokenProvider,
 	hasher hasher.Hasher,
-	fa fbs.FirebaseApp,
+	fa fbs.App,
 	mailer mailer.Mailer,
 	rds *redis.Client,
-	notification notirepo.NotificationRepository,
+	notification notirepo.Repository,
 	livekitService lksv.LiveKitService,
 	pubsub pubsub.PubSub,
-) *appContext {
-	return &appContext{
+) *AppCtx {
+	return &AppCtx{
 		mongoClient:    mongoClient,
 		tokenProvider:  tokenProvider,
 		hasher:         hasher,
@@ -60,38 +60,38 @@ func NewAppContext(
 	}
 }
 
-func (a *appContext) MongoClient() *mongo.Client {
+func (a *AppCtx) MongoClient() *mongo.Client {
 	return a.mongoClient
 }
 
-func (a *appContext) TokenProvider() tokenprovider.TokenProvider {
+func (a *AppCtx) TokenProvider() tokenprovider.TokenProvider {
 	return a.tokenProvider
 }
 
-func (a *appContext) Hasher() hasher.Hasher {
+func (a *AppCtx) Hasher() hasher.Hasher {
 	return a.hasher
 }
 
-func (a *appContext) Redis() *redis.Client {
+func (a *AppCtx) Redis() *redis.Client {
 	return a.rds
 }
 
-func (a *appContext) FirebaseApp() fbs.FirebaseApp {
+func (a *AppCtx) FirebaseApp() fbs.App {
 	return a.fa
 }
 
-func (a *appContext) Mailer() mailer.Mailer {
+func (a *AppCtx) Mailer() mailer.Mailer {
 	return a.mailer
 }
 
-func (a *appContext) Notification() notirepo.NotificationRepository {
+func (a *AppCtx) Notification() notirepo.Repository {
 	return a.notification
 }
 
-func (a *appContext) LiveKitService() lksv.LiveKitService {
+func (a *AppCtx) LiveKitService() lksv.LiveKitService {
 	return a.livekitService
 }
 
-func (a *appContext) PubSub() pubsub.PubSub {
+func (a *AppCtx) PubSub() pubsub.PubSub {
 	return a.pubsub
 }

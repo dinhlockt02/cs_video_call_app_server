@@ -18,7 +18,8 @@ func NewListGroupBiz(groupRepo grouprepo.Repository) *ListGroupBiz {
 	return &ListGroupBiz{groupRepo: groupRepo}
 }
 
-func (biz *ListGroupBiz) List(ctx context.Context, requesterId string, groupFilter map[string]interface{}) ([]groupmdl.Group, error) {
+func (biz *ListGroupBiz) List(ctx context.Context,
+	requesterId string, groupFilter map[string]interface{}) ([]groupmdl.Group, error) {
 	log.Debug().Str("requesterId", requesterId).Any("groupFilter", groupFilter).Msg("leave")
 
 	filter, err := common.GetIdFilter(requesterId)

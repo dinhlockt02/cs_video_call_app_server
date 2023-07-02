@@ -8,26 +8,26 @@ import (
 	"net/http"
 )
 
-type AuthMiddlewareMongoStore interface {
+type Store interface {
 	FindOne(ctx context.Context, filter map[string]interface{}) (*Device, error)
 }
 
-type AuthMiddlewareBiz struct {
-	store         AuthMiddlewareMongoStore
+type Biz struct {
+	store         Store
 	tokenProvider tokenprovider.TokenProvider
 }
 
 func NewAuthMiddlewareBiz(
-	store AuthMiddlewareMongoStore,
+	store Store,
 	tokenProvider tokenprovider.TokenProvider,
-) *AuthMiddlewareBiz {
-	return &AuthMiddlewareBiz{
+) *Biz {
+	return &Biz{
 		store:         store,
 		tokenProvider: tokenProvider,
 	}
 }
 
-func (biz *AuthMiddlewareBiz) Authenticate(ctx context.Context, token string) (*Device, error) {
+func (biz *Biz) Authenticate(ctx context.Context, token string) (*Device, error) {
 	tokenPayload, err := biz.tokenProvider.Validate(token)
 	if err != nil {
 		return nil, common.NewFullErrorResponse(

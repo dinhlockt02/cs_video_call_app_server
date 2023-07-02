@@ -14,15 +14,17 @@ import (
 
 type GetGroupRequestBiz struct {
 	groupRepo    grouprepo.Repository
-	notification notirepo.NotificationRepository
+	notification notirepo.Repository
 }
 
-func NewGetGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *GetGroupRequestBiz {
+func NewGetGroupRequestBiz(groupRepo grouprepo.Repository,
+	notification notirepo.Repository) *GetGroupRequestBiz {
 	return &GetGroupRequestBiz{groupRepo: groupRepo, notification: notification}
 }
 
 // GetRequest send a group invitation request to user.
-func (biz *GetGroupRequestBiz) GetRequest(ctx context.Context, requesterId string, filter groupmdl.Filter) ([]requestmdl.Request, error) {
+func (biz *GetGroupRequestBiz) GetRequest(ctx context.Context,
+	requesterId string, filter groupmdl.Filter) ([]requestmdl.Request, error) {
 	log.Debug().Str("requesterId", requesterId).Any("filter", filter).Msg("get requests")
 	var groupFilterFilter map[string]interface{}
 	if filter == groupmdl.Sent {

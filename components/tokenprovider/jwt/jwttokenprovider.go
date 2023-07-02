@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-type JwtTokenProvider struct {
+type TokenProvider struct {
 	secret string
 }
 
@@ -16,7 +16,7 @@ type AppClaims struct {
 	Payload *tokenprovider.TokenPayload `json:"payload"`
 }
 
-func (j *JwtTokenProvider) Generate(payload *tokenprovider.TokenPayload, expiry int) (*tokenprovider.Token, error) {
+func (j *TokenProvider) Generate(payload *tokenprovider.TokenPayload, expiry int) (*tokenprovider.Token, error) {
 	now := time.Now()
 	expire := now.Add(time.Second * time.Duration(expiry))
 	claims := AppClaims{
@@ -38,21 +38,23 @@ func (j *JwtTokenProvider) Generate(payload *tokenprovider.TokenPayload, expiry 
 	}, nil
 }
 
-func (j *JwtTokenProvider) Validate(token string) (*tokenprovider.TokenPayload, error) {
-	tk, err := jwt.ParseWithClaims(token, &AppClaims{Payload: &tokenprovider.TokenPayload{}}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(j.secret), nil
-	})
+func (j *TokenProvider) Validate(token string) (*tokenprovider.TokenPayload, error) {
+	tk, err := jwt.ParseWithClaims(
+		token,
+		&AppClaims{Payload: &tokenprovider.TokenPayload{}},
+		func(token *jwt.Token) (interface{}, error) {
+			return []byte(j.secret), nil
+		})
 	if err != nil {
 		return nil, errors.Wrap(err, "can not parse token")
 	}
 
 	if claims, ok := tk.Claims.(*AppClaims); ok && tk.Valid {
 		return claims.Payload, nil
-	} else {
-		return nil, errors.New("invalid token")
 	}
+	return nil, errors.New("invalid token")
 }
 
-func NewJwtTokenProvider(secret string) *JwtTokenProvider {
-	return &JwtTokenProvider{secret: secret}
+func NewJwtTokenProvider(secret string) *TokenProvider {
+	return &TokenProvider{secret: secret}
 }

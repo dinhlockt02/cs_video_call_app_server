@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreateNewCall(appCtx appcontext.AppContext) gin.HandlerFunc {
+func CreateNewCall(_ appcontext.AppContext) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		// TODO: implement this
 	}

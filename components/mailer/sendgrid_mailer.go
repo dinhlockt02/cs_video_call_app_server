@@ -5,7 +5,7 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-type sendGridMailer struct {
+type SendGridMailer struct {
 	senderName  string
 	senderEmail string
 	apiKey      string
@@ -15,15 +15,15 @@ func NewSendGridMailer(
 	senderName string,
 	senderEmail string,
 	apiKey string,
-) *sendGridMailer {
-	return &sendGridMailer{
+) *SendGridMailer {
+	return &SendGridMailer{
 		senderName:  senderName,
 		senderEmail: senderEmail,
 		apiKey:      apiKey,
 	}
 }
 
-func (s *sendGridMailer) Send(subject string, receiverEmail string, receiverName string, htmlContent string) error {
+func (s *SendGridMailer) Send(subject string, receiverEmail string, receiverName string, htmlContent string) error {
 	from := mail.NewEmail(s.senderName, s.senderEmail)
 	to := mail.NewEmail(receiverName, receiverEmail)
 	message := mail.NewSingleEmail(from, subject, to, "", htmlContent)

@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (s *mongoStore) Update(ctx context.Context, filter map[string]interface{}, data *devicemodel.UpdateDevice) error {
+func (s *MongoStore) Update(ctx context.Context, filter map[string]interface{}, data *devicemodel.UpdateDevice) error {
 	log.Debug().Any("filter", filter).Any("data", data).Msg("update a device")
 	update := bson.M{"$set": data}
 

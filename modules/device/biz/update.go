@@ -9,15 +9,16 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type createDeviceBiz struct {
+type CreateDeviceBiz struct {
 	store devicestore.Store
 }
 
-func NewUpdateDeviceBiz(store devicestore.Store) *createDeviceBiz {
-	return &createDeviceBiz{store: store}
+func NewUpdateDeviceBiz(store devicestore.Store) *CreateDeviceBiz {
+	return &CreateDeviceBiz{store: store}
 }
 
-func (biz *createDeviceBiz) Update(ctx context.Context, filter map[string]interface{}, data *devicemodel.UpdateDevice) error {
+func (biz *CreateDeviceBiz) Update(ctx context.Context,
+	filter map[string]interface{}, data *devicemodel.UpdateDevice) error {
 	log.Debug().Any("filter", filter).Any("data", data).Msg("update a device")
 	if err := data.Process(); err != nil {
 		return common.ErrInvalidRequest(errors.Wrap(err, "validate data failed"))

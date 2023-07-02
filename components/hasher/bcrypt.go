@@ -7,11 +7,11 @@ import (
 	"strings"
 )
 
-type bcryptHasher struct {
+type BcryptHasher struct {
 	cost int
 }
 
-func NewBcryptHasher(cost ...int) *bcryptHasher {
+func NewBcryptHasher(cost ...int) *BcryptHasher {
 	var c int
 	if len(cost) == 0 {
 		c = bcrypt.DefaultCost
@@ -19,10 +19,10 @@ func NewBcryptHasher(cost ...int) *bcryptHasher {
 		log.Fatalf("cost must be between %v and % v\n", bcrypt.MinCost, bcrypt.MaxCost)
 	}
 
-	return &bcryptHasher{cost: c}
+	return &BcryptHasher{cost: c}
 }
 
-func (b *bcryptHasher) Hash(data string) (string, error) {
+func (b *BcryptHasher) Hash(data string) (string, error) {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(data), b.cost)
 	if err != nil {
 		return "", err
@@ -30,7 +30,7 @@ func (b *bcryptHasher) Hash(data string) (string, error) {
 	return string(hashed), nil
 }
 
-func (b *bcryptHasher) Compare(data string, hashedData string) (bool, error) {
+func (b *BcryptHasher) Compare(data string, hashedData string) (bool, error) {
 	if strings.TrimSpace(data) == "" {
 		return false, errors.New("invalid hashed data")
 	}

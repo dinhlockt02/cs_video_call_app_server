@@ -6,7 +6,7 @@ import "strings"
 //
 // # The default Order of paging is ASC
 //
-// The default Limit is 10 and must be between 5 and 20
+// The default Limit is 10 and must be between 5 and 20.
 type Paging struct {
 	LastId *string `form:"last_id"`
 	Order  *Order  `form:"order"`
@@ -17,7 +17,7 @@ type Paging struct {
 //
 // # Order includes 2 values ASC and DESC, respectively mean Ascending and Descending order
 //
-// Default values of Order if not provided is ASC
+// Default values of Order if not provided is ASC.
 type Order string
 
 var (

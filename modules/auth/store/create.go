@@ -8,7 +8,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (s *mongoStore) CreateEmailAndPasswordUser(ctx context.Context, data *authmodel.RegisterUser) (*authmodel.User, error) {
+func (s *MongoStore) CreateEmailAndPasswordUser(ctx context.Context,
+	data *authmodel.RegisterUser) (*authmodel.User, error) {
 	log.Debug().Msg("inserting a firebase user")
 	result, err := s.database.Collection(data.CollectionName()).InsertOne(ctx, data)
 	if err != nil {
@@ -25,7 +26,8 @@ func (s *mongoStore) CreateEmailAndPasswordUser(ctx context.Context, data *authm
 	}, nil
 }
 
-func (s *mongoStore) CreateFirebaseUser(ctx context.Context, data *authmodel.RegisterFirebaseUser) (*authmodel.User, error) {
+func (s *MongoStore) CreateFirebaseUser(ctx context.Context,
+	data *authmodel.RegisterFirebaseUser) (*authmodel.User, error) {
 	log.Debug().Msg("inserting a firebase user")
 	result, err := s.database.Collection(data.CollectionName()).InsertOne(ctx, data)
 	if err != nil {

@@ -9,7 +9,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func (s *MongoStore) UpdateUser(ctx context.Context, filter map[string]interface{}, updatedUser *friendmodel.User) error {
+func (s *MongoStore) UpdateUser(ctx context.Context,
+	filter map[string]interface{}, updatedUser *friendmodel.User) error {
 	log.Debug().Any("filter", filter).Any("updatedUser", updatedUser).Msg("update a user")
 	updatedUser.Id = nil
 	updateData := bson.M{

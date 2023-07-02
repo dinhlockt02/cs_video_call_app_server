@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (s *mongoStore) Create(ctx context.Context, group *groupmdl.Group) error {
+func (s *MongoStore) Create(ctx context.Context, group *groupmdl.Group) error {
 	log.Debug().Any("group", group).Msg("create group")
 	result, err := s.database.Collection(group.CollectionName()).InsertOne(ctx, group)
 	if err != nil {

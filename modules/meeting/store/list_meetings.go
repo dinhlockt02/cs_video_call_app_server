@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func (s *mongoStore) ListMeeting(ctx context.Context, filter map[string]interface{}) ([]meetingmodel.Meeting, error) {
+func (s *MongoStore) ListMeeting(ctx context.Context, filter map[string]interface{}) ([]meetingmodel.Meeting, error) {
 	log.Debug().Any("filter", filter).Msg("list meetings")
 
 	var meetings []meetingmodel.Meeting

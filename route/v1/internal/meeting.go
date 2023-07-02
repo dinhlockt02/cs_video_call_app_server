@@ -8,7 +8,6 @@ import (
 )
 
 func InitMeetingRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
-
 	call := g.Group("/meeting", authmiddleware.Authentication(appCtx))
 	{
 		groupCall := call.Group("/:groupId")

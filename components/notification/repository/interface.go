@@ -5,7 +5,7 @@ import (
 	notimodel "github.com/dinhlockt02/cs_video_call_app_server/components/notification/model"
 )
 
-type NotificationRepository interface {
+type Repository interface {
 	// CreateAcceptFriendNotification is a method that will create, store and push notification
 	//
 	// It should be used when the subject accept the indirect (aka owner)'s friend request
@@ -44,7 +44,8 @@ type NotificationRepository interface {
 		prep *notimodel.NotificationObject,
 	) error
 
-	// CreateAbandonIncomingCallNotification should be used when the Subject abandon call before the Direct (aka owner) answer in a room (Prep)
+	// CreateAbandonIncomingCallNotification should be used
+	// when the Subject abandon call before the Direct (aka owner) answer in a room (Prep)
 	CreateAbandonIncomingCallNotification(
 		ctx context.Context,
 		owner string,

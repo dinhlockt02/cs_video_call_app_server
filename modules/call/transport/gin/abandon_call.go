@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AbandonCall(appCtx appcontext.AppContext) gin.HandlerFunc {
+func AbandonCall(_ appcontext.AppContext) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		// TODO: implement this
 	}

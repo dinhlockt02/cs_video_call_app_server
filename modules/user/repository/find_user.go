@@ -28,7 +28,8 @@ func NewFindUserRepo(
 	}
 }
 
-func (repo *FindUserRepo) FindUser(ctx context.Context, requesterId string, filter map[string]interface{}) (*usermodel.User, error) {
+func (repo *FindUserRepo) FindUser(ctx context.Context, requesterId string,
+	filter map[string]interface{}) (*usermodel.User, error) {
 	log.Debug().Str("requesterId", requesterId).Any("filter", filter).Msg("find user")
 	fuser, err := repo.friendRepo.FindUser(ctx, filter, friendrepo.WithRelation(requesterId))
 

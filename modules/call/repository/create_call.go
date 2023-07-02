@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (repo *callRepository) CreateCall(ctx context.Context, call *callmdl.Call) error {
+func (repo *CallRepository) CreateCall(ctx context.Context, call *callmdl.Call) error {
 	log.Debug().Any("call", call).Msg("create call")
 	err := repo.callStore.Create(ctx, call)
 	if err != nil {

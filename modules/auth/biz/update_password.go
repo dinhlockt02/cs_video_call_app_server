@@ -28,7 +28,8 @@ func NewUpdatePasswordBiz(
 	}
 }
 
-func (biz *UpdatePasswordBiz) Update(ctx context.Context, filter map[string]interface{}, data *authmodel.UpdatePasswordUser) error {
+func (biz *UpdatePasswordBiz) Update(ctx context.Context,
+	filter map[string]interface{}, data *authmodel.UpdatePasswordUser) error {
 	if err := data.Process(); err != nil {
 		return common.ErrInvalidRequest(errors.Wrap(err, "invalid update data"))
 	}

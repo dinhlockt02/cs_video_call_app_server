@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-func (repo *groupRepository) DeleteOne(
+func (repo *GroupRepository) DeleteOne(
 	ctx context.Context,
 	filter map[string]interface{},
 ) error {

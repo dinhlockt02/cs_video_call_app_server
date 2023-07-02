@@ -25,7 +25,8 @@ func NewCreateMeetingBiz(
 	}
 }
 
-func (biz *CreateMeetingBiz) Create(ctx context.Context, requester string, meeting *meetingmodel.Meeting) (string, error) {
+func (biz *CreateMeetingBiz) Create(ctx context.Context,
+	requester string, meeting *meetingmodel.Meeting) (string, error) {
 	log.Debug().Str("requester", requester).Any("meeting", meeting).Msg("create meeting")
 	// Create meeting
 	meeting.Status = meetingmodel.OnGoing
@@ -42,7 +43,6 @@ func (biz *CreateMeetingBiz) Create(ctx context.Context, requester string, meeti
 	token, err := biz.livekitService.CreateJoinToken(*meeting.Id, requester)
 	if err != nil {
 		return "", common.ErrInternal(errors.Wrap(err, "can not create join token"))
-
 	}
 	return token, nil
 }

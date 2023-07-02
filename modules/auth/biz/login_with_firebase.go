@@ -26,7 +26,7 @@ type LoginWithFirebaseDeviceStore interface {
 type LoginWithFirebaseBiz struct {
 	tokenProvider tokenprovider.TokenProvider
 	deviceStore   LoginWithFirebaseDeviceStore
-	fbs           firebase.FirebaseApp
+	fbs           firebase.App
 	authStore     LoginWithFirebaseAuthStore
 }
 
@@ -34,7 +34,7 @@ func NewLoginWithFirebaseBiz(
 	tokenProvider tokenprovider.TokenProvider,
 	deviceStore LoginWithFirebaseDeviceStore,
 	authStore LoginWithFirebaseAuthStore,
-	fbs firebase.FirebaseApp,
+	fbs firebase.App,
 ) *LoginWithFirebaseBiz {
 	return &LoginWithFirebaseBiz{
 		tokenProvider: tokenProvider,
@@ -44,8 +44,8 @@ func NewLoginWithFirebaseBiz(
 	}
 }
 
-func (biz *LoginWithFirebaseBiz) LoginWithFirebase(ctx context.Context, idToken string, device *devicemodel.Device) (*authmodel.AuthToken, error) {
-
+func (biz *LoginWithFirebaseBiz) LoginWithFirebase(ctx context.Context,
+	idToken string, device *devicemodel.Device) (*authmodel.AuthToken, error) {
 	if err := device.Process(); err != nil {
 		return nil, common.ErrInvalidRequest(errors.Wrap(err, "invalid device data"))
 	}

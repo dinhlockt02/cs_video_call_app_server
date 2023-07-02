@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func (s *mongoStore) UpdateGroup(
+func (s *MongoStore) UpdateGroup(
 	ctx context.Context,
 	filter map[string]interface{},
 	updatedGroup *groupmdl.Group,

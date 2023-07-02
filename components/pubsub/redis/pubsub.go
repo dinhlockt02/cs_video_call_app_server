@@ -19,7 +19,6 @@ func (ps *RedisPubSub) Publish(ctx context.Context, topic pubsub.Topic, data str
 }
 
 func (ps *RedisPubSub) Subscribe(ctx context.Context, topic pubsub.Topic) <-chan string {
-
 	c := make(chan string)
 
 	_pubsub := ps.client.Subscribe(ctx, string(topic))

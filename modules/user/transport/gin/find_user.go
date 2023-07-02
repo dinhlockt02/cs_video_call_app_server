@@ -40,7 +40,8 @@ func FindUser(appCtx appcontext.AppContext) gin.HandlerFunc {
 
 		findUserBiz := userbiz.NewFindUserBiz(findUserRepo)
 
-		user, err := findUserBiz.FindUser(context.Request.Context(), requester.GetId(), userstore.GetEmailFilter(filter.Email))
+		user, err := findUserBiz.FindUser(context.Request.Context(),
+			requester.GetId(), userstore.GetEmailFilter(filter.Email))
 		if err != nil {
 			panic(err)
 		}

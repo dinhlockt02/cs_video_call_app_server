@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (s *mongoStore) DeleteUser(ctx context.Context, filter map[string]interface{}) error {
+func (s *MongoStore) DeleteUser(ctx context.Context, filter map[string]interface{}) error {
 	log.Debug().Any("filter", filter).Msg("deleting a user")
 	rs, err := s.database.Collection(authmodel.User{}.CollectionName()).DeleteOne(ctx, filter)
 	if err != nil {

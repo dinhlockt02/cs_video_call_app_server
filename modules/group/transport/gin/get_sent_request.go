@@ -14,7 +14,6 @@ import (
 
 func GetSentRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		requester := c.MustGet(common.CurrentUser).(common.Requester)
 
 		groupStore := groupstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))

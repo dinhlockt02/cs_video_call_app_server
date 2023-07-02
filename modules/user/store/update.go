@@ -8,7 +8,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (s *mongoStore) Update(ctx context.Context, filter map[string]interface{}, updatedUser *usermodel.UpdateUser) error {
+func (s *MongoStore) Update(ctx context.Context,
+	filter map[string]interface{}, updatedUser *usermodel.UpdateUser) error {
 	log.Debug().Any("filter", filter).Any("updatedUser", updatedUser).Msg("update user")
 	update := bson.M{"$set": updatedUser}
 

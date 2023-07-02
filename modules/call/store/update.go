@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (s *mongoStore) Update(ctx context.Context, filter map[string]interface{}, data *callmdl.Call) error {
+func (s *MongoStore) Update(ctx context.Context, filter map[string]interface{}, data *callmdl.Call) error {
 	log.Debug().Any("filter", filter).Any("data", data).Msg("update a call")
 	id := data.Id
 	data.Id = nil

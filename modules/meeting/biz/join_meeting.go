@@ -47,13 +47,11 @@ func (biz *JoinMeetingBiz) Join(ctx context.Context, requester, groupId, meeting
 
 	if meeting.Status == meetingmodel.Ended {
 		return "", common.ErrInvalidRequest(errors.New(meetingmodel.MeetingEnded))
-
 	}
 
 	token, err := biz.livekitService.CreateJoinToken(*meeting.Id, requester)
 	if err != nil {
 		return "", common.ErrInternal(err)
-
 	}
 	return token, nil
 }

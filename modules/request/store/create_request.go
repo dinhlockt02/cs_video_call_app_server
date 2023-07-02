@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (s *mongoStore) CreateRequest(ctx context.Context, request *requestmdl.Request) error {
+func (s *MongoStore) CreateRequest(ctx context.Context, request *requestmdl.Request) error {
 	log.Debug().Any("request", request).Msg("create request")
 	result, err := s.database.Collection(request.CollectionName()).InsertOne(ctx, request)
 	if err != nil {

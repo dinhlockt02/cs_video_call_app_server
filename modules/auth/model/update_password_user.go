@@ -13,7 +13,7 @@ type UpdatePasswordUser struct {
 }
 
 func (UpdatePasswordUser) CollectionName() string {
-	return "users"
+	return common.UserCollectionName
 }
 
 func (u *UpdatePasswordUser) Process() error {

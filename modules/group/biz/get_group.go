@@ -12,10 +12,10 @@ import (
 
 type GetGroupBiz struct {
 	groupRepo    grouprepo.Repository
-	notification notirepo.NotificationRepository
+	notification notirepo.Repository
 }
 
-func NewGetGroupBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *GetGroupBiz {
+func NewGetGroupBiz(groupRepo grouprepo.Repository, notification notirepo.Repository) *GetGroupBiz {
 	return &GetGroupBiz{groupRepo: groupRepo, notification: notification}
 }
 

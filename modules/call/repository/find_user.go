@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (repo *callRepository) FindUser(ctx context.Context, filter map[string]interface{}) (*callmdl.User, error) {
+func (repo *CallRepository) FindUser(ctx context.Context, filter map[string]interface{}) (*callmdl.User, error) {
 	log.Debug().Any("filter", filter).Msg("find user")
 	user, err := repo.userStore.Find(ctx, filter)
 
