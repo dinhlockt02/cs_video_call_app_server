@@ -9,7 +9,8 @@ import (
 type Entity string
 
 var (
-	UserEntity Entity = "User"
+	UserEntity    Entity = "User"
+	MeetingEntity Entity = "Meeting"
 )
 
 type AppError struct {

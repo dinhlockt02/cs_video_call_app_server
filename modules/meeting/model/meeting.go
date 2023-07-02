@@ -1,7 +1,6 @@
 package meetingmodel
 
 import (
-	"errors"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	"time"
 )
@@ -27,8 +26,3 @@ type Meeting struct {
 func (Meeting) CollectionName() string {
 	return common.MeetingCollectionName
 }
-
-var (
-	ErrMeetingEnded    = errors.New("meeting has ended")
-	ErrMeetingNotFound = errors.New("meeting not found")
-)

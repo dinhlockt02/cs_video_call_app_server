@@ -6,9 +6,5 @@ import (
 )
 
 func (r *meetingRepository) CreateMeeting(ctx context.Context, meeting *meetingmodel.Meeting) error {
-	err := r.meetingStore.CreateMeeting(ctx, meeting)
-	if err != nil {
-		return err
-	}
-	return nil
+	return r.meetingStore.CreateMeeting(ctx, meeting)
 }
