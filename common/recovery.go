@@ -4,6 +4,6 @@ import "github.com/rs/zerolog/log"
 
 func Recovery() {
 	if err := recover(); err != nil {
-		log.Error().Err(err.(error)).Send()
+		log.Error().Stack().Err(err.(error)).Send()
 	}
 }

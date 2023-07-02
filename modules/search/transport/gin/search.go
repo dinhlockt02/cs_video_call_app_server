@@ -13,6 +13,7 @@ import (
 	groupstore "github.com/dinhlockt02/cs_video_call_app_server/modules/group/store"
 	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 	"net/http"
 	"sync"
 )
@@ -60,11 +61,11 @@ func searchFriend(ctx context.Context, appCtx appcontext.AppContext, requester c
 	filter := map[string]interface{}{}
 	err := common.AddIdFilter(map[string]interface{}{}, requester.GetId())
 	if err != nil {
-		panic(err)
+		return nil, errors.Wrap(err, "invalid requester id")
 	}
 	friends, err := findFriendBiz.FindFriend(ctx, filter, common.GetTextSearch(searchTerm, false, false))
 	if err != nil {
-		panic(err)
+		return nil, errors.Wrap(err, "can not find friends")
 	}
 	return friends, nil
 }
@@ -79,7 +80,7 @@ func searchGroup(ctx context.Context, appCtx appcontext.AppContext, requester co
 	listGroupBiz := groupbiz.NewListGroupBiz(groupRepo)
 	groups, err := listGroupBiz.List(ctx, requester.GetId(), common.GetTextSearch(searchTerm, false, true))
 	if err != nil {
-		panic(err)
+		return nil, errors.Wrap(err, "can not find groups")
 	}
 	return groups, nil
 }
