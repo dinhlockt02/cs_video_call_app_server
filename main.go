@@ -176,6 +176,9 @@ func setupLogger() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	if gin.Mode() == gin.DebugMode {
+		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	}
 	log.Logger = log.With().Caller().Logger()
 	if gin.Mode() == gin.DebugMode {
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)
