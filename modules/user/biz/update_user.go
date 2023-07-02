@@ -4,6 +4,8 @@ import (
 	"context"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	usermodel "github.com/dinhlockt02/cs_video_call_app_server/modules/user/model"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
 type UpdateUserStore interface {
@@ -11,23 +13,23 @@ type UpdateUserStore interface {
 	Update(ctx context.Context, filter map[string]interface{}, updatedUser *usermodel.UpdateUser) error
 }
 
-type updateUserBiz struct {
+type UpdateUserBiz struct {
 	updateUserStore UpdateUserStore
 }
 
-func NewUpdateUserBiz(updateUserStore UpdateUserStore) *updateUserBiz {
-	return &updateUserBiz{updateUserStore: updateUserStore}
+func NewUpdateUserBiz(updateUserStore UpdateUserStore) *UpdateUserBiz {
+	return &UpdateUserBiz{updateUserStore: updateUserStore}
 }
 
-func (biz *updateUserBiz) Update(ctx context.Context, filter map[string]interface{}, data *usermodel.UpdateUser) error {
-
+func (biz *UpdateUserBiz) Update(ctx context.Context, filter map[string]interface{}, data *usermodel.UpdateUser) error {
+	log.Debug().Any("data", data).Any("filter", filter).Msg("find user")
 	if err := data.Process(); err != nil {
-		return common.ErrInvalidRequest(err)
+		return common.ErrInvalidRequest(errors.Wrap(err, "invalid update user data"))
 	}
 
 	existedUser, err := biz.updateUserStore.Find(ctx, filter)
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "can not find user"))
 	}
 
 	if existedUser == nil {
@@ -35,7 +37,7 @@ func (biz *updateUserBiz) Update(ctx context.Context, filter map[string]interfac
 	}
 	err = biz.updateUserStore.Update(ctx, filter, data)
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "can not update user"))
 	}
 	return nil
 }

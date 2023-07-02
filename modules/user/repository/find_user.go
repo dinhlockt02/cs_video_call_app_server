@@ -5,13 +5,15 @@ import (
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	friendrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/repository"
 	usermodel "github.com/dinhlockt02/cs_video_call_app_server/modules/user/model"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
 type FindUserUserStore interface {
 	Find(ctx context.Context, filter map[string]interface{}) (*usermodel.User, error)
 }
 
-type findUserRepo struct {
+type FindUserRepo struct {
 	userStore  FindUserUserStore
 	friendRepo friendrepo.Repository
 }
@@ -19,37 +21,36 @@ type findUserRepo struct {
 func NewFindUserRepo(
 	userStore FindUserUserStore,
 	friendRepo friendrepo.Repository,
-) *findUserRepo {
-	return &findUserRepo{
+) *FindUserRepo {
+	return &FindUserRepo{
 		userStore:  userStore,
 		friendRepo: friendRepo,
 	}
 }
 
-func (repo *findUserRepo) FindUser(ctx context.Context, requesterId string, filter map[string]interface{}) (*usermodel.User, error) {
+func (repo *FindUserRepo) FindUser(ctx context.Context, requesterId string, filter map[string]interface{}) (*usermodel.User, error) {
+	log.Debug().Str("requesterId", requesterId).Any("filter", filter).Msg("find user")
 	fuser, err := repo.friendRepo.FindUser(ctx, filter, friendrepo.WithRelation(requesterId))
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "can not find user")
 	}
 
 	user, err := repo.userStore.Find(ctx, filter)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "can not find user")
 	}
 
 	user.Relation = fuser.Relation
 
-	filter = map[string]interface{}{}
-
-	err = common.AddIdFilter(filter, requesterId)
+	filter, err = common.GetIdFilter(requesterId)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "invalid requester id")
 	}
 
 	requester, err := repo.friendRepo.FindUser(ctx, filter)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "can not find requester")
 	}
 
 	requesterFriendMap := make(map[string]interface{}, len(requester.Friends))
