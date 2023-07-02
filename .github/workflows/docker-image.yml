@@ -2,9 +2,9 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main", "ci/docker" ]
+    branches: [ "main", "master" ]
 jobs:
-  docker-amd:
+  docker:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
