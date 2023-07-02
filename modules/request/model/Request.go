@@ -25,7 +25,7 @@ type Request struct {
 	common.MongoCreatedAt `json:",inline" bson:",inline"`
 }
 
-func (Request) CollectionName() string {
+func (*Request) CollectionName() string {
 	return "requests"
 }
 func (r *Request) Process() {
