@@ -6,6 +6,12 @@ import (
 	"net/http"
 )
 
+type Entity string
+
+var (
+	UserEntity Entity = "User"
+)
+
 type AppError struct {
 	StatusCode int    `json:"status_code"`
 	RootErr    error  `json:"-"`
@@ -20,9 +26,9 @@ func (err ValidationError) Error() string {
 	if len(err) == 0 {
 		return ""
 	}
-	rs := "[\n"
+	rs := "["
 	for i := range err {
-		rs += err[i].Error() + "\n"
+		rs += err[i].Error() + ", "
 	}
 	rs += "]"
 	return rs
@@ -74,7 +80,7 @@ func ErrInternal(err error) *AppError {
 	return NewFullErrorResponse(http.StatusInternalServerError, err, "internal server error", err.Error(), "ErrInternal")
 }
 
-func ErrEntityNotFound(entity string, err error) *AppError {
+func ErrEntityNotFound(entity Entity, err error) *AppError {
 	return NewFullErrorResponse(http.StatusNotFound, err, fmt.Sprintf("%v not found", entity), err.Error(), "ErrNotfound")
 }
 

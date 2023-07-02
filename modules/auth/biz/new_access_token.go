@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/tokenprovider"
+	"github.com/pkg/errors"
 )
 
 type accessTokenBiz struct {
@@ -26,7 +27,7 @@ func (biz *accessTokenBiz) New(ctx context.Context, refreshToken string) (*token
 	)
 
 	if err != nil {
-		return nil, common.ErrInternal(err)
+		return nil, common.ErrInternal(errors.Wrap(err, "can not regenerate access token"))
 	}
 
 	return accessToken, nil

@@ -2,8 +2,9 @@ package authbiz
 
 import (
 	"context"
-	"errors"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
+	authmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/auth/model"
+	"github.com/pkg/errors"
 	"strings"
 )
 
@@ -12,7 +13,7 @@ type VerifyEmailAuthStore interface {
 }
 
 type VerifyEmailRedisStore interface {
-	GetVerifyEmailCode(ctx context.Context, code string) string
+	GetVerifyEmailCode(ctx context.Context, code string) (string, error)
 }
 
 type verifyEmailBiz struct {
@@ -31,20 +32,21 @@ func NewVerifyEmail(
 }
 
 func (biz *verifyEmailBiz) Verify(ctx context.Context, code string) error {
-	user_id := biz.redisStore.GetVerifyEmailCode(ctx, code)
-	if strings.TrimSpace(user_id) == "" {
-		return common.ErrInvalidRequest(errors.New("invalid code"))
-	}
-	id, err := common.ToObjectId(user_id)
+	userId, err := biz.redisStore.GetVerifyEmailCode(ctx, code)
 	if err != nil {
-		return common.ErrInternal(err)
+		return common.ErrInternal(errors.Wrap(err, "can not get code from redis"))
+	}
+	if strings.TrimSpace(userId) == "" {
+		return common.ErrInvalidRequest(errors.New(authmodel.InvalidVerifyCode))
 	}
 
-	err = biz.authstore.UpdateEmailVerified(ctx, map[string]interface{}{
-		"_id": id,
-	})
+	idFilter, err := common.GetIdFilter(userId)
 	if err != nil {
-		return common.ErrInternal(err)
+		return common.ErrInternal(errors.Wrap(err, "invalid id"))
+	}
+	err = biz.authstore.UpdateEmailVerified(ctx, idFilter)
+	if err != nil {
+		return common.ErrInternal(errors.Wrap(err, "can not update email verified status"))
 	}
 	return nil
 }

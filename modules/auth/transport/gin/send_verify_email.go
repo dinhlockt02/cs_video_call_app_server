@@ -12,10 +12,8 @@ import (
 
 func SendVerifyEmail(appCtx appcontext.AppContext) gin.HandlerFunc {
 	return func(context *gin.Context) {
-
 		u, _ := context.Get(common.CurrentUser)
 		requester := u.(common.Requester)
-
 		authStore := authstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		err := authbiz.
 			NewSendVerifyEmail(

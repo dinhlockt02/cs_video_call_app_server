@@ -3,7 +3,7 @@ package firebase
 import (
 	"context"
 	firebase "firebase.google.com/go/v4"
-	"github.com/dinhlockt02/cs_video_call_app_server/common"
+	"github.com/pkg/errors"
 )
 
 type FirebaseApp interface {
@@ -22,11 +22,11 @@ func NewFirebaseApp(app *firebase.App) *firebaseApp {
 func (fa *firebaseApp) VerifyToken(ctx context.Context, idToken string) (*string, error) {
 	client, err := fa.app.Auth(ctx)
 	if err != nil {
-		return nil, common.ErrInternal(err)
+		return nil, errors.Wrap(err, "can not get auth client")
 	}
 	token, err := client.VerifyIDToken(ctx, idToken)
 	if err != nil {
-		return nil, common.ErrInvalidRequest(err)
+		return nil, errors.Wrap(err, "can not verify id token")
 	}
 	return &token.UID, nil
 }
@@ -34,12 +34,12 @@ func (fa *firebaseApp) VerifyToken(ctx context.Context, idToken string) (*string
 func (fa *firebaseApp) ExtractEmailFromUID(ctx context.Context, uid string) (*string, error) {
 	client, err := fa.app.Auth(ctx)
 	if err != nil {
-		return nil, common.ErrInternal(err)
+		return nil, errors.Wrap(err, "can not get auth client")
 	}
 
 	firebaseUser, err := client.GetUser(ctx, uid)
 	if err != nil {
-		return nil, common.ErrInternal(err)
+		return nil, errors.Wrap(err, "can not get user from uid")
 	}
 	return &firebaseUser.Email, nil
 }

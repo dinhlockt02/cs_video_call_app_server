@@ -31,7 +31,7 @@ func (biz *updateUserBiz) Update(ctx context.Context, filter map[string]interfac
 	}
 
 	if existedUser == nil {
-		return common.ErrEntityNotFound(data.EntityName(), usermodel.ErrUserNotFound)
+		return common.ErrEntityNotFound(common.UserEntity, usermodel.ErrUserNotFound)
 	}
 	err = biz.updateUserStore.Update(ctx, filter, data)
 	if err != nil {

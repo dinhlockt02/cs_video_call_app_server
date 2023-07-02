@@ -2,6 +2,8 @@ package authbiz
 
 import (
 	"context"
+	"github.com/dinhlockt02/cs_video_call_app_server/common"
+	"github.com/pkg/errors"
 )
 
 type LogoutDeviceStore interface {
@@ -23,7 +25,7 @@ func NewLogoutBiz(
 func (biz *logoutBiz) Logout(ctx context.Context, filter map[string]interface{}) error {
 	err := biz.deviceStore.Delete(ctx, filter)
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "can not delete user"))
 	}
 	return nil
 }
