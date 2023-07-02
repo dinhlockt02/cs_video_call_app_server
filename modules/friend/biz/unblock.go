@@ -2,11 +2,10 @@ package friendbiz
 
 import (
 	"context"
-	"errors"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	friendmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UnblockFriendStore interface {
@@ -14,39 +13,39 @@ type UnblockFriendStore interface {
 	UpdateUser(ctx context.Context, filter map[string]interface{}, updatedUser *friendmodel.User) error
 }
 
-type unblockBiz struct {
+type UnblockBiz struct {
 	friendStore UnfriendFriendStore
 }
 
-func NewUnblockBiz(friendStore UnfriendFriendStore) *unblockBiz {
-	return &unblockBiz{
+func NewUnblockBiz(friendStore UnfriendFriendStore) *UnblockBiz {
+	return &UnblockBiz{
 		friendStore: friendStore,
 	}
 }
 
-func (biz *unblockBiz) Unblock(ctx context.Context, userId string, blockedId string) error {
-	id, _ := primitive.ObjectIDFromHex(userId)
-	user, err := biz.friendStore.FindUser(ctx, map[string]interface{}{
-		"_id": id,
-	})
+func (biz *UnblockBiz) Unblock(ctx context.Context, userId string, blockedId string) error {
+	log.Debug().Str("userId", userId).Str("blockedId", blockedId).Msg("unblock user")
+	userFilter, err := common.GetIdFilter(userId)
+	if err != nil {
+		return common.ErrInvalidRequest(errors.New("invalid user id"))
+	}
+	user, err := biz.friendStore.FindUser(ctx, userFilter)
 
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "can not find user"))
 	}
 	if user == nil {
-		return common.ErrEntityNotFound("User", errors.New("user not found"))
+		return common.ErrEntityNotFound(common.UserEntity, errors.New(friendmodel.UserNotFound))
 	}
+
 	for i := range user.BlockedUser {
 		if user.BlockedUser[i] == blockedId {
 
 			user.BlockedUser = append(user.BlockedUser[:i], user.BlockedUser[i+1:]...)
-			log.Debug().Msgf("%v", user.BlockedUser)
 
-			err = biz.friendStore.UpdateUser(ctx, map[string]interface{}{
-				"_id": id,
-			}, user)
+			err = biz.friendStore.UpdateUser(ctx, userFilter, user)
 			if err != nil {
-				return err
+				return errors.Wrap(err, "can not update user")
 			}
 			break
 		}

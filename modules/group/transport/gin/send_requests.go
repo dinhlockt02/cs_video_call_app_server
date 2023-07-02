@@ -40,9 +40,9 @@ func SendGroupRequests(appCtx appcontext.AppContext) gin.HandlerFunc {
 			groupStore,
 			requestStore,
 		)
-		sendGroupRequestBiz := groupbiz.NewSendGroupRequestBiz(groupRepo)
+		sendGroupRequestBiz := groupbiz.NewSendGroupRequestBiz(groupRepo, appCtx.Notification())
 
-		group, err := groupbiz.NewGetGroupBiz(groupRepo).GetById(c.Request.Context(), groupId)
+		group, err := groupbiz.NewGetGroupBiz(groupRepo, appCtx.Notification()).GetById(c.Request.Context(), groupId)
 		if err != nil {
 			panic(err)
 		}
@@ -61,13 +61,13 @@ func SendGroupRequests(appCtx appcontext.AppContext) gin.HandlerFunc {
 					continue
 				}
 				if _, ok := members[friend]; !ok && friend != requester.GetId() {
+					wg.Add(1)
 					go func(friendId string) {
-						wg.Add(1)
 						defer wg.Done()
 						defer common.Recovery()
-						err := sendGroupRequestBiz.SendRequest(context.Background(), requester.GetId(), friendId, group)
+						err = sendGroupRequestBiz.SendRequest(context.Background(), requester.GetId(), friendId, group)
 						if err != nil {
-							log.Error().Msgf("%v\n", err)
+							log.Error().Err(err).Msg("send request failed")
 						}
 					}(friend)
 				}

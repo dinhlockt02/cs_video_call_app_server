@@ -6,7 +6,6 @@ import (
 	friendbiz "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/biz"
 	friendstore "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/store"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 )
 
@@ -17,9 +16,6 @@ func Unblock(appCtx appcontext.AppContext) gin.HandlerFunc {
 
 		userId := requester.GetId()
 		blockedId := context.Param("id")
-		if !primitive.IsValidObjectID(blockedId) {
-			panic(common.ErrInvalidRequest(common.ErrInvalidObjectId))
-		}
 
 		friendStore := friendstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		unblockBiz := friendbiz.NewUnblockBiz(friendStore)

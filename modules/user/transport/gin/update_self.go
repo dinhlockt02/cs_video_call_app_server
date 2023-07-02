@@ -7,7 +7,6 @@ import (
 	usermodel "github.com/dinhlockt02/cs_video_call_app_server/modules/user/model"
 	userstore "github.com/dinhlockt02/cs_video_call_app_server/modules/user/store"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 )
 
@@ -27,14 +26,12 @@ func UpdateSelf(appCtx appcontext.AppContext) gin.HandlerFunc {
 		userStore := userstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		updateUserBiz := userbiz.NewUpdateUserBiz(userStore)
 
-		id, err := primitive.ObjectIDFromHex(requester.GetId())
+		idFilter, err := common.GetIdFilter(requester.GetId())
 		if err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
 
-		if err = updateUserBiz.Update(context.Request.Context(), map[string]interface{}{
-			"_id": id,
-		}, &updateData); err != nil {
+		if err = updateUserBiz.Update(context.Request.Context(), idFilter, &updateData); err != nil {
 			panic(err)
 		}
 

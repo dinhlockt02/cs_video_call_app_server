@@ -2,46 +2,50 @@ package groupbiz
 
 import (
 	"context"
-	"errors"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	groupmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/group/model"
 	grouprepo "github.com/dinhlockt02/cs_video_call_app_server/modules/group/repository"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
-type createGroupBiz struct {
+type CreateGroupBiz struct {
 	groupRepo grouprepo.Repository
 }
 
-func NewCreateGroupBiz(groupRepo grouprepo.Repository) *createGroupBiz {
-	return &createGroupBiz{groupRepo: groupRepo}
+func NewCreateGroupBiz(groupRepo grouprepo.Repository) *CreateGroupBiz {
+	return &CreateGroupBiz{groupRepo: groupRepo}
 }
 
 // Create creates a group and add requester as a member.
-func (biz *createGroupBiz) Create(ctx context.Context, requester string, data *groupmdl.Group) error {
-	data.Members = []string{requester}
+func (biz *CreateGroupBiz) Create(ctx context.Context, requesterId string, data *groupmdl.Group) error {
+	log.Debug().Str("requesterId", requesterId).Any("data", data).Msg("create group")
+	data.Members = []string{requesterId}
 
 	if err := data.Process(); err != nil {
-		return common.ErrInvalidRequest(err)
+		return common.ErrInvalidRequest(errors.Wrap(err, "invalid group data"))
 	}
 
-	userFilter := make(map[string]interface{})
-	_ = common.AddIdFilter(userFilter, requester)
-	user, err := biz.groupRepo.FindUser(ctx, userFilter)
+	requesterFilter, err := common.GetIdFilter(requesterId)
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "invalid requester id"))
 	}
-	if user == nil {
-		return common.ErrEntityNotFound("User", errors.New("user not found"))
+	requester, err := biz.groupRepo.FindUser(ctx, requesterFilter)
+	if err != nil {
+		return common.ErrInternal(errors.Wrap(err, "can not find user"))
+	}
+	if requester == nil {
+		return common.ErrEntityNotFound(common.UserEntity, errors.New(groupmdl.RequesterNotFound))
 	}
 
 	if err = biz.groupRepo.CreateGroup(ctx, data); err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "can not create group"))
 	}
 
-	user.Groups = append(user.Groups, *data.Id)
+	requester.Groups = append(requester.Groups, *data.Id)
 
-	if err = biz.groupRepo.UpdateUser(ctx, userFilter, user); err != nil {
-		return err
+	if err = biz.groupRepo.UpdateUser(ctx, requesterFilter, requester); err != nil {
+		return common.ErrInternal(errors.Wrap(err, "can not update user"))
 	}
 
 	return nil

@@ -15,3 +15,9 @@ func AddIdFilter(filter map[string]interface{}, id string) error {
 	filter["_id"] = _id
 	return nil
 }
+
+func GetIdFilter(id string) (map[string]interface{}, error) {
+	m := make(map[string]interface{})
+	err := AddIdFilter(m, id)
+	return m, err
+}

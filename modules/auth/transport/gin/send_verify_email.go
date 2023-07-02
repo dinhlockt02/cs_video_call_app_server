@@ -12,10 +12,8 @@ import (
 
 func SendVerifyEmail(appCtx appcontext.AppContext) gin.HandlerFunc {
 	return func(context *gin.Context) {
-
 		u, _ := context.Get(common.CurrentUser)
 		requester := u.(common.Requester)
-
 		authStore := authstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		err := authbiz.
 			NewSendVerifyEmail(
@@ -28,7 +26,6 @@ func SendVerifyEmail(appCtx appcontext.AppContext) gin.HandlerFunc {
 			Send(context.Request.Context(), requester.GetId(), false)
 		if err != nil {
 			panic(err)
-			return
 		}
 		context.JSON(http.StatusOK, gin.H{"data": true})
 	}

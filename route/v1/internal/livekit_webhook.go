@@ -17,13 +17,11 @@ func InitLiveKitWebhookRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
 			event, err := lkwebhook.ReceiveWebhookEvent(c.Request, appCtx.LiveKitService().AuthProvider())
 			if err != nil {
 				panic(err)
-				return
 			}
 			if event.Event == "room_finished" {
 				err = appCtx.PubSub().Publish(c.Request.Context(), common.TopicRoomFinished, event.Room.Name)
 				if err != nil {
 					panic(err)
-					return
 				}
 			}
 			c.Status(http.StatusOK)

@@ -7,15 +7,15 @@ import (
 )
 
 type Store interface {
-	FindFriend(ctx context.Context, filter map[string]interface{}) ([]friendmodel.FriendUser, error)
+	FindFriends(ctx context.Context, filter map[string]interface{}) ([]friendmodel.FriendUser, error)
 	FindUser(ctx context.Context, filter map[string]interface{}) (*friendmodel.User, error)
 	UpdateUser(ctx context.Context, filter map[string]interface{}, updatedUser *friendmodel.User) error
 }
 
-type mongoStore struct {
+type MongoStore struct {
 	database *mongo.Database
 }
 
-func NewMongoStore(database *mongo.Database) *mongoStore {
-	return &mongoStore{database: database}
+func NewMongoStore(database *mongo.Database) *MongoStore {
+	return &MongoStore{database: database}
 }

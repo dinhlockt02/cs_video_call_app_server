@@ -23,7 +23,7 @@ func GetSentRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
 			groupStore,
 			requestStore,
 		)
-		getGroupRequestBiz := groupbiz.NewGetGroupRequestBiz(groupRepo)
+		getGroupRequestBiz := groupbiz.NewGetGroupRequestBiz(groupRepo, appCtx.Notification())
 		reqs, err := getGroupRequestBiz.GetRequest(c.Request.Context(), requester.GetId(), groupmdl.Sent)
 		if err != nil {
 			panic(err)

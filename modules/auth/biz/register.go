@@ -2,12 +2,13 @@ package authbiz
 
 import (
 	"context"
-	"errors"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/hasher"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/tokenprovider"
 	authmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/auth/model"
+	authstore "github.com/dinhlockt02/cs_video_call_app_server/modules/auth/store"
 	devicemodel "github.com/dinhlockt02/cs_video_call_app_server/modules/device/model"
+	"github.com/pkg/errors"
 	"time"
 )
 
@@ -44,50 +45,49 @@ func NewRegisterBiz(
 func (biz *registerBiz) Register(ctx context.Context, data *authmodel.RegisterUser, device *devicemodel.Device) (*authmodel.AuthToken, error) {
 
 	if err := data.Process(); err != nil {
-		return nil, common.ErrInvalidRequest(err)
+		return nil, common.ErrInvalidRequest(errors.Wrap(err, "invalid register data"))
 	}
 
 	if err := device.Process(); err != nil {
-		return nil, common.ErrInvalidRequest(err)
+		return nil, common.ErrInvalidRequest(errors.Wrap(err, "invalid device data"))
 	}
 
-	existedUser, err := biz.authStore.Find(ctx, map[string]interface{}{
-		"email": data.Email,
-	})
+	existedUser, err := biz.authStore.Find(ctx, authstore.GetEmailFilter(data.Email))
 	if err != nil {
-		if err != authmodel.ErrUserNotFound {
-			return nil, err
-		}
+		return nil, common.ErrInternal(errors.Wrap(err, "can not find user"))
 	}
 	if existedUser != nil {
-		return nil, common.ErrInvalidRequest(errors.New("user existed"))
+		return nil, common.ErrInvalidRequest(errors.New(authmodel.UserExists))
 	}
 
 	hashedPassword, err := biz.passwordHasher.Hash(data.Password)
 	if err != nil {
-		return nil, common.ErrInternal(err)
+		return nil, common.ErrInternal(errors.Wrap(err, "can not compare password"))
 	}
 
 	data.Password = hashedPassword
 
 	user, err := biz.authStore.CreateEmailAndPasswordUser(ctx, data)
 	if err != nil {
-		return nil, err
+		return nil, common.ErrInternal(errors.Wrap(err, "can not create user"))
 	}
 
 	device.UserId = user.Id
 	err = biz.deviceStore.Create(ctx, device)
+	if err != nil {
+		return nil, common.ErrInternal(errors.Wrap(err, "can not create device"))
+	}
 
 	now := time.Now()
 	refreshToken := &tokenprovider.Token{Token: *device.Id, CreatedAt: &now, ExpiredAt: nil}
-	if err != nil {
-		return nil, err
-	}
 
 	accessToken, err := biz.tokenProvider.Generate(
 		&tokenprovider.TokenPayload{Id: *device.Id},
 		common.AccessTokenExpiry,
 	)
+	if err != nil {
+		return nil, common.ErrInternal(errors.Wrap(err, "can not create access token"))
+	}
 
 	return &authmodel.AuthToken{
 		AccessToken:  accessToken,

@@ -4,42 +4,32 @@ import (
 	"context"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	notirepo "github.com/dinhlockt02/cs_video_call_app_server/components/notification/repository"
-	friendmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
 	grouprepo "github.com/dinhlockt02/cs_video_call_app_server/modules/group/repository"
 	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
-type recallGroupRequestBiz struct {
+type RecallGroupRequestBiz struct {
 	groupRepo    grouprepo.Repository
 	notification notirepo.NotificationRepository
 }
 
-func NewRecallGroupRequestBiz(groupRepo grouprepo.Repository) *recallGroupRequestBiz {
-	return &recallGroupRequestBiz{groupRepo: groupRepo}
+func NewRecallGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *RecallGroupRequestBiz {
+	return &RecallGroupRequestBiz{groupRepo: groupRepo, notification: notification}
 }
 
 // RecallRequest send a group invitation request to user.
-func (biz *recallGroupRequestBiz) RecallRequest(ctx context.Context, requester string, user string, groupId string) error {
+func (biz *RecallGroupRequestBiz) RecallRequest(ctx context.Context, requesterId string, user string, groupId string) error {
+	log.Debug().Str("requesterId", requesterId).Str("user", user).Str("groupId", groupId).Msg("recall request")
 	// Find exists request
-	senderFilter := requeststore.GetRequestSenderIdFilter(requester)
+	senderFilter := requeststore.GetRequestSenderIdFilter(requesterId)
 	receiverFilter := requeststore.GetRequestReceiverIdFilter(user)
 	groupFilter := requeststore.GetRequestGroupIdFilter(groupId)
 	ft := common.GetAndFilter(senderFilter, receiverFilter, groupFilter)
-	existedRequest, err := biz.groupRepo.FindRequest(ctx, ft)
+	err := biz.groupRepo.DeleteRequest(ctx, ft)
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "can not delete request"))
 	}
-	if existedRequest == nil {
-		return common.ErrInvalidRequest(friendmodel.ErrRequestNotFound)
-	}
-
-	// Delete request
-	filter := make(map[string]interface{})
-	err = common.AddIdFilter(filter, *existedRequest.Id)
-	err = biz.groupRepo.DeleteRequest(ctx, filter)
-	if err != nil {
-		return err
-	}
-	// TODO: send push notification new member joined
 	return nil
 }

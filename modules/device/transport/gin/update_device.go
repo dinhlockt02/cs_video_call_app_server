@@ -7,7 +7,7 @@ import (
 	devicemodel "github.com/dinhlockt02/cs_video_call_app_server/modules/device/model"
 	devicestore "github.com/dinhlockt02/cs_video_call_app_server/modules/device/store"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/pkg/errors"
 	"net/http"
 )
 
@@ -21,20 +21,18 @@ func UpdateDevice(appCtx appcontext.AppContext) gin.HandlerFunc {
 		err := context.ShouldBind(&deviceData)
 
 		if err != nil {
-			panic(common.ErrInvalidRequest(err))
+			panic(common.ErrInvalidRequest(errors.Wrap(err, "invalid body data")))
 		}
 
 		deviceStore := devicestore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		updateDeviceBiz := devicebiz.NewUpdateDeviceBiz(deviceStore)
 
-		id, err := primitive.ObjectIDFromHex(requester.GetDeviceId())
+		idFilter, err := common.GetIdFilter(requester.GetDeviceId())
 		if err != nil {
-			panic(common.ErrInvalidRequest(err))
+			panic(common.ErrInvalidRequest(errors.Wrap(err, "invalid device id")))
 		}
 
-		if err = updateDeviceBiz.Update(context.Request.Context(), map[string]interface{}{
-			"_id": id,
-		}, &deviceData); err != nil {
+		if err = updateDeviceBiz.Update(context.Request.Context(), idFilter, &deviceData); err != nil {
 			panic(err)
 		}
 

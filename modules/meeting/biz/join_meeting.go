@@ -7,9 +7,11 @@ import (
 	meetingmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/meeting/model"
 	meetingrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/meeting/repository"
 	meetingstore "github.com/dinhlockt02/cs_video_call_app_server/modules/meeting/store"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
-type joinMeetingBiz struct {
+type JoinMeetingBiz struct {
 	meetingRepo    meetingrepo.Repository
 	livekitService lksv.LiveKitService
 }
@@ -17,32 +19,34 @@ type joinMeetingBiz struct {
 func NewJoinMeetingBiz(
 	meetingRepo meetingrepo.Repository,
 	livekitService lksv.LiveKitService,
-) *joinMeetingBiz {
-	return &joinMeetingBiz{
+) *JoinMeetingBiz {
+	return &JoinMeetingBiz{
 		meetingRepo:    meetingRepo,
 		livekitService: livekitService,
 	}
 }
 
-func (biz *joinMeetingBiz) Join(ctx context.Context, requester, groupId, meetingId string) (string, error) {
-	// Create meeting
+func (biz *JoinMeetingBiz) Join(ctx context.Context, requester, groupId, meetingId string) (string, error) {
+	log.Debug().Str("requester", requester).
+		Str("groupId", groupId).
+		Str("meetingId", meetingId).
+		Msg("join meeting")
 
-	idFilter := map[string]interface{}{}
-	err := common.AddIdFilter(idFilter, meetingId)
+	idFilter, err := common.GetIdFilter(meetingId)
 	if err != nil {
-		return "", err
+		return "", common.ErrInvalidRequest(errors.Wrap(err, "invalid meeting id"))
 	}
 
 	meeting, err := biz.meetingRepo.FindMeeting(ctx, common.GetAndFilter(idFilter, meetingstore.GetGroupFilter(groupId)))
 	if err != nil {
-		return "", err
+		return "", common.ErrInternal(errors.Wrap(err, "can not find meeting"))
 	}
 	if meeting == nil {
-		return "", common.ErrEntityNotFound("Meeting", meetingmodel.ErrMeetingNotFound)
+		return "", common.ErrEntityNotFound(common.MeetingEntity, errors.New(meetingmodel.MeetingNotFound))
 	}
 
 	if meeting.Status == meetingmodel.Ended {
-		return "", common.ErrInvalidRequest(meetingmodel.ErrMeetingEnded)
+		return "", common.ErrInvalidRequest(errors.New(meetingmodel.MeetingEnded))
 
 	}
 

@@ -22,6 +22,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog/pkgerrors"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -173,7 +174,12 @@ func connectMongoDB(ctx context.Context) (*mongo.Client, error) {
 
 func setupLogger() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	if gin.Mode() == gin.DebugMode {
+		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	}
+	log.Logger = log.With().Caller().Logger()
 	if gin.Mode() == gin.DebugMode {
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	}

@@ -41,7 +41,7 @@ func (u *UpdateUser) Process() error {
 		if gender := strings.TrimSpace(string(*u.Gender)); gender == "" {
 			errs = append(errs, errors.New("gender must not be empty"))
 		} else if gender != common.Male && gender != common.Female && gender != common.Other {
-			errs = append(errs, errors.New(fmt.Sprintf("gender must be '%s' or '%s' or '%s'", common.Male, common.Female, common.Other)))
+			errs = append(errs, fmt.Errorf("gender must be '%s' or '%s' or '%s'", common.Male, common.Female, common.Other))
 		}
 	}
 

@@ -1,14 +1,14 @@
 package authmodel
 
 import (
-	"errors"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
+	"github.com/pkg/errors"
 	"strings"
 )
 
 type LoginUser struct {
-	Email    string `json:"email" bson:"email"`
-	Password string `json:"password" json:"password"`
+	Email    string `bson:"email" json:"email"`
+	Password string `bson:"password" json:"password"`
 }
 
 func (LoginUser) CollectionName() string {
@@ -31,7 +31,11 @@ func (u *LoginUser) Process() error {
 	}
 
 	if len(errs) > 0 {
-		return common.ValidationError(errs)
+		err := errs[0]
+		for i := 1; i < len(errs); i++ {
+			err = errors.Wrap(err, errs[i].Error())
+		}
+		return errors.Wrap(err, "validation error")
 	}
 	return nil
 }

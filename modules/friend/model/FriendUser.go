@@ -1,6 +1,10 @@
 package friendmodel
 
-import "time"
+import (
+	"time"
+
+	"github.com/dinhlockt02/cs_video_call_app_server/common"
+)
 
 type FriendUser struct {
 	Id         *string    `json:"id" bson:"_id,omitempty"`
@@ -10,5 +14,5 @@ type FriendUser struct {
 }
 
 func (FriendUser) CollectionName() string {
-	return "users"
+	return common.UserCollectionName
 }

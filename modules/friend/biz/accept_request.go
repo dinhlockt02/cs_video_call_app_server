@@ -2,16 +2,18 @@ package friendbiz
 
 import (
 	"context"
-	"errors"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
+
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	notimodel "github.com/dinhlockt02/cs_video_call_app_server/components/notification/model"
 	notirepo "github.com/dinhlockt02/cs_video_call_app_server/components/notification/repository"
 	friendmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
 	friendrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/repository"
-	"github.com/rs/zerolog/log"
 )
 
-type acceptRequestBiz struct {
+type AcceptRequestBiz struct {
 	friendRepository friendrepo.Repository
 	notification     notirepo.NotificationRepository
 }
@@ -19,77 +21,79 @@ type acceptRequestBiz struct {
 func NewAcceptRequestBiz(
 	friendRepository friendrepo.Repository,
 	notification notirepo.NotificationRepository,
-) *acceptRequestBiz {
-	return &acceptRequestBiz{
+) *AcceptRequestBiz {
+	return &AcceptRequestBiz{
 		friendRepository: friendRepository,
 		notification:     notification,
 	}
 }
 
-func (biz *acceptRequestBiz) AcceptRequest(ctx context.Context, senderId string, receiverId string) error {
-
+func (biz *AcceptRequestBiz) AcceptRequest(ctx context.Context, senderId string, receiverId string) error {
+	log.Debug().Str("senderId", senderId).Str("receiverId", receiverId).Msg("Accept friend request")
 	// Find exists request
 	existedRequest, err := biz.friendRepository.FindRequest(ctx, senderId, receiverId)
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "can not find request"))
 	}
 	if existedRequest == nil {
-		return common.ErrInvalidRequest(friendmodel.ErrRequestNotFound)
+		return common.ErrInvalidRequest(errors.New(friendmodel.RequestNotFound))
 	}
 
 	// Find sender
-	filter := make(map[string]interface{})
-	err = common.AddIdFilter(filter, senderId)
-	sender, err := biz.friendRepository.FindUser(ctx, filter)
+	senderFilter, err := common.GetIdFilter(senderId)
 	if err != nil {
-		return err
+		return common.ErrInvalidRequest(errors.Wrap(err, "invalid sender id"))
 	}
+	sender, err := biz.friendRepository.FindUser(ctx, senderFilter)
+
+	if err != nil {
+		return common.ErrInternal(errors.Wrap(err, "can not find sender"))
+	}
+
 	if sender == nil {
-		return common.ErrEntityNotFound("User", errors.New("sender not found"))
+		return common.ErrEntityNotFound(common.UserEntity, errors.New(friendmodel.SenderNotFound))
 	}
 
 	// Find Receiver
-	filter = make(map[string]interface{})
-	err = common.AddIdFilter(filter, receiverId)
-	receiver, err := biz.friendRepository.FindUser(ctx, filter)
+	receiverFilter, err := common.GetIdFilter(receiverId)
+	if err != nil {
+		return common.ErrInvalidRequest(errors.Wrap(err, "invalid receiver id"))
+	}
+	receiver, err := biz.friendRepository.FindUser(ctx, receiverFilter)
+	if err != nil {
+		return common.ErrInternal(errors.Wrap(err, "can not find receiver"))
+	}
 	if receiver == nil {
-		return common.ErrEntityNotFound("User", errors.New("receiver not found"))
+		return common.ErrEntityNotFound(common.UserEntity, errors.New(friendmodel.ReceiverNotFound))
 	}
 
 	// Update Sender
 	sender.Friends = append(sender.Friends, receiverId)
-	filter = make(map[string]interface{})
-	err = common.AddIdFilter(filter, senderId)
-	if err != nil {
-		return err
-	}
 
-	err = biz.friendRepository.UpdateUser(ctx, filter, sender)
+	err = biz.friendRepository.UpdateUser(ctx, senderFilter, sender)
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "can not update sender"))
 	}
 
 	// Update Receiver
 	receiver.Friends = append(receiver.Friends, senderId)
-	filter = make(map[string]interface{})
-	err = common.AddIdFilter(filter, receiverId)
+	err = biz.friendRepository.UpdateUser(ctx, receiverFilter, receiver)
 	if err != nil {
-		return err
-	}
-	err = biz.friendRepository.UpdateUser(ctx, filter, receiver)
-	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "can not update receiver"))
 	}
 
 	// Delete request
-	filter = make(map[string]interface{})
-	err = common.AddIdFilter(filter, *existedRequest.Id)
-	err = biz.friendRepository.DeleteRequest(ctx, filter)
+	requestFilter, err := common.GetIdFilter(*existedRequest.Id)
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "invalid request filter"))
+	}
+	err = biz.friendRepository.DeleteRequest(ctx, requestFilter)
+	if err != nil {
+		return common.ErrInternal(errors.Wrap(err, "can not delete request"))
 	}
 
 	go func() {
+		// TODO: change to pubsub model
 		e := biz.notification.CreateAcceptFriendNotification(ctx, senderId, &notimodel.NotificationObject{
 			Id:    senderId,
 			Name:  sender.Name,
@@ -102,7 +106,7 @@ func (biz *acceptRequestBiz) AcceptRequest(ctx context.Context, senderId string,
 			Type:  notimodel.User,
 		})
 		if e != nil {
-			log.Err(e)
+			log.Error().Err(e).Msg("create accept friend notification failed")
 		}
 	}()
 	return nil

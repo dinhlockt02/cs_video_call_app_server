@@ -1,10 +1,14 @@
 package friendmodel
 
-import "errors"
+const (
+	UserNotFound  = "user not found"
+	UserBeBlocked = "user is blocked"
 
-var ErrUserNotFound = errors.New("user not found")
-var ErrUserBeBlocked = errors.New("user is blocked")
+	RequestExists   = "request exists"
+	RequestNotFound = "request not found"
+	HasBeenFriend   = "has been friend"
 
-var ErrRequestExists = errors.New("request exists")
-var ErrRequestNotFound = errors.New("request not found")
-var ErrHasBeenFriend = errors.New("has been friend")
+	SenderNotFound      = "sender not found"
+	ReceiverNotFound    = "receiver not found"
+	BlockedUserNotFound = "blocked user not found"
+)

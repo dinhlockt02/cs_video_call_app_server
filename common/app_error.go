@@ -1,9 +1,17 @@
 package common
 
 import (
-	"errors"
 	"fmt"
+	"github.com/pkg/errors"
 	"net/http"
+)
+
+type Entity string
+
+var (
+	UserEntity    Entity = "User"
+	MeetingEntity Entity = "Meeting"
+	GroupEntity   Entity = "Group"
 )
 
 type AppError struct {
@@ -20,9 +28,9 @@ func (err ValidationError) Error() string {
 	if len(err) == 0 {
 		return ""
 	}
-	rs := "[\n"
+	rs := "["
 	for i := range err {
-		rs += err[i].Error() + "\n"
+		rs += err[i].Error() + ", "
 	}
 	rs += "]"
 	return rs
@@ -48,13 +56,6 @@ func NewErrorResponse(root error, msg, log, key string) *AppError {
 	}
 }
 
-func NewCustomError(root error, msg, key string) *AppError {
-	if root != nil {
-		return NewErrorResponse(root, msg, root.Error(), key)
-	}
-	return NewErrorResponse(errors.New(msg), msg, msg, key)
-}
-
 func (err *AppError) RootError() error {
 	if e, ok := err.RootErr.(*AppError); ok {
 		return e.RootErr
@@ -74,12 +75,12 @@ func ErrInternal(err error) *AppError {
 	return NewFullErrorResponse(http.StatusInternalServerError, err, "internal server error", err.Error(), "ErrInternal")
 }
 
-func ErrEntityNotFound(entity string, err error) *AppError {
+func ErrEntityNotFound(entity Entity, err error) *AppError {
 	return NewFullErrorResponse(http.StatusNotFound, err, fmt.Sprintf("%v not found", entity), err.Error(), "ErrNotfound")
 }
 
 func ErrForbidden(err error) *AppError {
-	return NewFullErrorResponse(http.StatusForbidden, err, fmt.Sprintf("Forbidden Request"), err.Error(), "ErrForbidden")
+	return NewFullErrorResponse(http.StatusForbidden, err, "Forbidden Request", err.Error(), "ErrForbidden")
 }
 
 var ErrInvalidObjectId = errors.New("invalid object id")

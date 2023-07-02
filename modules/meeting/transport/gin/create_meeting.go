@@ -1,7 +1,6 @@
 package meetinggin
 
 import (
-	"errors"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/appcontext"
 	groupbiz "github.com/dinhlockt02/cs_video_call_app_server/modules/group/biz"
@@ -13,6 +12,7 @@ import (
 	meetingstore "github.com/dinhlockt02/cs_video_call_app_server/modules/meeting/store"
 	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 	"net/http"
 	"time"
 )
@@ -30,7 +30,7 @@ func CreateMeeting(appCtx appcontext.AppContext) gin.HandlerFunc {
 		groupId := c.Param("groupId")
 
 		if _, err := common.ToObjectId(groupId); err != nil {
-			panic(common.ErrInvalidRequest(err))
+			panic(common.ErrInvalidRequest(errors.Wrap(err, "invalid group id")))
 		}
 
 		groupStore := groupstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
@@ -39,7 +39,7 @@ func CreateMeeting(appCtx appcontext.AppContext) gin.HandlerFunc {
 			groupStore,
 			requestStore,
 		)
-		getGroupBiz := groupbiz.NewGetGroupBiz(groupRepo)
+		getGroupBiz := groupbiz.NewGetGroupBiz(groupRepo, appCtx.Notification())
 
 		group, err := getGroupBiz.GetById(c.Request.Context(), groupId)
 		if err != nil {

@@ -1,10 +1,5 @@
 package authmodel
 
-import (
-	"errors"
-	"github.com/dinhlockt02/cs_video_call_app_server/common"
-)
-
 type User struct {
 	Id             string `json:"id" bson:"_id"`
 	Email          string `json:"email" bson:"email"`
@@ -16,5 +11,3 @@ type User struct {
 func (User) CollectionName() string {
 	return "users"
 }
-
-var ErrUserNotFound = common.ErrEntityNotFound("User", errors.New("user not found"))

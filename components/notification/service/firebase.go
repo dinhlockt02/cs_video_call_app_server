@@ -46,11 +46,6 @@ func (service firebaseNotificationService) Push(ctx context.Context, token []str
 		Android: &messaging.AndroidConfig{
 			Priority: "high",
 			TTL:      &zeroDuration,
-			//Notification: &messaging.AndroidNotification{
-			//	Title:    title,
-			//	Body:     body,
-			//	ImageURL: *notification.Prep.Image,
-			//},
 		},
 		Notification: &messaging.Notification{
 			Title: title,

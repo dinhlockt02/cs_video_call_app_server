@@ -7,7 +7,7 @@ import (
 	authmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/auth/model"
 	authstore "github.com/dinhlockt02/cs_video_call_app_server/modules/auth/store"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/pkg/errors"
 	"net/http"
 )
 
@@ -17,21 +17,18 @@ func UpdatePassword(appCtx appcontext.AppContext) gin.HandlerFunc {
 		var data authmodel.UpdatePasswordUser
 
 		if err := context.ShouldBind(&data); err != nil {
-			panic(common.ErrInvalidRequest(err))
-			return
+			panic(common.ErrInvalidRequest(errors.Wrap(err, "invalid body data")))
 		}
-		u, _ := context.Get(common.CurrentUser)
-		requester := u.(common.Requester)
-		id, _ := primitive.ObjectIDFromHex(requester.GetId())
 
 		authStore := authstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		biz := authbiz.NewUpdatePasswordBiz(authStore, appCtx.Hasher())
-		err := biz.Update(context.Request.Context(), map[string]interface{}{
-			"_id": id,
-		}, &data)
+
+		u, _ := context.Get(common.CurrentUser)
+		requester := u.(common.Requester)
+		idFilter, _ := common.GetIdFilter(requester.GetId())
+		err := biz.Update(context.Request.Context(), idFilter, &data)
 		if err != nil {
 			panic(err)
-			return
 		}
 		context.JSON(http.StatusOK, gin.H{"data": true})
 	}

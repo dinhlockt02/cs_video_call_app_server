@@ -2,8 +2,9 @@ package groupstore
 
 import (
 	"context"
-	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	groupmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/group/model"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -13,10 +14,11 @@ func (s *mongoStore) UpdateGroup(
 	filter map[string]interface{},
 	updatedGroup *groupmdl.Group,
 ) error {
+	log.Debug().Any("filter", filter).Any("updatedGroup", updatedGroup).Msg("update a group")
 	updatedGroup.Id = nil
-	updateData := bson.D{{
-		"$set", updatedGroup,
-	}}
+	updateData := bson.M{
+		"$set": updatedGroup,
+	}
 	_, err := s.database.
 		Collection(updatedGroup.CollectionName()).
 		UpdateOne(ctx, filter, updateData)
@@ -24,7 +26,7 @@ func (s *mongoStore) UpdateGroup(
 		if err == mongo.ErrNoDocuments {
 			return nil
 		}
-		return common.ErrInternal(err)
+		return errors.Wrap(err, "can not update group")
 	}
 	return nil
 }

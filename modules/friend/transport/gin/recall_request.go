@@ -8,7 +8,6 @@ import (
 	friendstore "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/store"
 	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 )
 
@@ -19,13 +18,6 @@ func RecallRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
 
 		senderId := requester.GetId()
 		receiverId := context.Param("id")
-
-		if !primitive.IsValidObjectID(senderId) {
-			panic(common.ErrInvalidRequest(common.ErrInvalidObjectId))
-		}
-		if !primitive.IsValidObjectID(receiverId) {
-			panic(common.ErrInvalidRequest(common.ErrInvalidObjectId))
-		}
 
 		friendStore := friendstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		requestStore := requeststore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))

@@ -27,24 +27,24 @@ type ActionKey string
 
 const (
 	Accept ActionKey = "accept"
-	Deny             = "deny"
+	Deny   ActionKey = "deny"
 )
 
 type NotificationObjectType string
 
 const (
 	User     NotificationObjectType = "user"
-	CallRoom                        = "call-room"
+	CallRoom NotificationObjectType = "call-room"
 )
 
 type NotificationActionType string
 
 const (
 	AcceptRequest        NotificationActionType = "accept-request"
-	ReceiveFriendRequest                        = "send-friend-request"
-	InComingCall                                = "incoming-call"
-	RejectCall                                  = "reject-call"
-	AbandonCall                                 = "abandon-call"
+	ReceiveFriendRequest NotificationActionType = "send-friend-request"
+	InComingCall         NotificationActionType = "incoming-call"
+	RejectCall           NotificationActionType = "reject-call"
+	AbandonCall          NotificationActionType = "abandon-call"
 )
 
 type Notification struct {

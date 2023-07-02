@@ -8,6 +8,7 @@ import (
 	groupstore "github.com/dinhlockt02/cs_video_call_app_server/modules/group/store"
 	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 )
@@ -18,10 +19,10 @@ func RejectRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
 		requester := u.(common.Requester)
 
 		requesterId := requester.GetId()
-		groupId := context.Param("id")
+		groupId := context.Param("groupId")
 
 		if !primitive.IsValidObjectID(groupId) {
-			panic(common.ErrInvalidRequest(common.ErrInvalidObjectId))
+			panic(common.ErrInvalidRequest(errors.New("invalid group id")))
 		}
 		groupStore := groupstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		requestStore := requeststore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
@@ -29,7 +30,7 @@ func RejectRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
 			groupStore,
 			requestStore,
 		)
-		rejectRequestBiz := groupbiz.NewRejectGroupRequestBiz(groupRepo)
+		rejectRequestBiz := groupbiz.NewRejectGroupRequestBiz(groupRepo, appCtx.Notification())
 		if err := rejectRequestBiz.RejectRequest(context.Request.Context(), requesterId, groupId); err != nil {
 			panic(err)
 		}

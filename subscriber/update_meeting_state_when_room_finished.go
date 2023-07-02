@@ -6,6 +6,7 @@ import (
 	"github.com/dinhlockt02/cs_video_call_app_server/components/appcontext"
 	meetingmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/meeting/model"
 	meetingstore "github.com/dinhlockt02/cs_video_call_app_server/modules/meeting/store"
+	"github.com/pkg/errors"
 	"time"
 )
 
@@ -21,7 +22,7 @@ func UpdateMeetingStateWhenRoomFinished(appCtx appcontext.AppContext, ctx contex
 
 				err := common.AddIdFilter(filter, roomId)
 				if err != nil {
-					panic(err)
+					panic(errors.Wrap(err, "invalid room id"))
 				}
 
 				now := time.Now()
@@ -30,7 +31,7 @@ func UpdateMeetingStateWhenRoomFinished(appCtx appcontext.AppContext, ctx contex
 					TimeEnd: &now,
 				})
 				if err != nil {
-					panic(err)
+					panic(errors.Wrap(err, "can not update meeting"))
 				}
 			}(roomId)
 		}

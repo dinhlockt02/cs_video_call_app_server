@@ -9,6 +9,7 @@ import (
 	devicemodel "github.com/dinhlockt02/cs_video_call_app_server/modules/device/model"
 	devicestore "github.com/dinhlockt02/cs_video_call_app_server/modules/device/store"
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 	"net/http"
 )
 
@@ -26,8 +27,7 @@ func Login(appCtx appcontext.AppContext) gin.HandlerFunc {
 		}
 
 		if err := context.ShouldBind(&body); err != nil {
-			panic(common.ErrInvalidRequest(err))
-			return
+			panic(common.ErrInvalidRequest(errors.Wrap(err, "invalid body data")))
 		}
 
 		authStore := authstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
@@ -36,7 +36,6 @@ func Login(appCtx appcontext.AppContext) gin.HandlerFunc {
 		result, err := biz.Login(context.Request.Context(), &body.Data, &body.Device)
 		if err != nil {
 			panic(err)
-			return
 		}
 		context.JSON(http.StatusOK, gin.H{"data": result})
 	}

@@ -16,12 +16,7 @@ func FindFriend(appCtx appcontext.AppContext) gin.HandlerFunc {
 		friendStore := friendstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		findFriendBiz := friendbiz.NewFindFriendBiz(friendStore)
 
-		filter := map[string]interface{}{}
-		err := common.AddIdFilter(map[string]interface{}{}, requester.GetId())
-		if err != nil {
-			panic(err)
-			return
-		}
+		filter, _ := common.GetIdFilter(requester.GetId())
 		friends, err := findFriendBiz.FindFriend(context.Request.Context(), filter, map[string]interface{}{})
 		if err != nil {
 			panic(err)

@@ -10,7 +10,7 @@ import (
 	userrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/user/repository"
 	userstore "github.com/dinhlockt02/cs_video_call_app_server/modules/user/store"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/pkg/errors"
 	"net/http"
 )
 
@@ -28,7 +28,7 @@ func FindUser(appCtx appcontext.AppContext) gin.HandlerFunc {
 		err := context.ShouldBind(&filter)
 
 		if err != nil {
-			panic(common.ErrInvalidRequest(err))
+			panic(common.ErrInvalidRequest(errors.Wrap(err, "invalid body data")))
 		}
 
 		userStore := userstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
@@ -40,13 +40,7 @@ func FindUser(appCtx appcontext.AppContext) gin.HandlerFunc {
 
 		findUserBiz := userbiz.NewFindUserBiz(findUserRepo)
 
-		id, err := primitive.ObjectIDFromHex(requester.GetId())
-		if err != nil {
-			panic(common.ErrInvalidRequest(err))
-		}
-		user, err := findUserBiz.FindUser(context.Request.Context(), id.Hex(), map[string]interface{}{
-			"email": filter.Email,
-		})
+		user, err := findUserBiz.FindUser(context.Request.Context(), requester.GetId(), userstore.GetEmailFilter(filter.Email))
 		if err != nil {
 			panic(err)
 		}

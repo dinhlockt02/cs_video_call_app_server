@@ -10,7 +10,6 @@ import (
 	userrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/user/repository"
 	userstore "github.com/dinhlockt02/cs_video_call_app_server/modules/user/store"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 )
 
@@ -26,13 +25,11 @@ func GetUser(appCtx appcontext.AppContext) gin.HandlerFunc {
 		u, _ := context.Get(common.CurrentUser)
 		requester := u.(common.Requester)
 
-		id, err := primitive.ObjectIDFromHex(context.Param("id"))
+		idFilter, err := common.GetIdFilter(context.Param("id"))
 		if err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
-		user, err := findUserBiz.FindUser(context.Request.Context(), requester.GetId(), map[string]interface{}{
-			"_id": id,
-		})
+		user, err := findUserBiz.FindUser(context.Request.Context(), requester.GetId(), idFilter)
 		if err != nil {
 			panic(err)
 		}
