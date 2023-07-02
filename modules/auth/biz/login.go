@@ -96,5 +96,5 @@ func (biz *loginBiz) Login(ctx context.Context, data *authmodel.LoginUser, devic
 		RefreshToken:   refreshToken,
 		EmailVerified:  existedUser.EmailVerified,
 		ProfileUpdated: existedUser.ProfileUpdated,
-	}, nil
+	}, err
 }

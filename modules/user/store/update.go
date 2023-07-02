@@ -8,7 +8,7 @@ import (
 )
 
 func (s *mongoStore) Update(ctx context.Context, filter map[string]interface{}, updatedUser *usermodel.UpdateUser) error {
-	update := bson.D{{"$set", updatedUser}}
+	update := bson.E{Key: "$set", Value: updatedUser}
 
 	_, err := s.database.
 		Collection(updatedUser.CollectionName()).

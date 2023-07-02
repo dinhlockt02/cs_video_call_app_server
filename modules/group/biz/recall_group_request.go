@@ -14,8 +14,8 @@ type recallGroupRequestBiz struct {
 	notification notirepo.NotificationRepository
 }
 
-func NewRecallGroupRequestBiz(groupRepo grouprepo.Repository) *recallGroupRequestBiz {
-	return &recallGroupRequestBiz{groupRepo: groupRepo}
+func NewRecallGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *recallGroupRequestBiz {
+	return &recallGroupRequestBiz{groupRepo: groupRepo, notification: notification}
 }
 
 // RecallRequest send a group invitation request to user.
@@ -34,8 +34,11 @@ func (biz *recallGroupRequestBiz) RecallRequest(ctx context.Context, requester s
 	}
 
 	// Delete request
-	filter := make(map[string]interface{})
-	err = common.AddIdFilter(filter, *existedRequest.Id)
+	filter, err := common.GetIdFilter(*existedRequest.Id)
+	if err != nil {
+		return err
+	}
+
 	err = biz.groupRepo.DeleteRequest(ctx, filter)
 	if err != nil {
 		return err

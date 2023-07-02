@@ -19,14 +19,12 @@ func NewAccessToken(appCtx appcontext.AppContext) gin.HandlerFunc {
 
 		if err := context.ShouldBind(&body); err != nil {
 			panic(common.ErrInvalidRequest(err))
-			return
 		}
 
 		biz := authbiz.NewAccessTokenBiz(appCtx.TokenProvider())
 		result, err := biz.New(context.Request.Context(), body.RefreshToken)
 		if err != nil {
 			panic(err)
-			return
 		}
 		context.JSON(http.StatusOK, gin.H{"data": result})
 	}

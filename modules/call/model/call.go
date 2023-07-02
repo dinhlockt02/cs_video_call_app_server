@@ -9,9 +9,9 @@ type Status string
 
 const (
 	Ended   Status = "ended"
-	Missed         = "missed"
-	Reject         = "reject"
-	OnGoing        = "on-going"
+	Missed  Status = "missed"
+	Reject  Status = "reject"
+	OnGoing Status = "on-going"
 )
 
 type User struct {
@@ -23,7 +23,7 @@ type User struct {
 type Call struct {
 	common.MongoId `json:",inline" bson:",inline"`
 	Caller         *User      `bson:"caller" json:"caller"`
-	Callee         *User      `bson:"callee" bson:"callee"`
+	Callee         *User      `bson:"callee" json:"callee"`
 	Status         Status     `bson:"status" json:"status"`
 	CalledAt       *time.Time `bson:"called_at" json:"called_at"`
 	CallRoom       string     `bson:"call_room" json:"call_room"`

@@ -14,8 +14,8 @@ type getGroupBiz struct {
 	notification notirepo.NotificationRepository
 }
 
-func NewGetGroupBiz(groupRepo grouprepo.Repository) *getGroupBiz {
-	return &getGroupBiz{groupRepo: groupRepo}
+func NewGetGroupBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *getGroupBiz {
+	return &getGroupBiz{groupRepo: groupRepo, notification: notification}
 }
 
 // GetById returns a group by id.
@@ -27,6 +27,9 @@ func (biz *getGroupBiz) GetById(ctx context.Context, groupId string) (*groupmdl.
 		return nil, common.ErrInvalidRequest(errors.New("invalid group id"))
 	}
 	group, err := biz.groupRepo.FindGroup(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
 	if group == nil {
 		return nil, common.ErrEntityNotFound("Group", errors.New("group not found"))
 	}

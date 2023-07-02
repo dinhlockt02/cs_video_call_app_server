@@ -43,8 +43,14 @@ func (biz *createNewCallBiz) CreateNewCall(ctx context.Context, callerId string,
 
 	// Find Callee
 	filter = make(map[string]interface{})
-	_ = common.AddIdFilter(filter, calleeId)
+	err = common.AddIdFilter(filter, calleeId)
+	if err != nil {
+		return err
+	}
 	callee, err := biz.callRepo.FindUser(ctx, filter)
+	if err != nil {
+		return err
+	}
 	if callee == nil {
 		return common.ErrEntityNotFound("User", errors.New("callee not found"))
 	}

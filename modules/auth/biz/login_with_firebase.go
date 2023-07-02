@@ -79,7 +79,7 @@ func (biz *loginWithFirebaseBiz) LoginWithFirebase(ctx context.Context, idToken 
 		if err != nil {
 			return nil, err
 		}
-	} else if existedUser != nil && existedUser.EmailVerified == false {
+	} else if existedUser != nil && !existedUser.EmailVerified {
 
 		err = biz.authStore.DeleteUser(ctx, map[string]interface{}{
 			"email": *email,
@@ -125,5 +125,5 @@ func (biz *loginWithFirebaseBiz) LoginWithFirebase(ctx context.Context, idToken 
 		RefreshToken:   refreshToken,
 		EmailVerified:  existedUser.EmailVerified,
 		ProfileUpdated: existedUser.ProfileUpdated,
-	}, nil
+	}, err
 }

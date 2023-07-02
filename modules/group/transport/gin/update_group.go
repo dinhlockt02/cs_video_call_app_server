@@ -35,7 +35,7 @@ func UpdateGroup(appCtx appcontext.AppContext) gin.HandlerFunc {
 			groupStore,
 			requestStore,
 		)
-		getGroupBiz := groupbiz.NewGetGroupBiz(groupRepo)
+		getGroupBiz := groupbiz.NewGetGroupBiz(groupRepo, appCtx.Notification())
 
 		group, err := getGroupBiz.GetById(c.Request.Context(), groupId)
 		if err != nil {
@@ -53,8 +53,10 @@ func UpdateGroup(appCtx appcontext.AppContext) gin.HandlerFunc {
 			panic(common.ErrForbidden(errors.New("user is not a member of group")))
 		}
 
-		groupFilter := map[string]interface{}{}
-		common.AddIdFilter(groupFilter, groupId)
+		groupFilter, err := common.GetIdFilter(groupId)
+		if err != nil {
+			panic(common.ErrInvalidRequest(err))
+		}
 
 		err = groupbiz.NewUpdateGroupBiz(groupRepo).Update(c.Request.Context(), groupFilter, data)
 		if err != nil {

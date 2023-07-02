@@ -27,7 +27,6 @@ func Register(appCtx appcontext.AppContext) gin.HandlerFunc {
 
 		if err := context.ShouldBind(&body); err != nil {
 			panic(common.ErrInvalidRequest(err))
-			return
 		}
 
 		deviceStore := devicestore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
@@ -36,7 +35,6 @@ func Register(appCtx appcontext.AppContext) gin.HandlerFunc {
 		result, err := biz.Register(context.Request.Context(), &body.Data, &body.Device)
 		if err != nil {
 			panic(err)
-			return
 		}
 		context.JSON(http.StatusOK, gin.H{"data": result})
 	}

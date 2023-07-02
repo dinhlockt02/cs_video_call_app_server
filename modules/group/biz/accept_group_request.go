@@ -15,8 +15,8 @@ type acceptGroupRequestBiz struct {
 	notification notirepo.NotificationRepository
 }
 
-func NewAcceptGroupRequestBiz(groupRepo grouprepo.Repository) *acceptGroupRequestBiz {
-	return &acceptGroupRequestBiz{groupRepo: groupRepo}
+func NewAcceptGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *acceptGroupRequestBiz {
+	return &acceptGroupRequestBiz{groupRepo: groupRepo, notification: notification}
 }
 
 // AcceptRequest send a group invitation request to user.
@@ -36,6 +36,9 @@ func (biz *acceptGroupRequestBiz) AcceptRequest(ctx context.Context, requesterId
 	// Find sender
 	filter := make(map[string]interface{})
 	err = common.AddIdFilter(filter, requesterId)
+	if err != nil {
+		return err
+	}
 	requester, err := biz.groupRepo.FindUser(ctx, filter)
 	if err != nil {
 		return err
@@ -47,7 +50,13 @@ func (biz *acceptGroupRequestBiz) AcceptRequest(ctx context.Context, requesterId
 	// Find Group
 	filter = make(map[string]interface{})
 	err = common.AddIdFilter(filter, groupId)
+	if err != nil {
+		return err
+	}
 	group, err := biz.groupRepo.FindGroup(ctx, filter)
+	if err != nil {
+		return err
+	}
 	if group == nil {
 		return common.ErrEntityNotFound("Group", errors.New("group not found"))
 	}
@@ -78,8 +87,10 @@ func (biz *acceptGroupRequestBiz) AcceptRequest(ctx context.Context, requesterId
 	}
 
 	// Delete request
-	filter = make(map[string]interface{})
-	err = common.AddIdFilter(filter, *existedRequest.Id)
+	filter, err = common.GetIdFilter(*existedRequest.Id)
+	if err != nil {
+		return err
+	}
 	err = biz.groupRepo.DeleteRequest(ctx, filter)
 	if err != nil {
 		return err

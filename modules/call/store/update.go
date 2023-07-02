@@ -9,7 +9,7 @@ import (
 func (s *mongoStore) Update(ctx context.Context, filter map[string]interface{}, data *callmdl.Call) error {
 	id := data.Id
 	data.Id = nil
-	update := bson.D{{"$set", data}}
+	update := bson.M{"$set": data}
 
 	_, err := s.database.Collection(data.CollectionName()).UpdateOne(ctx, filter, update)
 	if err != nil {

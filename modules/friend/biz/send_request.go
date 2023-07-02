@@ -38,8 +38,10 @@ func (biz *sendRequestBiz) SendRequest(ctx context.Context, senderId string, rec
 	}
 
 	// Find sender
-	filter := make(map[string]interface{})
-	err = common.AddIdFilter(filter, senderId)
+	filter, err := common.GetIdFilter(senderId)
+	if err != nil {
+		return err
+	}
 	sender, err := biz.friendRepo.FindUser(ctx, filter)
 	if err != nil {
 		return err
@@ -49,9 +51,14 @@ func (biz *sendRequestBiz) SendRequest(ctx context.Context, senderId string, rec
 	}
 
 	// Find Receiver
-	filter = make(map[string]interface{})
-	err = common.AddIdFilter(filter, receiverId)
+	filter, err = common.GetIdFilter(receiverId)
+	if err != nil {
+		return err
+	}
 	receiver, err := biz.friendRepo.FindUser(ctx, filter)
+	if err != nil {
+		return err
+	}
 	if receiver == nil {
 		return common.ErrEntityNotFound("User", errors.New("receiver not found"))
 	}

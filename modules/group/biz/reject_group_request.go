@@ -14,8 +14,8 @@ type rejectGroupRequestBiz struct {
 	notification notirepo.NotificationRepository
 }
 
-func NewRejectGroupRequestBiz(groupRepo grouprepo.Repository) *rejectGroupRequestBiz {
-	return &rejectGroupRequestBiz{groupRepo: groupRepo}
+func NewRejectGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *rejectGroupRequestBiz {
+	return &rejectGroupRequestBiz{groupRepo: groupRepo, notification: notification}
 }
 
 // RejectRequest send a group invitation request to user.
@@ -33,8 +33,10 @@ func (biz *rejectGroupRequestBiz) RejectRequest(ctx context.Context, requesterId
 	}
 
 	// Delete request
-	filter := make(map[string]interface{})
-	err = common.AddIdFilter(filter, *existedRequest.Id)
+	filter, err := common.GetIdFilter(*existedRequest.Id)
+	if err != nil {
+		return err
+	}
 	err = biz.groupRepo.DeleteRequest(ctx, filter)
 	if err != nil {
 		return err

@@ -39,7 +39,7 @@ func CreateMeeting(appCtx appcontext.AppContext) gin.HandlerFunc {
 			groupStore,
 			requestStore,
 		)
-		getGroupBiz := groupbiz.NewGetGroupBiz(groupRepo)
+		getGroupBiz := groupbiz.NewGetGroupBiz(groupRepo, appCtx.Notification())
 
 		group, err := getGroupBiz.GetById(c.Request.Context(), groupId)
 		if err != nil {

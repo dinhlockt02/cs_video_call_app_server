@@ -24,8 +24,8 @@ func VerifyEmail(appCtx appcontext.AppContext) gin.HandlerFunc {
 		)).Verify(context.Request.Context(), code)
 		if err != nil {
 			panic(err)
-			return
 		}
-		context.JSON(http.StatusOK, gin.H{"data": true})
+		// TODO: render an html page
+		context.JSONP(http.StatusOK, gin.H{"data": true})
 	}
 }

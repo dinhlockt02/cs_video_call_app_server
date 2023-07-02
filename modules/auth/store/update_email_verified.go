@@ -12,7 +12,7 @@ func (s *mongoStore) UpdateEmailVerified(ctx context.Context, filter map[string]
 	var updateEmailVerifiedUser authmodel.EmailVerifiedUser
 	updateEmailVerifiedUser.Process()
 
-	update := bson.D{{"$set", updateEmailVerifiedUser}}
+	update := bson.E{Key: "$set", Value: updateEmailVerifiedUser}
 
 	_, err := s.database.
 		Collection(updateEmailVerifiedUser.CollectionName()).

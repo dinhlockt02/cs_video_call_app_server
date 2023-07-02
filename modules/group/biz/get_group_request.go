@@ -15,8 +15,8 @@ type getGroupRequestBiz struct {
 	notification notirepo.NotificationRepository
 }
 
-func NewGetGroupRequestBiz(groupRepo grouprepo.Repository) *getGroupRequestBiz {
-	return &getGroupRequestBiz{groupRepo: groupRepo}
+func NewGetGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *getGroupRequestBiz {
+	return &getGroupRequestBiz{groupRepo: groupRepo, notification: notification}
 }
 
 // GetRequest send a group invitation request to user.

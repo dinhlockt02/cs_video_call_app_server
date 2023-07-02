@@ -28,7 +28,6 @@ func SendVerifyEmail(appCtx appcontext.AppContext) gin.HandlerFunc {
 			Send(context.Request.Context(), requester.GetId(), false)
 		if err != nil {
 			panic(err)
-			return
 		}
 		context.JSON(http.StatusOK, gin.H{"data": true})
 	}

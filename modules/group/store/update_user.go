@@ -10,9 +10,9 @@ import (
 
 func (s *mongoStore) UpdateUser(ctx context.Context, filter map[string]interface{}, updatedUser *groupmdl.User) error {
 	updatedUser.Id = nil
-	updateData := bson.D{{
-		"$set", updatedUser,
-	}}
+	updateData := bson.E{
+		Key: "$set", Value: updatedUser,
+	}
 	_, err := s.database.
 		Collection(updatedUser.CollectionName()).
 		UpdateOne(ctx, filter, updateData)

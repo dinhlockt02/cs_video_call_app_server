@@ -10,7 +10,7 @@ type MeetingStatus string
 
 const (
 	OnGoing MeetingStatus = "on-going"
-	Ended                 = "ended"
+	Ended   MeetingStatus = "ended"
 )
 
 type Meeting struct {

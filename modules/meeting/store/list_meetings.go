@@ -13,7 +13,7 @@ func (s *mongoStore) ListMeeting(ctx context.Context, filter map[string]interfac
 
 	findOptions := options.Find()
 	// Sort by `price` field descending
-	findOptions.SetSort(bson.D{{"time_start", -1}})
+	findOptions.SetSort(bson.E{Key: "time_start", Value: -1})
 
 	cursor, err := s.database.
 		Collection(meetingmodel.Meeting{}.CollectionName()).

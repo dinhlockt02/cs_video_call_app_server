@@ -42,18 +42,18 @@ func CreateGroup(appCtx appcontext.AppContext) gin.HandlerFunc {
 		go func() {
 			defer common.Recovery()
 			wg := sync.WaitGroup{}
-			sendGroupRequestBiz := groupbiz.NewSendGroupRequestBiz(groupRepo)
+			sendGroupRequestBiz := groupbiz.NewSendGroupRequestBiz(groupRepo, appCtx.Notification())
 			for _, member := range invitedMembers {
 				if member != requester.GetId() {
-					go func() {
-						wg.Add(1)
+					wg.Add(1)
+					go func(mem string) {
 						defer wg.Done()
 						defer common.Recovery()
-						err := sendGroupRequestBiz.SendRequest(context.Background(), requester.GetId(), member, data)
+						err := sendGroupRequestBiz.SendRequest(context.Background(), requester.GetId(), mem, data)
 						if err != nil {
 							log.Error().Msgf("%v\n", err)
 						}
-					}()
+					}(member)
 				}
 			}
 			wg.Wait()

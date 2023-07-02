@@ -12,11 +12,11 @@ type listGroupBiz struct {
 	groupRepo grouprepo.Repository
 }
 
-func NewListGroupBiz(groupRepo grouprepo.Repository) *createGroupBiz {
-	return &createGroupBiz{groupRepo: groupRepo}
+func NewListGroupBiz(groupRepo grouprepo.Repository) *listGroupBiz {
+	return &listGroupBiz{groupRepo: groupRepo}
 }
 
-func (biz *createGroupBiz) List(ctx context.Context, requesterId string, groupFilter map[string]interface{}) ([]groupmdl.Group, error) {
+func (biz *listGroupBiz) List(ctx context.Context, requesterId string, groupFilter map[string]interface{}) ([]groupmdl.Group, error) {
 
 	filter := make(map[string]interface{})
 	_ = common.AddIdFilter(filter, requesterId)

@@ -38,20 +38,29 @@ func (biz *acceptRequestBiz) AcceptRequest(ctx context.Context, senderId string,
 	}
 
 	// Find sender
-	filter := make(map[string]interface{})
-	err = common.AddIdFilter(filter, senderId)
-	sender, err := biz.friendRepository.FindUser(ctx, filter)
+	filter, err := common.GetIdFilter(senderId)
 	if err != nil {
 		return err
 	}
+	sender, err := biz.friendRepository.FindUser(ctx, filter)
+
+	if err != nil {
+		return err
+	}
+
 	if sender == nil {
 		return common.ErrEntityNotFound("User", errors.New("sender not found"))
 	}
 
 	// Find Receiver
-	filter = make(map[string]interface{})
-	err = common.AddIdFilter(filter, receiverId)
+	filter, err = common.GetIdFilter(receiverId)
+	if err != nil {
+		return err
+	}
 	receiver, err := biz.friendRepository.FindUser(ctx, filter)
+	if err != nil {
+		return err
+	}
 	if receiver == nil {
 		return common.ErrEntityNotFound("User", errors.New("receiver not found"))
 	}
@@ -82,8 +91,10 @@ func (biz *acceptRequestBiz) AcceptRequest(ctx context.Context, senderId string,
 	}
 
 	// Delete request
-	filter = make(map[string]interface{})
-	err = common.AddIdFilter(filter, *existedRequest.Id)
+	filter, err = common.GetIdFilter(*existedRequest.Id)
+	if err != nil {
+		return err
+	}
 	err = biz.friendRepository.DeleteRequest(ctx, filter)
 	if err != nil {
 		return err

@@ -8,7 +8,7 @@ import (
 )
 
 func (s *mongoStore) Update(ctx context.Context, filter map[string]interface{}, passwordUser *authmodel.UpdatePasswordUser) error {
-	update := bson.D{{"$set", passwordUser}}
+	update := bson.E{Key: "$set", Value: passwordUser}
 
 	_, err := s.database.
 		Collection(passwordUser.CollectionName()).

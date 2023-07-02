@@ -11,10 +11,10 @@ type getGroupMembersBiz struct {
 	groupRepo grouprepo.Repository
 }
 
-func NewGetGroupMembersBiz(groupRepo grouprepo.Repository) *getGroupBiz {
-	return &getGroupBiz{groupRepo: groupRepo}
+func NewGetGroupMembersBiz(groupRepo grouprepo.Repository) *getGroupMembersBiz {
+	return &getGroupMembersBiz{groupRepo: groupRepo}
 }
 
-func (biz *getGroupBiz) GetGroupUsers(ctx context.Context, userIds ...string) ([]groupmdl.User, error) {
+func (biz *getGroupMembersBiz) GetGroupUsers(ctx context.Context, userIds ...string) ([]groupmdl.User, error) {
 	return biz.groupRepo.FindUsers(ctx, groupstore.GetUserIdInIdListFilter(userIds...))
 }

@@ -48,6 +48,9 @@ func (repo *findUserRepo) FindUser(ctx context.Context, requesterId string, filt
 	}
 
 	requester, err := repo.friendRepo.FindUser(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
 
 	requesterFriendMap := make(map[string]interface{}, len(requester.Friends))
 

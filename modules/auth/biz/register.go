@@ -92,5 +92,5 @@ func (biz *registerBiz) Register(ctx context.Context, data *authmodel.RegisterUs
 	return &authmodel.AuthToken{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
-	}, nil
+	}, err
 }

@@ -7,8 +7,8 @@ import (
 )
 
 type LoginUser struct {
-	Email    string `json:"email" bson:"email"`
-	Password string `json:"password" json:"password"`
+	Email    string `bson:"email" json:"email"`
+	Password string `bson:"password" json:"password"`
 }
 
 func (LoginUser) CollectionName() string {

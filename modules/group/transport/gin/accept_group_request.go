@@ -18,7 +18,7 @@ func AcceptRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
 		requester := u.(common.Requester)
 
 		requesterId := requester.GetId()
-		groupId := context.Param("id")
+		groupId := context.Param("groupId")
 
 		if !primitive.IsValidObjectID(groupId) {
 			panic(common.ErrInvalidRequest(common.ErrInvalidObjectId))
@@ -29,7 +29,7 @@ func AcceptRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
 			groupStore,
 			requestStore,
 		)
-		acceptRequestBiz := groupbiz.NewAcceptGroupRequestBiz(groupRepo)
+		acceptRequestBiz := groupbiz.NewAcceptGroupRequestBiz(groupRepo, appCtx.Notification())
 		if err := acceptRequestBiz.AcceptRequest(context.Request.Context(), requesterId, groupId); err != nil {
 			panic(err)
 		}

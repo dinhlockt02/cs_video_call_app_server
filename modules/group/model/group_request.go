@@ -6,7 +6,7 @@ type Filter string
 
 const (
 	Sent    Filter = "sent"
-	Receive        = "receive"
+	Receive Filter = "receive"
 )
 
 type GroupRequest struct {

@@ -24,7 +24,6 @@ func Logout(appCtx appcontext.AppContext) gin.HandlerFunc {
 		})
 		if err != nil {
 			panic(err)
-			return
 		}
 		context.JSON(http.StatusOK, gin.H{"data": true})
 	}

@@ -1,8 +1,8 @@
 package common
 
 import (
-	"errors"
 	"fmt"
+	"github.com/pkg/errors"
 	"net/http"
 )
 
@@ -79,7 +79,7 @@ func ErrEntityNotFound(entity string, err error) *AppError {
 }
 
 func ErrForbidden(err error) *AppError {
-	return NewFullErrorResponse(http.StatusForbidden, err, fmt.Sprintf("Forbidden Request"), err.Error(), "ErrForbidden")
+	return NewFullErrorResponse(http.StatusForbidden, err, "Forbidden Request", err.Error(), "ErrForbidden")
 }
 
 var ErrInvalidObjectId = errors.New("invalid object id")

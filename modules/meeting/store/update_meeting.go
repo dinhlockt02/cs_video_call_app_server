@@ -12,7 +12,7 @@ func (s *mongoStore) UpdateMeeting(
 	filter map[string]interface{},
 	updatedMeeting *meetingmodel.UpdateMeeting,
 ) error {
-	data := bson.D{{"$set", updatedMeeting}}
+	data := bson.E{Key: "$set", Value: updatedMeeting}
 	_, err := s.database.Collection(updatedMeeting.CollectionName()).UpdateOne(ctx, filter, data)
 	if err != nil {
 		return common.ErrInternal(err)

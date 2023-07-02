@@ -20,7 +20,6 @@ func FindFriend(appCtx appcontext.AppContext) gin.HandlerFunc {
 		err := common.AddIdFilter(map[string]interface{}{}, requester.GetId())
 		if err != nil {
 			panic(err)
-			return
 		}
 		friends, err := findFriendBiz.FindFriend(context.Request.Context(), filter, map[string]interface{}{})
 		if err != nil {

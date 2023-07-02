@@ -37,7 +37,7 @@ func RecallRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
 			groupStore,
 			requestStore,
 		)
-		recallRequestBiz := groupbiz.NewRecallGroupRequestBiz(groupRepo)
+		recallRequestBiz := groupbiz.NewRecallGroupRequestBiz(groupRepo, appCtx.Notification())
 		if err := recallRequestBiz.RecallRequest(context.Request.Context(), requesterId, friendId, groupId); err != nil {
 			panic(err)
 		}

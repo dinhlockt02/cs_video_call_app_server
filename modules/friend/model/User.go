@@ -8,11 +8,11 @@ type Relation string
 
 const (
 	Self     Relation = "self"
-	Friend            = "friend"
-	Received          = "received"
-	Sent              = "sent"
-	Blocked           = "blocked"
-	Non               = "non"
+	Friend   Relation = "friend"
+	Received Relation = "received"
+	Sent     Relation = "sent"
+	Blocked  Relation = "blocked"
+	Non      Relation = "non"
 )
 
 type User struct {

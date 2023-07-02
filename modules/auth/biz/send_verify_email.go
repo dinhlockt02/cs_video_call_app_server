@@ -59,7 +59,7 @@ func (biz *sendVerifyEmail) Send(ctx context.Context, receiver_id string, isConc
 		go func() {
 			err = biz.mailer.Send(authmodel.VerifyEmailTitle, receiver.Email, "", authmodel.VerifyEmailBody(link))
 			if err != nil {
-				log.Error().Msg(err.(error).Error())
+				log.Error().Err(err).Stack().Msg("Send email failed")
 			}
 		}()
 	} else {

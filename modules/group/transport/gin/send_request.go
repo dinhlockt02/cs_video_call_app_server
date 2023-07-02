@@ -34,14 +34,14 @@ func SendGroupRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
 			requestStore,
 		)
 
-		getGroupBiz := groupbiz.NewGetGroupBiz(groupRepo)
+		getGroupBiz := groupbiz.NewGetGroupBiz(groupRepo, appCtx.Notification())
 
 		group, err := getGroupBiz.GetById(context.Background(), groupId)
 		if err != nil {
 			panic(err)
 		}
 
-		sendGroupRequestBiz := groupbiz.NewSendGroupRequestBiz(groupRepo)
+		sendGroupRequestBiz := groupbiz.NewSendGroupRequestBiz(groupRepo, appCtx.Notification())
 		err = sendGroupRequestBiz.SendRequest(context.Background(), requester.GetId(), friendId, group)
 		if err != nil {
 			panic(err)

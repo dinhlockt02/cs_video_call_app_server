@@ -17,8 +17,8 @@ type sendGroupRequestBiz struct {
 	notification notirepo.NotificationRepository
 }
 
-func NewSendGroupRequestBiz(groupRepo grouprepo.Repository) *sendGroupRequestBiz {
-	return &sendGroupRequestBiz{groupRepo: groupRepo}
+func NewSendGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *sendGroupRequestBiz {
+	return &sendGroupRequestBiz{groupRepo: groupRepo, notification: notification}
 }
 
 // SendRequest send a group invitation request to user.
@@ -39,8 +39,10 @@ func (biz *sendGroupRequestBiz) SendRequest(ctx context.Context, requester strin
 	}
 
 	// Find sender
-	filter := make(map[string]interface{})
-	err = common.AddIdFilter(filter, requester)
+	filter, err := common.GetIdFilter(requester)
+	if err != nil {
+		return err
+	}
 	sender, err := biz.groupRepo.FindUser(ctx, filter)
 	if err != nil {
 		return err
@@ -50,9 +52,14 @@ func (biz *sendGroupRequestBiz) SendRequest(ctx context.Context, requester strin
 	}
 
 	// Find Receiver
-	filter = make(map[string]interface{})
-	err = common.AddIdFilter(filter, user)
+	filter, err = common.GetIdFilter(user)
+	if err != nil {
+		return err
+	}
 	receiver, err := biz.groupRepo.FindUser(ctx, filter)
+	if err != nil {
+		return err
+	}
 	if receiver == nil {
 		return common.ErrEntityNotFound("User", errors.New("receiver not found"))
 	}

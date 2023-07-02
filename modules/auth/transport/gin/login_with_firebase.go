@@ -25,7 +25,6 @@ func LoginWithFirebase(appCtx appcontext.AppContext) gin.HandlerFunc {
 
 		if err := context.ShouldBind(&body); err != nil {
 			panic(common.ErrInvalidRequest(err))
-			return
 		}
 
 		deviceStore := devicestore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
@@ -35,7 +34,6 @@ func LoginWithFirebase(appCtx appcontext.AppContext) gin.HandlerFunc {
 
 		if err != nil {
 			panic(err)
-			return
 		}
 		context.JSON(http.StatusOK, gin.H{"data": result})
 	}

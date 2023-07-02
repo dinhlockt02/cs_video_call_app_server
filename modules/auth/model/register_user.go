@@ -8,9 +8,9 @@ import (
 )
 
 type RegisterUser struct {
-	common.MongoId        `bson:"inline"`
-	common.MongoCreatedAt `bson:"inline" json:"inline"`
-	common.MongoUpdatedAt `bson:"inline" json:"inline"`
+	common.MongoId        `bson:",inline"`
+	common.MongoCreatedAt `bson:",inline" json:",inline"`
+	common.MongoUpdatedAt `bson:",inline" json:",inline"`
 	Email                 string `json:"email" bson:"email"`
 	Password              string `json:"password" bson:"password"`
 	EmailVerified         bool   `json:"email_verified" bson:"email_verified"`

@@ -18,7 +18,6 @@ func UpdatePassword(appCtx appcontext.AppContext) gin.HandlerFunc {
 
 		if err := context.ShouldBind(&data); err != nil {
 			panic(common.ErrInvalidRequest(err))
-			return
 		}
 		u, _ := context.Get(common.CurrentUser)
 		requester := u.(common.Requester)
@@ -31,7 +30,6 @@ func UpdatePassword(appCtx appcontext.AppContext) gin.HandlerFunc {
 		}, &data)
 		if err != nil {
 			panic(err)
-			return
 		}
 		context.JSON(http.StatusOK, gin.H{"data": true})
 	}

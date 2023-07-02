@@ -27,7 +27,6 @@ func Login(appCtx appcontext.AppContext) gin.HandlerFunc {
 
 		if err := context.ShouldBind(&body); err != nil {
 			panic(common.ErrInvalidRequest(err))
-			return
 		}
 
 		authStore := authstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
@@ -36,7 +35,6 @@ func Login(appCtx appcontext.AppContext) gin.HandlerFunc {
 		result, err := biz.Login(context.Request.Context(), &body.Data, &body.Device)
 		if err != nil {
 			panic(err)
-			return
 		}
 		context.JSON(http.StatusOK, gin.H{"data": result})
 	}

@@ -14,9 +14,9 @@ func (s *mongoStore) UpdateGroup(
 	updatedGroup *groupmdl.Group,
 ) error {
 	updatedGroup.Id = nil
-	updateData := bson.D{{
-		"$set", updatedGroup,
-	}}
+	updateData := bson.E{
+		Key: "$set", Value: updatedGroup,
+	}
 	_, err := s.database.
 		Collection(updatedGroup.CollectionName()).
 		UpdateOne(ctx, filter, updateData)
