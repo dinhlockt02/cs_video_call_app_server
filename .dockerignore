@@ -36,3 +36,8 @@ service-account-key.json
 .config/
 
 .git/
+
+.github/
+api-docs/
+.golangci.yml
+
