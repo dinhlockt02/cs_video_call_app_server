@@ -15,7 +15,8 @@ func GetDevices(appCtx appcontext.AppContext) gin.HandlerFunc {
 		requester := u.(common.Requester)
 
 		deviceStore := devicestore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
-		devices, err := devicebiz.NewGetDevicesBiz(deviceStore).Get(context.Request.Context(), devicestore.GetUserIdFilter(requester.GetId()))
+		devices, err := devicebiz.NewGetDevicesBiz(deviceStore).
+			Get(context.Request.Context(), devicestore.GetUserIdFilter(requester.GetId()))
 		if err != nil {
 			panic(err)
 		}
