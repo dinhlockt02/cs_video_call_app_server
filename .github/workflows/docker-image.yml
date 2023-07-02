@@ -27,5 +27,5 @@ jobs:
         with:
           context: .
           push: true
-          platform: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64
           tags: dinhlockt02/cs_video_call_app_server:latest
