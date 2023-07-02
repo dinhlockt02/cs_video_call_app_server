@@ -10,17 +10,17 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type recallGroupRequestBiz struct {
+type RecallGroupRequestBiz struct {
 	groupRepo    grouprepo.Repository
 	notification notirepo.NotificationRepository
 }
 
-func NewRecallGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *recallGroupRequestBiz {
-	return &recallGroupRequestBiz{groupRepo: groupRepo, notification: notification}
+func NewRecallGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *RecallGroupRequestBiz {
+	return &RecallGroupRequestBiz{groupRepo: groupRepo, notification: notification}
 }
 
 // RecallRequest send a group invitation request to user.
-func (biz *recallGroupRequestBiz) RecallRequest(ctx context.Context, requesterId string, user string, groupId string) error {
+func (biz *RecallGroupRequestBiz) RecallRequest(ctx context.Context, requesterId string, user string, groupId string) error {
 	log.Debug().Str("requesterId", requesterId).Str("user", user).Str("groupId", groupId).Msg("recall request")
 	// Find exists request
 	senderFilter := requeststore.GetRequestSenderIdFilter(requesterId)

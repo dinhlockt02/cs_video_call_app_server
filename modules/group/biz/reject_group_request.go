@@ -9,17 +9,17 @@ import (
 	"github.com/pkg/errors"
 )
 
-type rejectGroupRequestBiz struct {
+type RejectGroupRequestBiz struct {
 	groupRepo    grouprepo.Repository
 	notification notirepo.NotificationRepository
 }
 
-func NewRejectGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *rejectGroupRequestBiz {
-	return &rejectGroupRequestBiz{groupRepo: groupRepo, notification: notification}
+func NewRejectGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *RejectGroupRequestBiz {
+	return &RejectGroupRequestBiz{groupRepo: groupRepo, notification: notification}
 }
 
 // RejectRequest send a group invitation request to user.
-func (biz *rejectGroupRequestBiz) RejectRequest(ctx context.Context, requesterId string, groupId string) error {
+func (biz *RejectGroupRequestBiz) RejectRequest(ctx context.Context, requesterId string, groupId string) error {
 	// Find exists request
 	requesterFilter := requeststore.GetRequestReceiverIdFilter(requesterId)
 	groupFilter := requeststore.GetRequestGroupIdFilter(groupId)

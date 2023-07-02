@@ -11,7 +11,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type joinMeetingBiz struct {
+type JoinMeetingBiz struct {
 	meetingRepo    meetingrepo.Repository
 	livekitService lksv.LiveKitService
 }
@@ -19,14 +19,14 @@ type joinMeetingBiz struct {
 func NewJoinMeetingBiz(
 	meetingRepo meetingrepo.Repository,
 	livekitService lksv.LiveKitService,
-) *joinMeetingBiz {
-	return &joinMeetingBiz{
+) *JoinMeetingBiz {
+	return &JoinMeetingBiz{
 		meetingRepo:    meetingRepo,
 		livekitService: livekitService,
 	}
 }
 
-func (biz *joinMeetingBiz) Join(ctx context.Context, requester, groupId, meetingId string) (string, error) {
+func (biz *JoinMeetingBiz) Join(ctx context.Context, requester, groupId, meetingId string) (string, error) {
 	log.Debug().Str("requester", requester).
 		Str("groupId", groupId).
 		Str("meetingId", meetingId).

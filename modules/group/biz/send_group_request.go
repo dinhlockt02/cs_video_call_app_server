@@ -12,17 +12,17 @@ import (
 	"github.com/pkg/errors"
 )
 
-type sendGroupRequestBiz struct {
+type SendGroupRequestBiz struct {
 	groupRepo    grouprepo.Repository
 	notification notirepo.NotificationRepository
 }
 
-func NewSendGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *sendGroupRequestBiz {
-	return &sendGroupRequestBiz{groupRepo: groupRepo, notification: notification}
+func NewSendGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *SendGroupRequestBiz {
+	return &SendGroupRequestBiz{groupRepo: groupRepo, notification: notification}
 }
 
 // SendRequest send a group invitation request to user.
-func (biz *sendGroupRequestBiz) SendRequest(ctx context.Context, requesterId string, user string, group *groupmdl.Group) error {
+func (biz *SendGroupRequestBiz) SendRequest(ctx context.Context, requesterId string, user string, group *groupmdl.Group) error {
 
 	// TODO: Allow send request only if requester is a member of group
 

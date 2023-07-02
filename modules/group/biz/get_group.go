@@ -10,17 +10,17 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type getGroupBiz struct {
+type GetGroupBiz struct {
 	groupRepo    grouprepo.Repository
 	notification notirepo.NotificationRepository
 }
 
-func NewGetGroupBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *getGroupBiz {
-	return &getGroupBiz{groupRepo: groupRepo, notification: notification}
+func NewGetGroupBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *GetGroupBiz {
+	return &GetGroupBiz{groupRepo: groupRepo, notification: notification}
 }
 
 // GetById returns a group by id.
-func (biz *getGroupBiz) GetById(ctx context.Context, groupId string) (*groupmdl.Group, error) {
+func (biz *GetGroupBiz) GetById(ctx context.Context, groupId string) (*groupmdl.Group, error) {
 	log.Debug().Str("groupId", groupId).Msg("get group by id")
 	// Find Group
 	filter, err := common.GetIdFilter(groupId)

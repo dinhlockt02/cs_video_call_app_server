@@ -56,13 +56,6 @@ func NewErrorResponse(root error, msg, log, key string) *AppError {
 	}
 }
 
-func NewCustomError(root error, msg, key string) *AppError {
-	if root != nil {
-		return NewErrorResponse(root, msg, root.Error(), key)
-	}
-	return NewErrorResponse(errors.New(msg), msg, msg, key)
-}
-
 func (err *AppError) RootError() error {
 	if e, ok := err.RootErr.(*AppError); ok {
 		return e.RootErr

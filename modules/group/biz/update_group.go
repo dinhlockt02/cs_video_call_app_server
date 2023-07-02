@@ -8,15 +8,15 @@ import (
 	"github.com/pkg/errors"
 )
 
-type updateGroupBiz struct {
+type UpdateGroupBiz struct {
 	groupRepo grouprepo.Repository
 }
 
-func NewUpdateGroupBiz(groupRepo grouprepo.Repository) *updateGroupBiz {
-	return &updateGroupBiz{groupRepo: groupRepo}
+func NewUpdateGroupBiz(groupRepo grouprepo.Repository) *UpdateGroupBiz {
+	return &UpdateGroupBiz{groupRepo: groupRepo}
 }
 
-func (biz *updateGroupBiz) Update(ctx context.Context, filter map[string]interface{}, data *groupmdl.Group) error {
+func (biz *UpdateGroupBiz) Update(ctx context.Context, filter map[string]interface{}, data *groupmdl.Group) error {
 	data.Members = nil
 
 	if err := data.Process(); err != nil {

@@ -8,19 +8,19 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type listMeetingsBiz struct {
+type ListMeetingsBiz struct {
 	meetingRepo meetingrepo.Repository
 }
 
 func NewListMeetingsBiz(
 	meetingRepo meetingrepo.Repository,
-) *listMeetingsBiz {
-	return &listMeetingsBiz{
+) *ListMeetingsBiz {
+	return &ListMeetingsBiz{
 		meetingRepo: meetingRepo,
 	}
 }
 
-func (biz *listMeetingsBiz) List(ctx context.Context, groupId string) ([]meetingmodel.Meeting, error) {
+func (biz *ListMeetingsBiz) List(ctx context.Context, groupId string) ([]meetingmodel.Meeting, error) {
 	log.Debug().Str("groupId", groupId).
 		Msg("list meetings")
 	filter := meetingstore.GetGroupFilter(groupId)

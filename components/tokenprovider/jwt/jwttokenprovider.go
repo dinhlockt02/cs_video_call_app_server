@@ -1,13 +1,13 @@
 package jwt
 
 import (
-	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/tokenprovider"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/pkg/errors"
 	"time"
 )
 
-type jwtTokenProvider struct {
+type JwtTokenProvider struct {
 	secret string
 }
 
@@ -16,7 +16,7 @@ type AppClaims struct {
 	Payload *tokenprovider.TokenPayload `json:"payload"`
 }
 
-func (j *jwtTokenProvider) Generate(payload *tokenprovider.TokenPayload, expiry int) (*tokenprovider.Token, error) {
+func (j *JwtTokenProvider) Generate(payload *tokenprovider.TokenPayload, expiry int) (*tokenprovider.Token, error) {
 	now := time.Now()
 	expire := now.Add(time.Second * time.Duration(expiry))
 	claims := AppClaims{
@@ -29,7 +29,7 @@ func (j *jwtTokenProvider) Generate(payload *tokenprovider.TokenPayload, expiry 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(j.secret))
 	if err != nil {
-		return nil, common.ErrInternal(err)
+		return nil, errors.Wrap(err, "can not sign token")
 	}
 	return &tokenprovider.Token{
 		Token:     tokenString,
@@ -38,21 +38,21 @@ func (j *jwtTokenProvider) Generate(payload *tokenprovider.TokenPayload, expiry 
 	}, nil
 }
 
-func (j *jwtTokenProvider) Validate(token string) (*tokenprovider.TokenPayload, error) {
+func (j *JwtTokenProvider) Validate(token string) (*tokenprovider.TokenPayload, error) {
 	tk, err := jwt.ParseWithClaims(token, &AppClaims{Payload: &tokenprovider.TokenPayload{}}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(j.secret), nil
 	})
 	if err != nil {
-		return nil, common.ErrInternal(err)
+		return nil, errors.Wrap(err, "can not parse token")
 	}
 
 	if claims, ok := tk.Claims.(*AppClaims); ok && tk.Valid {
 		return claims.Payload, nil
 	} else {
-		return nil, common.ErrInvalidRequest(nil)
+		return nil, errors.New("invalid token")
 	}
 }
 
-func NewJwtTokenProvider(secret string) *jwtTokenProvider {
-	return &jwtTokenProvider{secret: secret}
+func NewJwtTokenProvider(secret string) *JwtTokenProvider {
+	return &JwtTokenProvider{secret: secret}
 }

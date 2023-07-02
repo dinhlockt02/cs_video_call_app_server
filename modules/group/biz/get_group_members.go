@@ -10,15 +10,15 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type getGroupMembersBiz struct {
+type GetGroupMembersBiz struct {
 	groupRepo grouprepo.Repository
 }
 
-func NewGetGroupMembersBiz(groupRepo grouprepo.Repository) *getGroupMembersBiz {
-	return &getGroupMembersBiz{groupRepo: groupRepo}
+func NewGetGroupMembersBiz(groupRepo grouprepo.Repository) *GetGroupMembersBiz {
+	return &GetGroupMembersBiz{groupRepo: groupRepo}
 }
 
-func (biz *getGroupMembersBiz) GetGroupUsers(ctx context.Context, userIds ...string) ([]groupmdl.User, error) {
+func (biz *GetGroupMembersBiz) GetGroupUsers(ctx context.Context, userIds ...string) ([]groupmdl.User, error) {
 	log.Debug().Any("userIds", userIds).Msg("get group users")
 	users, err := biz.groupRepo.FindUsers(ctx, groupstore.GetUserIdInIdListFilter(userIds...))
 	if err != nil {

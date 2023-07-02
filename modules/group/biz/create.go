@@ -9,16 +9,16 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type createGroupBiz struct {
+type CreateGroupBiz struct {
 	groupRepo grouprepo.Repository
 }
 
-func NewCreateGroupBiz(groupRepo grouprepo.Repository) *createGroupBiz {
-	return &createGroupBiz{groupRepo: groupRepo}
+func NewCreateGroupBiz(groupRepo grouprepo.Repository) *CreateGroupBiz {
+	return &CreateGroupBiz{groupRepo: groupRepo}
 }
 
 // Create creates a group and add requester as a member.
-func (biz *createGroupBiz) Create(ctx context.Context, requesterId string, data *groupmdl.Group) error {
+func (biz *CreateGroupBiz) Create(ctx context.Context, requesterId string, data *groupmdl.Group) error {
 	log.Debug().Str("requesterId", requesterId).Any("data", data).Msg("create group")
 	data.Members = []string{requesterId}
 

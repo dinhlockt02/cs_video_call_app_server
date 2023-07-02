@@ -2,20 +2,19 @@ package authmiddleware
 
 import (
 	"context"
-	"github.com/dinhlockt02/cs_video_call_app_server/common"
-	"github.com/rs/zerolog/log"
+	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type mongoStore struct {
+type MongoStore struct {
 	database *mongo.Database
 }
 
-func NewMongoStore(database *mongo.Database) *mongoStore {
-	return &mongoStore{database: database}
+func NewMongoStore(database *mongo.Database) *MongoStore {
+	return &MongoStore{database: database}
 }
 
-func (s *mongoStore) FindOne(ctx context.Context, filter map[string]interface{}) (*Device, error) {
+func (s *MongoStore) FindOne(ctx context.Context, filter map[string]interface{}) (*Device, error) {
 	var device Device
 	result := s.database.Collection(device.CollectionName()).FindOne(ctx, filter)
 
@@ -23,12 +22,10 @@ func (s *mongoStore) FindOne(ctx context.Context, filter map[string]interface{})
 		if err == mongo.ErrNoDocuments {
 			return nil, nil
 		}
-		return nil, common.ErrInternal(err)
+		return nil, errors.Wrap(err, "can not find device")
 	}
 	if err := result.Decode(&device); err != nil {
-		log.Debug().Msg(err.Error())
-
-		return nil, common.ErrInternal(err)
+		return nil, errors.Wrap(err, "can not decode device")
 	}
 	return &device, nil
 }

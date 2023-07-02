@@ -12,17 +12,17 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type getGroupRequestBiz struct {
+type GetGroupRequestBiz struct {
 	groupRepo    grouprepo.Repository
 	notification notirepo.NotificationRepository
 }
 
-func NewGetGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *getGroupRequestBiz {
-	return &getGroupRequestBiz{groupRepo: groupRepo, notification: notification}
+func NewGetGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *GetGroupRequestBiz {
+	return &GetGroupRequestBiz{groupRepo: groupRepo, notification: notification}
 }
 
 // GetRequest send a group invitation request to user.
-func (biz *getGroupRequestBiz) GetRequest(ctx context.Context, requesterId string, filter groupmdl.Filter) ([]requestmdl.Request, error) {
+func (biz *GetGroupRequestBiz) GetRequest(ctx context.Context, requesterId string, filter groupmdl.Filter) ([]requestmdl.Request, error) {
 	log.Debug().Str("requesterId", requesterId).Any("filter", filter).Msg("get requests")
 	var groupFilterFilter map[string]interface{}
 	if filter == groupmdl.Sent {

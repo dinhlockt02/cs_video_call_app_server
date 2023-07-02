@@ -10,7 +10,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type createMeetingBiz struct {
+type CreateMeetingBiz struct {
 	meetingRepo    meetingrepo.Repository
 	livekitService lksv.LiveKitService
 }
@@ -18,14 +18,14 @@ type createMeetingBiz struct {
 func NewCreateMeetingBiz(
 	meetingRepo meetingrepo.Repository,
 	livekitService lksv.LiveKitService,
-) *createMeetingBiz {
-	return &createMeetingBiz{
+) *CreateMeetingBiz {
+	return &CreateMeetingBiz{
 		meetingRepo:    meetingRepo,
 		livekitService: livekitService,
 	}
 }
 
-func (biz *createMeetingBiz) Create(ctx context.Context, requester string, meeting *meetingmodel.Meeting) (string, error) {
+func (biz *CreateMeetingBiz) Create(ctx context.Context, requester string, meeting *meetingmodel.Meeting) (string, error) {
 	log.Debug().Str("requester", requester).Any("meeting", meeting).Msg("create meeting")
 	// Create meeting
 	meeting.Status = meetingmodel.OnGoing

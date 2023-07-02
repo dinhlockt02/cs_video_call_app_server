@@ -9,15 +9,15 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type leaveGroupBiz struct {
+type LeaveGroupBiz struct {
 	groupRepo grouprepo.Repository
 }
 
-func NewLeaveGroupBiz(groupRepo grouprepo.Repository) *leaveGroupBiz {
-	return &leaveGroupBiz{groupRepo: groupRepo}
+func NewLeaveGroupBiz(groupRepo grouprepo.Repository) *LeaveGroupBiz {
+	return &LeaveGroupBiz{groupRepo: groupRepo}
 }
 
-func (biz *leaveGroupBiz) Leave(ctx context.Context, userFilter map[string]interface{}, groupFilter map[string]interface{}) error {
+func (biz *LeaveGroupBiz) Leave(ctx context.Context, userFilter map[string]interface{}, groupFilter map[string]interface{}) error {
 	log.Debug().Any("userFilter", userFilter).Any("groupFilter", groupFilter).Msg("leave")
 	user, err := biz.groupRepo.FindUser(ctx, userFilter)
 	if err != nil {

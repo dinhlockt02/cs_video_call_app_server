@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	"github.com/dinhlockt02/cs_video_call_app_server/components/tokenprovider"
+	"github.com/pkg/errors"
 	"net/http"
 )
 
@@ -11,7 +12,7 @@ type AuthMiddlewareMongoStore interface {
 	FindOne(ctx context.Context, filter map[string]interface{}) (*Device, error)
 }
 
-type authMiddlewareBiz struct {
+type AuthMiddlewareBiz struct {
 	store         AuthMiddlewareMongoStore
 	tokenProvider tokenprovider.TokenProvider
 }
@@ -19,14 +20,14 @@ type authMiddlewareBiz struct {
 func NewAuthMiddlewareBiz(
 	store AuthMiddlewareMongoStore,
 	tokenProvider tokenprovider.TokenProvider,
-) *authMiddlewareBiz {
-	return &authMiddlewareBiz{
+) *AuthMiddlewareBiz {
+	return &AuthMiddlewareBiz{
 		store:         store,
 		tokenProvider: tokenProvider,
 	}
 }
 
-func (biz *authMiddlewareBiz) Authenticate(ctx context.Context, token string) (*Device, error) {
+func (biz *AuthMiddlewareBiz) Authenticate(ctx context.Context, token string) (*Device, error) {
 	tokenPayload, err := biz.tokenProvider.Validate(token)
 	if err != nil {
 		return nil, common.NewFullErrorResponse(
@@ -40,7 +41,7 @@ func (biz *authMiddlewareBiz) Authenticate(ctx context.Context, token string) (*
 
 	id, err := common.ToObjectId(tokenPayload.Id)
 	if err != nil {
-		return nil, common.ErrInvalidRequest(err)
+		return nil, common.ErrInvalidRequest(errors.Wrap(err, "invalid payload token"))
 	}
 
 	device, err := biz.store.FindOne(ctx, map[string]interface{}{
@@ -48,7 +49,7 @@ func (biz *authMiddlewareBiz) Authenticate(ctx context.Context, token string) (*
 	})
 
 	if err != nil {
-		return nil, common.ErrInternal(err)
+		return nil, common.ErrInternal(errors.Wrap(err, "can not find device"))
 	}
 
 	if device == nil {
