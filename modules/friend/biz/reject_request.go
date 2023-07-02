@@ -5,34 +5,36 @@ import (
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	friendmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
 	friendrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/repository"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
-type rejectRequestBiz struct {
+type RejectRequestBiz struct {
 	friendRepo friendrepo.Repository
 }
 
-func NewRejectRequestBiz(friendRepo friendrepo.Repository) *rejectRequestBiz {
-	return &rejectRequestBiz{
+func NewRejectRequestBiz(friendRepo friendrepo.Repository) *RejectRequestBiz {
+	return &RejectRequestBiz{
 		friendRepo: friendRepo,
 	}
 }
 
-func (biz *rejectRequestBiz) RejectRequest(ctx context.Context, senderId string, receiverId string) error {
+func (biz *RejectRequestBiz) RejectRequest(ctx context.Context, senderId string, receiverId string) error {
+	log.Debug().Str("senderId", senderId).Str("receiverId", receiverId).Msg("get sent request")
 	existedRequest, err := biz.friendRepo.FindRequest(ctx, senderId, receiverId)
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "can not find request"))
 	}
 	if existedRequest == nil {
-		return common.ErrInvalidRequest(friendmodel.ErrRequestNotFound)
+		return common.ErrInvalidRequest(errors.New(friendmodel.RequestNotFound))
 	}
-	filter := make(map[string]interface{})
-	err = common.AddIdFilter(filter, *existedRequest.Id)
+	filter, err := common.GetIdFilter(*existedRequest.Id)
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "invalid request id: "+*existedRequest.Id))
 	}
 	err = biz.friendRepo.DeleteRequest(ctx, filter)
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "can not delete request"))
 	}
 	return nil
 }

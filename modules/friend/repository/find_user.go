@@ -5,34 +5,37 @@ import (
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	friendmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
 	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
 // FindUser is a method of finding a user
-func (repo *friendRepository) FindUser(
+func (repo *FriendRepository) FindUser(
 	ctx context.Context,
 	filter map[string]interface{},
 	options ...FindUserOption,
 ) (*friendmodel.User, error) {
+	log.Debug().Any("filter", filter).Any("options", options).Msg("find a user")
 	user, err := repo.friendstore.FindUser(ctx, filter)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "can not find user")
 	}
 
 	if user == nil {
-		return nil, common.ErrEntityNotFound("User", friendmodel.ErrUserNotFound)
+		return nil, common.ErrEntityNotFound(common.UserEntity, errors.New(friendmodel.UserNotFound))
 	}
 
 	for _, option := range options {
 		err = option(ctx, repo, user)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "failed to apply option")
 		}
 	}
 
 	return user, nil
 }
 
-type FindUserOption func(ctx context.Context, repo *friendRepository, u *friendmodel.User) error
+type FindUserOption func(ctx context.Context, repo *FriendRepository, u *friendmodel.User) error
 
 // WithRelation requires requesterId, which is the id of the requester,
 //
@@ -41,7 +44,8 @@ type FindUserOption func(ctx context.Context, repo *friendRepository, u *friendm
 // [friendmodel.Self], [friendmodel.Friend], [friendmodel.Blocked],
 // [friendmodel.Non], [friendmodel.Sent], [friendmodel.Received],
 func WithRelation(requesterId string) FindUserOption {
-	return func(ctx context.Context, repo *friendRepository, user *friendmodel.User) error {
+	return func(ctx context.Context, repo *FriendRepository, user *friendmodel.User) error {
+		log.Debug().Msg("add relation to user model")
 		if *user.Id == requesterId {
 			user.Relation = friendmodel.Self
 			return nil
@@ -54,21 +58,20 @@ func WithRelation(requesterId string) FindUserOption {
 			}
 		}
 
-		filter := make(map[string]interface{})
-		err := common.AddIdFilter(filter, requesterId)
+		filter, err := common.GetIdFilter(requesterId)
 
 		if err != nil {
-			return err
+			return errors.Wrap(err, "invalid requester id "+requesterId)
 		}
 
 		requester, err := repo.friendstore.FindUser(ctx, filter)
 
 		if err != nil {
-			return err
+			return errors.Wrap(err, "can not find requester")
 		}
 
 		if requester == nil {
-			return common.ErrEntityNotFound("User", friendmodel.ErrUserNotFound)
+			return common.ErrEntityNotFound(common.UserEntity, errors.New(friendmodel.UserNotFound))
 		}
 
 		for _, blockedId := range requester.BlockedUser {
@@ -91,7 +94,7 @@ func WithRelation(requesterId string) FindUserOption {
 
 		request, err := repo.requestStore.FindRequest(ctx, filter)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "can not find request")
 		}
 
 		if request == nil {

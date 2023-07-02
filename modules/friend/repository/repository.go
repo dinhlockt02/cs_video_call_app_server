@@ -38,7 +38,7 @@ type Repository interface {
 	) error
 }
 
-type friendRepository struct {
+type FriendRepository struct {
 	friendstore  friendstore.Store
 	requestStore requeststore.Store
 }
@@ -46,8 +46,8 @@ type friendRepository struct {
 func NewFriendRepository(
 	friendstore friendstore.Store,
 	requestStore requeststore.Store,
-) *friendRepository {
-	return &friendRepository{
+) *FriendRepository {
+	return &FriendRepository{
 		friendstore:  friendstore,
 		requestStore: requestStore,
 	}

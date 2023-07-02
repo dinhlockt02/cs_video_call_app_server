@@ -6,7 +6,7 @@ import (
 )
 
 // UpdateUser updates user that matches filter
-func (repo *friendRepository) UpdateUser(
+func (repo *FriendRepository) UpdateUser(
 	ctx context.Context,
 	filter map[string]interface{},
 	user *friendmodel.User,

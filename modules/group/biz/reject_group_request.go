@@ -7,6 +7,7 @@ import (
 	friendmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
 	grouprepo "github.com/dinhlockt02/cs_video_call_app_server/modules/group/repository"
 	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
+	"github.com/pkg/errors"
 )
 
 type rejectGroupRequestBiz struct {
@@ -26,10 +27,10 @@ func (biz *rejectGroupRequestBiz) RejectRequest(ctx context.Context, requesterId
 	ft := common.GetAndFilter(requesterFilter, groupFilter)
 	existedRequest, err := biz.groupRepo.FindRequest(ctx, ft)
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "can not find request"))
 	}
 	if existedRequest == nil {
-		return common.ErrInvalidRequest(friendmodel.ErrRequestNotFound)
+		return common.ErrInvalidRequest(errors.New(friendmodel.RequestNotFound))
 	}
 
 	// Delete request

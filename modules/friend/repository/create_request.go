@@ -5,7 +5,7 @@ import (
 	requestmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/request/model"
 )
 
-func (repo *friendRepository) CreateRequest(
+func (repo *FriendRepository) CreateRequest(
 	ctx context.Context,
 	request *requestmdl.Request,
 ) error {

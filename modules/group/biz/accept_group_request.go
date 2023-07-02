@@ -2,12 +2,12 @@ package groupbiz
 
 import (
 	"context"
-	"errors"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	notirepo "github.com/dinhlockt02/cs_video_call_app_server/components/notification/repository"
 	friendmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
 	grouprepo "github.com/dinhlockt02/cs_video_call_app_server/modules/group/repository"
 	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
+	"github.com/pkg/errors"
 )
 
 type acceptGroupRequestBiz struct {
@@ -30,7 +30,7 @@ func (biz *acceptGroupRequestBiz) AcceptRequest(ctx context.Context, requesterId
 		return err
 	}
 	if existedRequest == nil {
-		return common.ErrInvalidRequest(friendmodel.ErrRequestNotFound)
+		return common.ErrInvalidRequest(errors.New(friendmodel.RequestNotFound))
 	}
 
 	// Find sender

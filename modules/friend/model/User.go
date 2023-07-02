@@ -1,6 +1,7 @@
 package friendmodel
 
 import (
+	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	"time"
 )
 
@@ -25,8 +26,8 @@ type User struct {
 	Relation    Relation   `json:"relation"`
 }
 
-func (User) CollectionName() string {
-	return "users"
+func (*User) CollectionName() string {
+	return common.UserCollectionName
 }
 
 func (u *User) Process() {
