@@ -2,9 +2,11 @@ package groupbiz
 
 import (
 	"context"
-	"errors"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
+	groupmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/group/model"
 	grouprepo "github.com/dinhlockt02/cs_video_call_app_server/modules/group/repository"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
 type leaveGroupBiz struct {
@@ -16,19 +18,20 @@ func NewLeaveGroupBiz(groupRepo grouprepo.Repository) *leaveGroupBiz {
 }
 
 func (biz *leaveGroupBiz) Leave(ctx context.Context, userFilter map[string]interface{}, groupFilter map[string]interface{}) error {
+	log.Debug().Any("userFilter", userFilter).Any("groupFilter", groupFilter).Msg("leave")
 	user, err := biz.groupRepo.FindUser(ctx, userFilter)
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "can not find user"))
 	}
 	if user == nil {
-		return common.ErrEntityNotFound("User", errors.New("user not found"))
+		return common.ErrEntityNotFound(common.UserEntity, errors.New(groupmdl.UserNotFound))
 	}
 	group, err := biz.groupRepo.FindGroup(ctx, groupFilter)
 	if err != nil {
 		return err
 	}
 	if group == nil {
-		return common.ErrEntityNotFound("Group", errors.New("group not found"))
+		return common.ErrEntityNotFound(common.GroupEntity, errors.New(groupmdl.GroupNotFound))
 	}
 	for i, member := range group.Members {
 		if member == *user.Id {

@@ -5,6 +5,7 @@ import (
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	groupmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/group/model"
 	grouprepo "github.com/dinhlockt02/cs_video_call_app_server/modules/group/repository"
+	"github.com/pkg/errors"
 )
 
 type updateGroupBiz struct {
@@ -19,11 +20,11 @@ func (biz *updateGroupBiz) Update(ctx context.Context, filter map[string]interfa
 	data.Members = nil
 
 	if err := data.Process(); err != nil {
-		return common.ErrInvalidRequest(err)
+		return common.ErrInvalidRequest(errors.Wrap(err, "invalid update data"))
 	}
 
 	if err := biz.groupRepo.UpdateGroup(ctx, filter, data); err != nil {
-		return err
+		return common.ErrInvalidRequest(errors.Wrap(err, "can not update group"))
 	}
 
 	return nil

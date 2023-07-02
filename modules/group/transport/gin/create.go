@@ -10,6 +10,7 @@ import (
 	groupstore "github.com/dinhlockt02/cs_video_call_app_server/modules/group/store"
 	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net/http"
 	"sync"
@@ -20,7 +21,7 @@ func CreateGroup(appCtx appcontext.AppContext) gin.HandlerFunc {
 		var data *groupmdl.Group
 
 		if err := c.ShouldBind(&data); err != nil {
-			panic(common.ErrInvalidRequest(err))
+			panic(common.ErrInvalidRequest(errors.Wrap(err, "invalid request body")))
 		}
 
 		requester := c.MustGet(common.CurrentUser).(common.Requester)
@@ -51,7 +52,7 @@ func CreateGroup(appCtx appcontext.AppContext) gin.HandlerFunc {
 						defer common.Recovery()
 						err := sendGroupRequestBiz.SendRequest(context.Background(), requester.GetId(), mem, data)
 						if err != nil {
-							log.Error().Msgf("%v\n", err)
+							log.Error().Err(err).Msg("send request failed")
 						}
 					}(member)
 				}

@@ -65,9 +65,9 @@ func SendGroupRequests(appCtx appcontext.AppContext) gin.HandlerFunc {
 					go func(friendId string) {
 						defer wg.Done()
 						defer common.Recovery()
-						err := sendGroupRequestBiz.SendRequest(context.Background(), requester.GetId(), friendId, group)
+						err = sendGroupRequestBiz.SendRequest(context.Background(), requester.GetId(), friendId, group)
 						if err != nil {
-							log.Error().Msgf("%v\n", err)
+							log.Error().Err(err).Msg("send request failed")
 						}
 					}(friend)
 				}

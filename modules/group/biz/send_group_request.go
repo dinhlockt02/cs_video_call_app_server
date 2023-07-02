@@ -22,15 +22,16 @@ func NewSendGroupRequestBiz(groupRepo grouprepo.Repository, notification notirep
 }
 
 // SendRequest send a group invitation request to user.
-func (biz *sendGroupRequestBiz) SendRequest(ctx context.Context, requester string, user string, group *groupmdl.Group) error {
+func (biz *sendGroupRequestBiz) SendRequest(ctx context.Context, requesterId string, user string, group *groupmdl.Group) error {
 
 	// TODO: Allow send request only if requester is a member of group
 
 	// Find exists request
-	requesterFilter := requeststore.GetRequestReceiverIdFilter(user)
-	groupFilter := requeststore.GetRequestGroupIdFilter(*group.Id)
-	ft := common.GetAndFilter(requesterFilter, groupFilter)
-	existedRequest, err := biz.groupRepo.FindRequest(ctx, ft)
+	requestFilter := common.GetAndFilter(
+		requeststore.GetRequestReceiverIdFilter(user),
+		requeststore.GetRequestGroupIdFilter(*group.Id),
+	)
+	existedRequest, err := biz.groupRepo.FindRequest(ctx, requestFilter)
 	if err != nil {
 		return common.ErrInternal(errors.Wrap(err, "can not find request"))
 	}
@@ -38,46 +39,50 @@ func (biz *sendGroupRequestBiz) SendRequest(ctx context.Context, requester strin
 		return common.ErrInvalidRequest(errors.New(friendmodel.RequestExists))
 	}
 
-	// Find sender
-	filter, err := common.GetIdFilter(requester)
+	// Find requester
+	requesterFilter, err := common.GetIdFilter(requesterId)
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "invalid requester id"))
 	}
-	sender, err := biz.groupRepo.FindUser(ctx, filter)
+	requester, err := biz.groupRepo.FindUser(ctx, requesterFilter)
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "can not find requester"))
 	}
-	if sender == nil {
-		return common.ErrEntityNotFound("User", errors.New("sender not found"))
+	if requester == nil {
+		return common.ErrEntityNotFound(common.UserEntity, errors.New("requester not found"))
 	}
 
 	// Find Receiver
-	filter, err = common.GetIdFilter(user)
+	receiverFilter, err := common.GetIdFilter(user)
 	if err != nil {
-		return err
+		return common.ErrInvalidRequest(errors.Wrap(err, "invalid receiver id"))
 	}
-	receiver, err := biz.groupRepo.FindUser(ctx, filter)
+	receiver, err := biz.groupRepo.FindUser(ctx, receiverFilter)
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "can not find receiver"))
 	}
 	if receiver == nil {
-		return common.ErrEntityNotFound("User", errors.New("receiver not found"))
+		return common.ErrEntityNotFound(common.UserEntity, errors.New("receiver not found"))
 	}
 
 	senderRequestUser := requestmdl.RequestUser{
-		Id:     requester,
-		Name:   sender.Name,
-		Avatar: sender.Avatar,
+		Id:     requesterId,
+		Name:   requester.Name,
+		Avatar: requester.Avatar,
 	}
 	receiverRequestUser := requestmdl.RequestUser{
 		Id:     user,
 		Name:   receiver.Name,
 		Avatar: receiver.Avatar,
 	}
+	groupImageUrl := ""
+	if group.ImageUrl != nil {
+		groupImageUrl = *group.ImageUrl
+	}
 	groupRequest := requestmdl.RequestGroup{
 		Id:       *group.Id,
 		Name:     *group.Name,
-		ImageUrl: *group.ImageUrl,
+		ImageUrl: groupImageUrl,
 	}
 	req := requestmdl.Request{
 		Sender:   senderRequestUser,
@@ -87,7 +92,7 @@ func (biz *sendGroupRequestBiz) SendRequest(ctx context.Context, requester strin
 	req.Process()
 	err = biz.groupRepo.CreateRequest(ctx, &req)
 	if err != nil {
-		return err
+		return common.ErrInternal(errors.Wrap(err, "can not create request"))
 	}
 
 	go func() {

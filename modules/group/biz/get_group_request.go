@@ -8,6 +8,8 @@ import (
 	grouprepo "github.com/dinhlockt02/cs_video_call_app_server/modules/group/repository"
 	requestmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/request/model"
 	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
 type getGroupRequestBiz struct {
@@ -21,7 +23,7 @@ func NewGetGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo
 
 // GetRequest send a group invitation request to user.
 func (biz *getGroupRequestBiz) GetRequest(ctx context.Context, requesterId string, filter groupmdl.Filter) ([]requestmdl.Request, error) {
-
+	log.Debug().Str("requesterId", requesterId).Any("filter", filter).Msg("get requests")
 	var groupFilterFilter map[string]interface{}
 	if filter == groupmdl.Sent {
 		groupFilterFilter = requeststore.GetRequestSenderIdFilter(requesterId)
@@ -37,7 +39,7 @@ func (biz *getGroupRequestBiz) GetRequest(ctx context.Context, requesterId strin
 	requests, err := biz.groupRepo.FindRequests(ctx, ft)
 
 	if err != nil {
-		return nil, err
+		return nil, common.ErrInternal(errors.Wrap(err, "can not find requests"))
 	}
 
 	return requests, nil

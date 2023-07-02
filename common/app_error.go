@@ -11,6 +11,7 @@ type Entity string
 var (
 	UserEntity    Entity = "User"
 	MeetingEntity Entity = "Meeting"
+	GroupEntity   Entity = "Group"
 )
 
 type AppError struct {

@@ -11,10 +11,5 @@ func (repo *groupRepository) FindRequest(
 	ctx context.Context,
 	filter map[string]interface{},
 ) (*requestmdl.Request, error) {
-
-	existedRequest, err := repo.requestStore.FindRequest(ctx, filter)
-	if err != nil {
-		return nil, err
-	}
-	return existedRequest, nil
+	return repo.requestStore.FindRequest(ctx, filter)
 }
