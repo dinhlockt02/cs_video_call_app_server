@@ -13,7 +13,6 @@ import (
 
 func VerifyEmail(appCtx appcontext.AppContext) gin.HandlerFunc {
 	return func(context *gin.Context) {
-
 		code, ok := context.GetQuery("code")
 		if !ok {
 			panic(common.ErrInvalidRequest(errors.New("invalid verify url")))

@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (s *mongoStore) Create(ctx context.Context, data *notimodel.Notification) error {
+func (s *MongoStore) Create(ctx context.Context, data *notimodel.Notification) error {
 	result, err := s.database.Collection(data.CollectionName()).InsertOne(ctx, data)
 	if err != nil {
 		return common.ErrInternal(err)

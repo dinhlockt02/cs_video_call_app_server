@@ -74,7 +74,7 @@ func (Notification) CollectionName() string {
 	return "notifications"
 }
 
-type notificationBuilder struct {
+type NotificationBuilder struct {
 	Owner    string
 	Subject  *NotificationObject
 	Direct   *NotificationObject
@@ -83,34 +83,34 @@ type notificationBuilder struct {
 	Action   NotificationActionType
 }
 
-func NewNotificationBuilder(action NotificationActionType, owner string) *notificationBuilder {
-	result := new(notificationBuilder)
+func NewNotificationBuilder(action NotificationActionType, owner string) *NotificationBuilder {
+	result := new(NotificationBuilder)
 	result.Action = action
 	result.Owner = owner
 	return result
 }
 
-func (builder *notificationBuilder) SetSubject(object *NotificationObject) *notificationBuilder {
+func (builder *NotificationBuilder) SetSubject(object *NotificationObject) *NotificationBuilder {
 	builder.Subject = object
 	return builder
 }
 
-func (builder *notificationBuilder) SetDirect(object *NotificationObject) *notificationBuilder {
+func (builder *NotificationBuilder) SetDirect(object *NotificationObject) *NotificationBuilder {
 	builder.Direct = object
 	return builder
 }
 
-func (builder *notificationBuilder) SetIndirect(object *NotificationObject) *notificationBuilder {
+func (builder *NotificationBuilder) SetIndirect(object *NotificationObject) *NotificationBuilder {
 	builder.Indirect = object
 	return builder
 }
 
-func (builder *notificationBuilder) SetPrep(object *NotificationObject) *notificationBuilder {
+func (builder *NotificationBuilder) SetPrep(object *NotificationObject) *NotificationBuilder {
 	builder.Prep = object
 	return builder
 }
 
-func (builder *notificationBuilder) Build() *Notification {
+func (builder *NotificationBuilder) Build() *Notification {
 	now := time.Now()
 	return &Notification{
 		MongoCreatedAt: common.MongoCreatedAt{CreatedAt: &now},
@@ -145,7 +145,6 @@ func (n *Notification) GetMessage() (title string, body string) {
 
 // GetContent is a function that will a map that will meet the awesome_notification requirement.
 func (n *Notification) GetContent() (map[string]interface{}, error) {
-
 	title, body := n.GetMessage()
 
 	marshaledNotification, err := json.Marshal(n)
@@ -291,7 +290,6 @@ func (n *Notification) GetActionButton() []map[string]interface{} {
 	default:
 		return nil
 	}
-
 }
 
 func GetActionKeyLabel(key ActionKey) string {

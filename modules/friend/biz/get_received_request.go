@@ -20,7 +20,8 @@ func NewGetReceivedRequestBiz(friendRepo friendrepo.Repository) *GetReceivedRequ
 	}
 }
 
-func (biz *GetReceivedRequestBiz) GetReceivedRequest(ctx context.Context, receiverId string) ([]requestmdl.Request, error) {
+func (biz *GetReceivedRequestBiz) GetReceivedRequest(ctx context.Context,
+	receiverId string) ([]requestmdl.Request, error) {
 	log.Debug().Str("receiverId", receiverId).Msg("get received request")
 	requests, err := biz.friendRepo.FindRequests(ctx, common.GetAndFilter(
 		requeststore.GetRequestReceiverIdFilter(receiverId),

@@ -9,11 +9,9 @@ import (
 )
 
 func InitLiveKitWebhookRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
-
 	webhook := g.Group("/livekit-webhook")
 	{
 		webhook.POST("", func(c *gin.Context) {
-
 			event, err := lkwebhook.ReceiveWebhookEvent(c.Request, appCtx.LiveKitService().AuthProvider())
 			if err != nil {
 				panic(err)

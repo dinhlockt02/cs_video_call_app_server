@@ -21,7 +21,8 @@ func NewFindFriendBiz(friendStore FindFriendFriendStore) *FindFriendBiz {
 	return &FindFriendBiz{friendStore: friendStore}
 }
 
-func (biz *FindFriendBiz) FindFriend(ctx context.Context, filter map[string]interface{}, friendFilter map[string]interface{}) ([]friendmodel.FriendUser, error) {
+func (biz *FindFriendBiz) FindFriend(ctx context.Context, filter map[string]interface{},
+	friendFilter map[string]interface{}) ([]friendmodel.FriendUser, error) {
 	log.Debug().Any("filter", filter).Any("friendFilter", friendFilter).Msg("find friends")
 
 	user, err := biz.friendStore.FindUser(ctx, filter)

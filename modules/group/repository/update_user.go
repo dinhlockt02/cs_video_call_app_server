@@ -5,7 +5,7 @@ import (
 	groupmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/group/model"
 )
 
-func (repo *groupRepository) UpdateUser(
+func (repo *GroupRepository) UpdateUser(
 	ctx context.Context,
 	filter map[string]interface{},
 	updatedUser *groupmdl.User,

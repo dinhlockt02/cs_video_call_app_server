@@ -34,7 +34,6 @@ import (
 )
 
 func init() {
-
 	setupLogger()
 
 	var err error
@@ -48,7 +47,6 @@ func init() {
 }
 
 func main() {
-
 	// Get mongo client
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -133,7 +131,7 @@ func main() {
 		pubsub,
 	)
 
-	subscriber.Setup(appCtx, context.Background())
+	subscriber.Setup(context.Background(), appCtx)
 
 	envport := os.Getenv("SERVER_PORT")
 	if envport == "" {

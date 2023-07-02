@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (s *mongoStore) DeleteOne(ctx context.Context, filter map[string]interface{}) error {
+func (s *MongoStore) DeleteOne(ctx context.Context, filter map[string]interface{}) error {
 	log.Debug().Any("filter", filter).Msg("delete group")
 	_, err := s.database.Collection(groupmdl.Group{}.CollectionName()).DeleteOne(ctx, filter)
 	if err != nil {

@@ -61,7 +61,7 @@ type Repository interface {
 	) error
 }
 
-type groupRepository struct {
+type GroupRepository struct {
 	groupStore   groupstore.Store
 	requestStore requeststore.Store
 }
@@ -69,8 +69,8 @@ type groupRepository struct {
 func NewGroupRepository(
 	groupStore groupstore.Store,
 	requestStore requeststore.Store,
-) *groupRepository {
-	return &groupRepository{
+) *GroupRepository {
+	return &GroupRepository{
 		groupStore:   groupStore,
 		requestStore: requestStore,
 	}

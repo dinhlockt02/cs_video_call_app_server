@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (s *mongoStore) Delete(ctx context.Context, filter map[string]interface{}) error {
+func (s *MongoStore) Delete(ctx context.Context, filter map[string]interface{}) error {
 	log.Debug().Any("filter", filter).Msg("delete many devices")
 	result, err := s.database.Collection(devicemodel.Device{}.CollectionName()).DeleteMany(ctx, filter)
 	if err != nil {

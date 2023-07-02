@@ -43,7 +43,8 @@ func NewLoginBiz(
 	}
 }
 
-func (biz *LoginBiz) Login(ctx context.Context, data *authmodel.LoginUser, device *devicemodel.Device) (*authmodel.AuthToken, error) {
+func (biz *LoginBiz) Login(ctx context.Context, data *authmodel.LoginUser,
+	device *devicemodel.Device) (*authmodel.AuthToken, error) {
 	log.Debug().Msg("login usecase executed")
 	if err := data.Process(); err != nil {
 		return nil, common.ErrInvalidRequest(errors.Wrap(err, "invalid login data"))

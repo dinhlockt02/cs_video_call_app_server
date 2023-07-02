@@ -10,7 +10,6 @@ import (
 
 func Authentication(appCtx appcontext.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		authorizationHeader := strings.Split(c.GetHeader("Authorization"), " ")
 
 		if len(authorizationHeader) != 2 || authorizationHeader[0] != "Bearer" {

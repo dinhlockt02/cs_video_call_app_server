@@ -8,12 +8,10 @@ import (
 )
 
 func InitDeviceRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
-
 	user := g.Group("/device", authmiddleware.Authentication(appCtx))
 	{
 		user.PUT("", devicegin.UpdateDevice(appCtx))
 		user.GET("", devicegin.GetDevices(appCtx))
 		user.DELETE("/:deviceId", devicegin.DeleteDevice(appCtx))
-
 	}
 }

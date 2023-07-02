@@ -8,7 +8,6 @@ import (
 )
 
 func InitFriendRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
-
 	friend := g.Group("/friend", authmiddleware.Authentication(appCtx))
 	{
 		friend.GET("", friendgin.FindFriend(appCtx))

@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (s *mongoStore) FindUsers(ctx context.Context, filter map[string]interface{}) ([]groupmdl.User, error) {
+func (s *MongoStore) FindUsers(ctx context.Context, filter map[string]interface{}) ([]groupmdl.User, error) {
 	log.Debug().Any("filter", filter).Msg("find users")
 	var users []groupmdl.User
 	cursor, err := s.database.Collection(groupmdl.User{}.CollectionName()).Find(ctx, filter)

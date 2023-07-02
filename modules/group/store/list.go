@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (s *mongoStore) List(
+func (s *MongoStore) List(
 	ctx context.Context,
 	filter map[string]interface{},
 ) ([]groupmdl.Group, error) {

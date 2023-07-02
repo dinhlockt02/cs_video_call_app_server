@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func (s *mongoStore) FindGroup(
+func (s *MongoStore) FindGroup(
 	ctx context.Context,
 	filter map[string]interface{},
 ) (*groupmdl.Group, error) {

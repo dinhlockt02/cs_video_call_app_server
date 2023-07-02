@@ -7,19 +7,19 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type notificationRepository struct {
+type NotificationRepository struct {
 	service NotificationService
 	store   NotificationStore
 }
 
-func NewNotificationRepository(service NotificationService, store NotificationStore) *notificationRepository {
-	return &notificationRepository{
+func NewNotificationRepository(service NotificationService, store NotificationStore) *NotificationRepository {
+	return &NotificationRepository{
 		service: service,
 		store:   store,
 	}
 }
 
-func (repo *notificationRepository) CreateAcceptFriendNotification(
+func (repo *NotificationRepository) CreateAcceptFriendNotification(
 	ctx context.Context,
 	owner string,
 	subject *notimodel.NotificationObject,
@@ -34,7 +34,7 @@ func (repo *notificationRepository) CreateAcceptFriendNotification(
 	return repo.createNotification(ctx, noti)
 }
 
-func (repo *notificationRepository) CreateReceiveFriendRequestNotification(
+func (repo *NotificationRepository) CreateReceiveFriendRequestNotification(
 	ctx context.Context,
 	owner string,
 	subject *notimodel.NotificationObject,
@@ -49,7 +49,7 @@ func (repo *notificationRepository) CreateReceiveFriendRequestNotification(
 	return repo.createNotification(ctx, noti)
 }
 
-func (repo *notificationRepository) CreateIncomingCallNotification(
+func (repo *NotificationRepository) CreateIncomingCallNotification(
 	ctx context.Context,
 	owner string,
 	subject *notimodel.NotificationObject,
@@ -66,7 +66,9 @@ func (repo *notificationRepository) CreateIncomingCallNotification(
 	return repo.createNotification(ctx, noti)
 }
 
-func (repo *notificationRepository) CreateRejectIncomingCallNotification(ctx context.Context, owner string, subject *notimodel.NotificationObject, direct *notimodel.NotificationObject, prep *notimodel.NotificationObject) error {
+func (repo *NotificationRepository) CreateRejectIncomingCallNotification(ctx context.Context,
+	owner string, subject *notimodel.NotificationObject,
+	direct *notimodel.NotificationObject, prep *notimodel.NotificationObject) error {
 	noti := notimodel.
 		NewNotificationBuilder(notimodel.RejectCall, owner).
 		SetSubject(subject).
@@ -77,7 +79,7 @@ func (repo *notificationRepository) CreateRejectIncomingCallNotification(ctx con
 	return repo.createNotification(ctx, noti)
 }
 
-func (repo *notificationRepository) CreateAbandonIncomingCallNotification(
+func (repo *NotificationRepository) CreateAbandonIncomingCallNotification(
 	ctx context.Context,
 	owner string,
 	subject *notimodel.NotificationObject,
@@ -94,7 +96,7 @@ func (repo *notificationRepository) CreateAbandonIncomingCallNotification(
 	return repo.createNotification(ctx, noti)
 }
 
-func (repo *notificationRepository) createNotification(ctx context.Context, noti *notimodel.Notification) error {
+func (repo *NotificationRepository) createNotification(ctx context.Context, noti *notimodel.Notification) error {
 	err := repo.store.Create(ctx, noti)
 	if err != nil {
 		return common.ErrInternal(err)

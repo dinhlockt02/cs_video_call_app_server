@@ -16,7 +16,6 @@ import (
 
 func SendGroupRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		requester := c.MustGet(common.CurrentUser).(common.Requester)
 		friendId := c.Param("friendId")
 		groupId := c.Param("groupId")

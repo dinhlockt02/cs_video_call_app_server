@@ -24,7 +24,6 @@ func NewIsEmailVerifiedBiz(
 }
 
 func (biz *IsEmailVerifiedBiz) IsEmailVerified(ctx context.Context, filter map[string]interface{}) (bool, error) {
-
 	existedUser, err := biz.authStore.Find(ctx, filter)
 	if err != nil {
 		return false, err

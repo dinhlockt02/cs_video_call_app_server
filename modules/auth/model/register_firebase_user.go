@@ -16,7 +16,7 @@ type RegisterFirebaseUser struct {
 }
 
 func (RegisterFirebaseUser) CollectionName() string {
-	return "users"
+	return common.UserCollectionName
 }
 
 func (u *RegisterFirebaseUser) Process() error {

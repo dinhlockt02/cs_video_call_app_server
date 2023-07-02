@@ -17,7 +17,6 @@ import (
 
 func SendGroupRequests(appCtx appcontext.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		var data struct {
 			Friends []string `json:"friends"`
 		}

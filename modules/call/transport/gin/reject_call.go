@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RejectCall(appCtx appcontext.AppContext) gin.HandlerFunc {
+func RejectCall(_ appcontext.AppContext) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		// TODO: implement this
 	}

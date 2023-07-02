@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func (s *mongoStore) Find(ctx context.Context, filter map[string]interface{}) (*usermodel.User, error) {
+func (s *MongoStore) Find(ctx context.Context, filter map[string]interface{}) (*usermodel.User, error) {
 	log.Debug().Any("filter", filter).Msg("find user")
 	result := s.database.
 		Collection(usermodel.User{}.CollectionName()).

@@ -13,10 +13,10 @@ type Store interface {
 	CreateRequest(ctx context.Context, request *requestmdl.Request) error
 }
 
-type mongoStore struct {
+type MongoStore struct {
 	database *mongo.Database
 }
 
-func NewMongoStore(database *mongo.Database) *mongoStore {
-	return &mongoStore{database: database}
+func NewMongoStore(database *mongo.Database) *MongoStore {
+	return &MongoStore{database: database}
 }

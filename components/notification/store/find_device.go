@@ -6,7 +6,7 @@ import (
 	notimodel "github.com/dinhlockt02/cs_video_call_app_server/components/notification/model"
 )
 
-func (s *mongoStore) FindDevice(ctx context.Context, filter map[string]interface{}) ([]notimodel.Device, error) {
+func (s *MongoStore) FindDevice(ctx context.Context, filter map[string]interface{}) ([]notimodel.Device, error) {
 	cursor, err := s.database.Collection(notimodel.Device{}.CollectionName()).
 		Find(ctx, filter)
 	if err != nil {

@@ -10,10 +10,10 @@ type Store interface {
 	Find(ctx context.Context, filter map[string]interface{}) (*usermodel.User, error)
 }
 
-type mongoStore struct {
+type MongoStore struct {
 	database *mongo.Database
 }
 
-func NewMongoStore(database *mongo.Database) *mongoStore {
-	return &mongoStore{database: database}
+func NewMongoStore(database *mongo.Database) *MongoStore {
+	return &MongoStore{database: database}
 }

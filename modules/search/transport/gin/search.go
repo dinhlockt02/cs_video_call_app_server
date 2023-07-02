@@ -20,7 +20,6 @@ import (
 
 func Search(appCtx appcontext.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		searchTerm := c.Query("term")
 
 		u, _ := c.Get(common.CurrentUser)
@@ -54,7 +53,8 @@ func Search(appCtx appcontext.AppContext) gin.HandlerFunc {
 	}
 }
 
-func searchFriend(ctx context.Context, appCtx appcontext.AppContext, requester common.Requester, searchTerm string) ([]friendmodel.FriendUser, error) {
+func searchFriend(ctx context.Context, appCtx appcontext.AppContext,
+	requester common.Requester, searchTerm string) ([]friendmodel.FriendUser, error) {
 	friendStore := friendstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 	findFriendBiz := friendbiz.NewFindFriendBiz(friendStore)
 
@@ -70,7 +70,8 @@ func searchFriend(ctx context.Context, appCtx appcontext.AppContext, requester c
 	return friends, nil
 }
 
-func searchGroup(ctx context.Context, appCtx appcontext.AppContext, requester common.Requester, searchTerm string) ([]groupmdl.Group, error) {
+func searchGroup(ctx context.Context, appCtx appcontext.AppContext,
+	requester common.Requester, searchTerm string) ([]groupmdl.Group, error) {
 	groupStore := groupstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 	requestStore := requeststore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 	groupRepo := grouprepo.NewGroupRepository(

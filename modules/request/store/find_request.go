@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func (s *mongoStore) FindRequests(ctx context.Context, filter map[string]interface{}) ([]requestmdl.Request, error) {
+func (s *MongoStore) FindRequests(ctx context.Context, filter map[string]interface{}) ([]requestmdl.Request, error) {
 	log.Debug().Any("filter", filter).Msg("find requests")
 	var request []requestmdl.Request
 	cursor, err := s.database.Collection((&requestmdl.Request{}).CollectionName()).Find(ctx, filter)
@@ -23,7 +23,7 @@ func (s *mongoStore) FindRequests(ctx context.Context, filter map[string]interfa
 	return request, nil
 }
 
-func (s *mongoStore) FindRequest(ctx context.Context, filter map[string]interface{}) (*requestmdl.Request, error) {
+func (s *MongoStore) FindRequest(ctx context.Context, filter map[string]interface{}) (*requestmdl.Request, error) {
 	log.Debug().Any("filter", filter).Msg("find a requests")
 	var request requestmdl.Request
 	result := s.database.Collection(request.CollectionName()).FindOne(ctx, filter)

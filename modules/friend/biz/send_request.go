@@ -14,12 +14,12 @@ import (
 
 type SendRequestBiz struct {
 	friendRepo   friendrepo.Repository
-	notification notirepo.NotificationRepository
+	notification notirepo.Repository
 }
 
 func NewSendRequestBiz(
 	friendRepo friendrepo.Repository,
-	notification notirepo.NotificationRepository,
+	notification notirepo.Repository,
 ) *SendRequestBiz {
 	return &SendRequestBiz{
 		friendRepo:   friendRepo,
@@ -104,17 +104,18 @@ func (biz *SendRequestBiz) SendRequest(ctx context.Context, senderId string, rec
 
 	go func() {
 		// TODO: change to pubsub model
-		e := biz.notification.CreateReceiveFriendRequestNotification(context.Background(), receiverId, &notimodel.NotificationObject{
-			Id:    receiverId,
-			Name:  receiver.Name,
-			Image: &receiver.Avatar,
-			Type:  notimodel.User,
-		}, &notimodel.NotificationObject{
-			Id:    senderId,
-			Name:  sender.Name,
-			Image: &sender.Avatar,
-			Type:  notimodel.User,
-		})
+		e := biz.notification.CreateReceiveFriendRequestNotification(context.Background(), receiverId,
+			&notimodel.NotificationObject{
+				Id:    receiverId,
+				Name:  receiver.Name,
+				Image: &receiver.Avatar,
+				Type:  notimodel.User,
+			}, &notimodel.NotificationObject{
+				Id:    senderId,
+				Name:  sender.Name,
+				Image: &sender.Avatar,
+				Type:  notimodel.User,
+			})
 		if e != nil {
 			log.Error().Err(e).Msg("send friend request notification failed")
 		}

@@ -11,7 +11,6 @@ import (
 
 func NewAccessToken(appCtx appcontext.AppContext) gin.HandlerFunc {
 	return func(context *gin.Context) {
-
 		type Body struct {
 			RefreshToken string `json:"refresh_token"`
 		}

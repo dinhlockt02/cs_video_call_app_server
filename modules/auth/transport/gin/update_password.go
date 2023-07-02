@@ -13,7 +13,6 @@ import (
 
 func UpdatePassword(appCtx appcontext.AppContext) gin.HandlerFunc {
 	return func(context *gin.Context) {
-
 		var data authmodel.UpdatePasswordUser
 
 		if err := context.ShouldBind(&data); err != nil {

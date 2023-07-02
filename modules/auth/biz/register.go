@@ -21,7 +21,7 @@ type RegisterDeviceStore interface {
 	Create(ctx context.Context, data *devicemodel.Device) error
 }
 
-type registerBiz struct {
+type RegisterBiz struct {
 	tokenProvider  tokenprovider.TokenProvider
 	passwordHasher hasher.Hasher
 	deviceStore    RegisterDeviceStore
@@ -33,8 +33,8 @@ func NewRegisterBiz(
 	passwordHasher hasher.Hasher,
 	deviceStore RegisterDeviceStore,
 	authStore RegisterAuthStore,
-) *registerBiz {
-	return &registerBiz{
+) *RegisterBiz {
+	return &RegisterBiz{
 		tokenProvider:  tokenProvider,
 		passwordHasher: passwordHasher,
 		deviceStore:    deviceStore,
@@ -42,8 +42,8 @@ func NewRegisterBiz(
 	}
 }
 
-func (biz *registerBiz) Register(ctx context.Context, data *authmodel.RegisterUser, device *devicemodel.Device) (*authmodel.AuthToken, error) {
-
+func (biz *RegisterBiz) Register(ctx context.Context, data *authmodel.RegisterUser,
+	device *devicemodel.Device) (*authmodel.AuthToken, error) {
 	if err := data.Process(); err != nil {
 		return nil, common.ErrInvalidRequest(errors.Wrap(err, "invalid register data"))
 	}

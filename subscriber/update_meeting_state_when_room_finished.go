@@ -10,9 +10,8 @@ import (
 	"time"
 )
 
-func UpdateMeetingStateWhenRoomFinished(appCtx appcontext.AppContext, ctx context.Context) {
+func UpdateMeetingStateWhenRoomFinished(ctx context.Context, appCtx appcontext.AppContext) {
 	ch := appCtx.PubSub().Subscribe(ctx, common.TopicRoomFinished)
-
 	meetingStore := meetingstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 	go func() {
 		for roomId := range ch {

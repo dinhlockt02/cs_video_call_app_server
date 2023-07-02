@@ -17,7 +17,7 @@ type Repository interface {
 	UpdateCall(ctx context.Context, filter map[string]interface{}, data *callmdl.Call) error
 }
 
-type callRepository struct {
+type CallRepository struct {
 	userStore userstore.Store
 	callStore callstore.Store
 }
@@ -25,8 +25,8 @@ type callRepository struct {
 func NewCallRepository(
 	userStore userstore.Store,
 	callStore callstore.Store,
-) *callRepository {
-	return &callRepository{
+) *CallRepository {
+	return &CallRepository{
 		userStore: userStore,
 		callStore: callStore,
 	}

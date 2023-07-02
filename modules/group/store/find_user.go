@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func (s *mongoStore) FindUser(ctx context.Context, filter map[string]interface{}) (*groupmdl.User, error) {
+func (s *MongoStore) FindUser(ctx context.Context, filter map[string]interface{}) (*groupmdl.User, error) {
 	log.Debug().Any("filter", filter).Msg("find user")
 	var user groupmdl.User
 	result := s.database.Collection(user.CollectionName()).FindOne(ctx, filter)

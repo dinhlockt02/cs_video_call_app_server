@@ -8,7 +8,6 @@ import (
 )
 
 func InitGroupRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
-
 	group := g.Group("/group", authmiddleware.Authentication(appCtx))
 	{
 		groupRequest := group.Group("/request")

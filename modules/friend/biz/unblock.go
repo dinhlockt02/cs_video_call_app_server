@@ -40,9 +40,7 @@ func (biz *UnblockBiz) Unblock(ctx context.Context, userId string, blockedId str
 
 	for i := range user.BlockedUser {
 		if user.BlockedUser[i] == blockedId {
-
 			user.BlockedUser = append(user.BlockedUser[:i], user.BlockedUser[i+1:]...)
-
 			err = biz.friendStore.UpdateUser(ctx, userFilter, user)
 			if err != nil {
 				return errors.Wrap(err, "can not update user")

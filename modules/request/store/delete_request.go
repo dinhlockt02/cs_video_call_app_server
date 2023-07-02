@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (s *mongoStore) DeleteRequest(ctx context.Context, filter map[string]interface{}) error {
+func (s *MongoStore) DeleteRequest(ctx context.Context, filter map[string]interface{}) error {
 	log.Debug().Any("filter", filter).Msg("delete request")
 	_, err := s.database.Collection((&requestmdl.Request{}).CollectionName()).DeleteOne(ctx, filter)
 	if err != nil {

@@ -5,8 +5,8 @@ import (
 	groupmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/group/model"
 )
 
-// FindGroup returns the group using filter
-func (repo *groupRepository) FindGroup(
+// FindGroup returns the group using filter.
+func (repo *GroupRepository) FindGroup(
 	ctx context.Context,
 	filter map[string]interface{},
 ) (*groupmdl.Group, error) {

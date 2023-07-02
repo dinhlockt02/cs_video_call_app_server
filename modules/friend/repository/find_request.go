@@ -10,7 +10,7 @@ import (
 )
 
 // FindRequest returns the friend request between sender and receiver
-// If the request does not exist, it returns nil, nil
+// If the request does not exist, it returns nil, nil.
 func (repo *FriendRepository) FindRequest(
 	ctx context.Context,
 	sender string,

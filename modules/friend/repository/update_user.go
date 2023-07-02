@@ -5,7 +5,7 @@ import (
 	friendmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
 )
 
-// UpdateUser updates user that matches filter
+// UpdateUser updates user that matches filter.
 func (repo *FriendRepository) UpdateUser(
 	ctx context.Context,
 	filter map[string]interface{},

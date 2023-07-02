@@ -16,7 +16,7 @@ type VerifyEmailRedisStore interface {
 	GetVerifyEmailCode(ctx context.Context, code string) (string, error)
 }
 
-type verifyEmailBiz struct {
+type VerifyEmailBiz struct {
 	authstore  VerifyEmailAuthStore
 	redisStore VerifyEmailRedisStore
 }
@@ -24,14 +24,14 @@ type verifyEmailBiz struct {
 func NewVerifyEmail(
 	authstore VerifyEmailAuthStore,
 	redisStore VerifyEmailRedisStore,
-) *verifyEmailBiz {
-	return &verifyEmailBiz{
+) *VerifyEmailBiz {
+	return &VerifyEmailBiz{
 		authstore:  authstore,
 		redisStore: redisStore,
 	}
 }
 
-func (biz *verifyEmailBiz) Verify(ctx context.Context, code string) error {
+func (biz *VerifyEmailBiz) Verify(ctx context.Context, code string) error {
 	userId, err := biz.redisStore.GetVerifyEmailCode(ctx, code)
 	if err != nil {
 		return common.ErrInternal(errors.Wrap(err, "can not get code from redis"))

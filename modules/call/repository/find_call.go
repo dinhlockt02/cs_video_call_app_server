@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (repo *callRepository) FindCall(ctx context.Context, filter map[string]interface{}) (*callmdl.Call, error) {
+func (repo *CallRepository) FindCall(ctx context.Context, filter map[string]interface{}) (*callmdl.Call, error) {
 	log.Debug().Any("filter", filter).Msg("find call")
 	call, err := repo.callStore.FindCall(ctx, filter)
 	if err != nil {

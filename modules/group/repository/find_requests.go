@@ -6,8 +6,8 @@ import (
 )
 
 // FindRequests returns the friend request between sender and receiver
-// If the request does not exist, it returns nil, nil
-func (repo *groupRepository) FindRequests(
+// If the request does not exist, it returns nil, nil.
+func (repo *GroupRepository) FindRequests(
 	ctx context.Context,
 	filter map[string]interface{},
 ) ([]requestmdl.Request, error) {

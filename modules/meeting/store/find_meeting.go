@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func (s *mongoStore) FindMeeting(ctx context.Context, filter map[string]interface{}) (*meetingmodel.Meeting, error) {
+func (s *MongoStore) FindMeeting(ctx context.Context, filter map[string]interface{}) (*meetingmodel.Meeting, error) {
 	log.Debug().Any("filter", filter).Msg("find meeting")
 
 	var meeting meetingmodel.Meeting

@@ -8,7 +8,6 @@ import (
 )
 
 func InitCallRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
-
 	call := g.Group("/call", authmiddleware.Authentication(appCtx))
 	{
 		call.POST("/:friendId/:callRoomId", callgin.CreateNewCall(appCtx))

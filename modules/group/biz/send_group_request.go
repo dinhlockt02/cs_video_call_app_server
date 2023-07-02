@@ -14,16 +14,17 @@ import (
 
 type SendGroupRequestBiz struct {
 	groupRepo    grouprepo.Repository
-	notification notirepo.NotificationRepository
+	notification notirepo.Repository
 }
 
-func NewSendGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *SendGroupRequestBiz {
+func NewSendGroupRequestBiz(groupRepo grouprepo.Repository,
+	notification notirepo.Repository) *SendGroupRequestBiz {
 	return &SendGroupRequestBiz{groupRepo: groupRepo, notification: notification}
 }
 
 // SendRequest send a group invitation request to user.
-func (biz *SendGroupRequestBiz) SendRequest(ctx context.Context, requesterId string, user string, group *groupmdl.Group) error {
-
+func (biz *SendGroupRequestBiz) SendRequest(ctx context.Context,
+	requesterId string, user string, group *groupmdl.Group) error {
 	// TODO: Allow send request only if requester is a member of group
 
 	// Find exists request
@@ -76,8 +77,8 @@ func (biz *SendGroupRequestBiz) SendRequest(ctx context.Context, requesterId str
 		Avatar: receiver.Avatar,
 	}
 	groupImageUrl := ""
-	if group.ImageUrl != nil {
-		groupImageUrl = *group.ImageUrl
+	if group.ImageURL != nil {
+		groupImageUrl = *group.ImageURL
 	}
 	groupRequest := requestmdl.RequestGroup{
 		Id:       *group.Id,
@@ -97,21 +98,6 @@ func (biz *SendGroupRequestBiz) SendRequest(ctx context.Context, requesterId str
 
 	go func() {
 		// TODO: Push notification group request
-		//e := biz.notification.CreateReceiveFriendRequestNotification(
-		//	context.Background(), receiverId, &notimodel.NotificationObject{
-		//		Id:    receiverId,
-		//		Name:  receiver.Name,
-		//		Image: &receiver.Avatar,
-		//		Type:  notimodel.User,
-		//	}, &notimodel.NotificationObject{
-		//		Id:    senderId,
-		//		Name:  sender.Name,
-		//		Image: &sender.Avatar,
-		//		Type:  notimodel.User,
-		//	})
-		//if e != nil {
-		//	log.Err(e)
-		//}
 	}()
 
 	return nil

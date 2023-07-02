@@ -11,10 +11,11 @@ import (
 
 type RejectGroupRequestBiz struct {
 	groupRepo    grouprepo.Repository
-	notification notirepo.NotificationRepository
+	notification notirepo.Repository
 }
 
-func NewRejectGroupRequestBiz(groupRepo grouprepo.Repository, notification notirepo.NotificationRepository) *RejectGroupRequestBiz {
+func NewRejectGroupRequestBiz(groupRepo grouprepo.Repository,
+	notification notirepo.Repository) *RejectGroupRequestBiz {
 	return &RejectGroupRequestBiz{groupRepo: groupRepo, notification: notification}
 }
 

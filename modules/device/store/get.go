@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (s *mongoStore) Get(ctx context.Context, filter map[string]interface{}) ([]*devicemodel.GetDeviceDto, error) {
+func (s *MongoStore) Get(ctx context.Context, filter map[string]interface{}) ([]*devicemodel.GetDeviceDto, error) {
 	log.Debug().Any("filter", filter).Msg("find devices")
 	var devices []*devicemodel.GetDeviceDto
 	cursor, err := s.database.Collection(devicemodel.GetDeviceDto{}.CollectionName()).Find(ctx, filter)
