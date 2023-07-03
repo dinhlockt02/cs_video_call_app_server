@@ -20,6 +20,7 @@ type User struct {
 	Id          *string    `json:"id" bson:"_id,omitempty"`
 	UpdatedAt   *time.Time `bson:"updated_at" json:"update_at,omitempty"`
 	Friends     []string   `json:"friends" bson:"friends"`
+	Groups      []string   `json:"-" bson:"groups"`
 	BlockedUser []string   `bson:"blocked_user"`
 	Avatar      string     `json:"avatar" bson:"avatar"`
 	Name        string     `json:"name" bson:"name"`
