@@ -67,7 +67,7 @@ func (biz *AcceptGroupRequestBiz) AcceptRequest(ctx context.Context, requesterId
 	// Update Requester
 	requester.Groups = append(requester.Groups, groupId)
 
-	err = biz.groupRepo.UpdateUser(ctx, requestFilter, requester)
+	err = biz.groupRepo.UpdateUser(ctx, requesterFilter, requester)
 	if err != nil {
 		return common.ErrInternal(errors.Wrap(err, "can not update requester"))
 	}
