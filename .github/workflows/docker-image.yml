@@ -28,4 +28,6 @@ jobs:
           context: .
           push: true
           platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           tags: dinhlockt02/cs_video_call_app_server:latest
