@@ -54,6 +54,7 @@ func (repo *FindUserRepo) FindUser(ctx context.Context, requesterId string,
 		return nil, errors.Wrap(err, "can not find requester")
 	}
 
+	// Find common Friend
 	requesterFriendMap := make(map[string]interface{}, len(requester.Friends))
 
 	for _, friend := range requester.Friends {
@@ -68,6 +69,22 @@ func (repo *FindUserRepo) FindUser(ctx context.Context, requesterId string,
 	}
 
 	user.CommonFriendCount = &commonFriendCount
+
+	// Find common groups
+	requesterGroupMap := make(map[string]interface{}, len(requester.Groups))
+
+	for _, group := range requester.Groups {
+		requesterGroupMap[group] = struct{}{}
+	}
+
+	commonGroupCount := 0
+	for _, group := range fuser.Groups {
+		if _, ok := requesterGroupMap[group]; ok {
+			commonGroupCount++
+		}
+	}
+
+	user.CommonGroupCount = &commonGroupCount
 
 	return user, nil
 }

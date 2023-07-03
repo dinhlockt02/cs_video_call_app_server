@@ -20,6 +20,9 @@ type User struct {
 	Bio                   string               `json:"bio" bson:"bio"`
 	CommonFriend          []string             `json:"-"`
 	CommonFriendCount     *int                 `json:"common_friend_count,omitempty"`
+	CommonGroupCount      *int                 `json:"common_group_count,omitempty"`
+	EmailVerified         bool                 `json:"email_verified" bson:"email_verified"`
+	ProfileUpdated        bool                 `json:"profile_updated" bson:"profile_updated"`
 	Relation              friendmodel.Relation `json:"relation"`
 }
 
