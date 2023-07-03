@@ -6,5 +6,5 @@ import (
 )
 
 func Setup(ctx context.Context, appCtx appcontext.AppContext) {
-	UpdateMeetingStateWhenRoomFinished(ctx, appCtx)
+	UpdateMeetingOrCallStateWhenRoomFinished(ctx, appCtx)
 }

@@ -26,7 +26,6 @@ type Call struct {
 	Callee         *User      `bson:"callee" json:"callee"`
 	Status         Status     `bson:"status" json:"status"`
 	CalledAt       *time.Time `bson:"called_at" json:"called_at"`
-	CallRoom       string     `bson:"call_room" json:"call_room"`
 }
 
 func (Call) CollectionName() string {

@@ -10,8 +10,8 @@ import (
 func InitCallRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
 	call := g.Group("/call", authmiddleware.Authentication(appCtx))
 	{
-		call.POST("/:friendId/:callRoomId", callgin.CreateNewCall(appCtx))
-		call.DELETE("/:friendId/:callRoomId/reject", callgin.RejectCall(appCtx))
-		call.DELETE("/:friendId/:callRoomId/abandon", callgin.AbandonCall(appCtx))
+		call.POST("/:friendId", callgin.CreateNewCall(appCtx))
+		call.GET("/:callRoomId", callgin.JoinCall(appCtx))
+		call.GET("", callgin.ListCalls(appCtx))
 	}
 }

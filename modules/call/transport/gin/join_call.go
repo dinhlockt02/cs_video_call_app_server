@@ -13,15 +13,15 @@ import (
 	"net/http"
 )
 
-func CreateNewCall(appCtx appcontext.AppContext) gin.HandlerFunc {
+func JoinCall(appCtx appcontext.AppContext) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		u, _ := context.Get(common.CurrentUser)
 		requester := u.(common.Requester)
 
 		requesterId := requester.GetId()
-		friendId := context.Param("friendId")
+		callId := context.Param("callId")
 
-		if !primitive.IsValidObjectID(friendId) {
+		if !primitive.IsValidObjectID(callId) {
 			panic(common.ErrInvalidRequest(errors.Wrap(common.ErrInvalidObjectId, "invalid friend id")))
 		}
 		callStore := callstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
@@ -30,8 +30,8 @@ func CreateNewCall(appCtx appcontext.AppContext) gin.HandlerFunc {
 			userStore,
 			callStore,
 		)
-		token, err := callbiz.NewCreateCallBiz(callRepo, appCtx.LiveKitService(), appCtx.Notification()).
-			Create(context.Request.Context(), requesterId, friendId)
+		token, err := callbiz.NewJoinCallBiz(callRepo, appCtx.LiveKitService()).
+			Join(context.Request.Context(), requesterId, callId)
 		if err != nil {
 			panic(err)
 		}
