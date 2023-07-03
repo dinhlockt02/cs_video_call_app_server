@@ -15,12 +15,12 @@ import (
 
 type AcceptRequestBiz struct {
 	friendRepository friendrepo.Repository
-	notification     notirepo.Repository
+	notification     notirepo.INotificationService
 }
 
 func NewAcceptRequestBiz(
 	friendRepository friendrepo.Repository,
-	notification notirepo.Repository,
+	notification notirepo.INotificationService,
 ) *AcceptRequestBiz {
 	return &AcceptRequestBiz{
 		friendRepository: friendRepository,

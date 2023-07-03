@@ -12,11 +12,11 @@ import (
 
 type RecallGroupRequestBiz struct {
 	groupRepo    grouprepo.Repository
-	notification notirepo.Repository
+	notification notirepo.INotificationService
 }
 
 func NewRecallGroupRequestBiz(groupRepo grouprepo.Repository,
-	notification notirepo.Repository) *RecallGroupRequestBiz {
+	notification notirepo.INotificationService) *RecallGroupRequestBiz {
 	return &RecallGroupRequestBiz{groupRepo: groupRepo, notification: notification}
 }
 

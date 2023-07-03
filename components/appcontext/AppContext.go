@@ -19,7 +19,7 @@ type AppContext interface {
 	Mailer() mailer.Mailer
 	Redis() *redis.Client
 	FirebaseApp() fbs.App
-	Notification() notirepo.Repository
+	Notification() notirepo.INotificationService
 	LiveKitService() lksv.LiveKitService
 	PubSub() pubsub.PubSub
 }
@@ -31,7 +31,7 @@ type AppCtx struct {
 	rds            *redis.Client
 	fa             fbs.App
 	mailer         mailer.Mailer
-	notification   notirepo.Repository
+	notification   notirepo.INotificationService
 	livekitService lksv.LiveKitService
 	pubsub         pubsub.PubSub
 }
@@ -43,7 +43,7 @@ func NewAppContext(
 	fa fbs.App,
 	mailer mailer.Mailer,
 	rds *redis.Client,
-	notification notirepo.Repository,
+	notification notirepo.INotificationService,
 	livekitService lksv.LiveKitService,
 	pubsub pubsub.PubSub,
 ) *AppCtx {
@@ -84,7 +84,7 @@ func (a *AppCtx) Mailer() mailer.Mailer {
 	return a.mailer
 }
 
-func (a *AppCtx) Notification() notirepo.Repository {
+func (a *AppCtx) Notification() notirepo.INotificationService {
 	return a.notification
 }
 

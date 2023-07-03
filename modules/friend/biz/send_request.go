@@ -14,12 +14,12 @@ import (
 
 type SendRequestBiz struct {
 	friendRepo   friendrepo.Repository
-	notification notirepo.Repository
+	notification notirepo.INotificationService
 }
 
 func NewSendRequestBiz(
 	friendRepo friendrepo.Repository,
-	notification notirepo.Repository,
+	notification notirepo.INotificationService,
 ) *SendRequestBiz {
 	return &SendRequestBiz{
 		friendRepo:   friendRepo,
