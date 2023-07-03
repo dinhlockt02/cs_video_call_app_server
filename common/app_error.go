@@ -11,6 +11,7 @@ type Entity string
 var (
 	UserEntity    Entity = "User"
 	MeetingEntity Entity = "Meeting"
+	CallEntity    Entity = "Call"
 	GroupEntity   Entity = "Group"
 )
 

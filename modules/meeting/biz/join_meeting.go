@@ -51,7 +51,7 @@ func (biz *JoinMeetingBiz) Join(ctx context.Context, requester, groupId, meeting
 
 	token, err := biz.livekitService.CreateJoinToken(*meeting.Id, requester)
 	if err != nil {
-		return "", common.ErrInternal(err)
+		return "", common.ErrInternal(errors.Wrap(err, "can not create join room token"))
 	}
 	return token, nil
 }

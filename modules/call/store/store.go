@@ -9,7 +9,8 @@ import (
 type Store interface {
 	Create(ctx context.Context, data *callmdl.Call) error
 	FindCall(ctx context.Context, filter map[string]interface{}) (*callmdl.Call, error)
-	Update(ctx context.Context, filter map[string]interface{}, data *callmdl.Call) error
+	Update(ctx context.Context, filter map[string]interface{}, data *callmdl.UpdateCall) error
+	ListCalls(ctx context.Context, filter map[string]interface{}) ([]callmdl.Call, error)
 }
 
 type MongoStore struct {

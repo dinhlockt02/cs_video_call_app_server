@@ -8,16 +8,13 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (s *MongoStore) Update(ctx context.Context, filter map[string]interface{}, data *callmdl.Call) error {
+func (s *MongoStore) Update(ctx context.Context, filter map[string]interface{}, data *callmdl.UpdateCall) error {
 	log.Debug().Any("filter", filter).Any("data", data).Msg("update a call")
-	id := data.Id
-	data.Id = nil
 	update := bson.M{"$set": data}
 
 	_, err := s.database.Collection(data.CollectionName()).UpdateOne(ctx, filter, update)
 	if err != nil {
 		return errors.Wrap(err, "can not update call")
 	}
-	data.Id = id
 	return nil
 }

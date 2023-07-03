@@ -14,7 +14,8 @@ type Repository interface {
 	) (*callmdl.User, error)
 	CreateCall(ctx context.Context, call *callmdl.Call) error
 	FindCall(ctx context.Context, filter map[string]interface{}) (*callmdl.Call, error)
-	UpdateCall(ctx context.Context, filter map[string]interface{}, data *callmdl.Call) error
+	UpdateCall(ctx context.Context, filter map[string]interface{}, data *callmdl.UpdateCall) error
+	ListCalls(ctx context.Context, filter map[string]interface{}) ([]callmdl.Call, error)
 }
 
 type CallRepository struct {

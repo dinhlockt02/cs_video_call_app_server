@@ -13,15 +13,23 @@ import (
 	"net/http"
 )
 
-func CreateNewCall(appCtx appcontext.AppContext) gin.HandlerFunc {
+func ListCalls(appCtx appcontext.AppContext) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		u, _ := context.Get(common.CurrentUser)
 		requester := u.(common.Requester)
 
 		requesterId := requester.GetId()
-		friendId := context.Param("friendId")
+		callId := context.Param("callId")
 
-		if !primitive.IsValidObjectID(friendId) {
+		filter := make(map[string]interface{})
+		if status, ok := context.GetQuery("status"); ok {
+			filter["status"] = status
+		}
+		if callee, ok := context.GetQuery("callee"); ok {
+			filter["callee"] = callee
+		}
+
+		if !primitive.IsValidObjectID(callId) {
 			panic(common.ErrInvalidRequest(errors.Wrap(common.ErrInvalidObjectId, "invalid friend id")))
 		}
 		callStore := callstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
@@ -30,8 +38,9 @@ func CreateNewCall(appCtx appcontext.AppContext) gin.HandlerFunc {
 			userStore,
 			callStore,
 		)
-		token, err := callbiz.NewCreateCallBiz(callRepo, appCtx.LiveKitService(), appCtx.Notification()).
-			Create(context.Request.Context(), requesterId, friendId)
+		requesterFilter, _ := common.GetIdFilter(requesterId)
+		token, err := callbiz.NewListCallsBiz(callRepo).
+			List(context.Request.Context(), requesterFilter)
 		if err != nil {
 			panic(err)
 		}
