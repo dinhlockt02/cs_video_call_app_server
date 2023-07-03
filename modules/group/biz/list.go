@@ -20,7 +20,7 @@ func NewListGroupBiz(groupRepo grouprepo.Repository) *ListGroupBiz {
 
 func (biz *ListGroupBiz) List(ctx context.Context,
 	requesterId string, groupFilter map[string]interface{}) ([]groupmdl.Group, error) {
-	log.Debug().Str("requesterId", requesterId).Any("groupFilter", groupFilter).Msg("leave")
+	log.Debug().Str("requesterId", requesterId).Any("groupFilter", groupFilter).Msg("list group")
 
 	filter, err := common.GetIdFilter(requesterId)
 	if err != nil {
