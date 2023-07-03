@@ -17,5 +17,5 @@ const (
 	UserCollectionName    = "users"
 	CallCollectionName    = "calls"
 	MeetingCollectionName = "meetings"
-	DevicesCollectionName
+	DevicesCollectionName = "devices"
 )
