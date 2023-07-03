@@ -77,20 +77,23 @@ func (biz *LoginWithFirebaseBiz) LoginWithFirebase(ctx context.Context,
 		if err != nil {
 			return nil, common.ErrInternal(errors.Wrap(err, "can not delete user"))
 		}
+		existedUser = nil
 	}
 
-	createdUser := &authmodel.RegisterFirebaseUser{
-		Email: *email,
-	}
+	if existedUser == nil {
+		createdUser := &authmodel.RegisterFirebaseUser{
+			Email: *email,
+		}
+		err = createdUser.Process()
+		if err != nil {
+			return nil, common.ErrInternal(errors.Wrap(err, "can not process created user"))
+		}
 
-	err = createdUser.Process()
-	if err != nil {
-		return nil, common.ErrInternal(errors.Wrap(err, "can not process created user"))
-	}
+		existedUser, err = biz.authStore.CreateFirebaseUser(ctx, createdUser)
+		if err != nil {
+			return nil, common.ErrInternal(errors.Wrap(err, "can not create user"))
+		}
 
-	existedUser, err = biz.authStore.CreateFirebaseUser(ctx, createdUser)
-	if err != nil {
-		return nil, common.ErrInternal(errors.Wrap(err, "can not create user"))
 	}
 
 	device.UserId = existedUser.Id
