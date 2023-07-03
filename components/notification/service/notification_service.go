@@ -1,4 +1,4 @@
-package notirepo
+package notiservice
 
 import (
 	"context"

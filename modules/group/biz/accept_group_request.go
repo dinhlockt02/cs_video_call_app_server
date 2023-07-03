@@ -14,11 +14,11 @@ import (
 
 type AcceptGroupRequestBiz struct {
 	groupRepo    grouprepo.Repository
-	notification notirepo.Repository
+	notification notirepo.INotificationService
 }
 
 func NewAcceptGroupRequestBiz(groupRepo grouprepo.Repository,
-	notification notirepo.Repository) *AcceptGroupRequestBiz {
+	notification notirepo.INotificationService) *AcceptGroupRequestBiz {
 	return &AcceptGroupRequestBiz{groupRepo: groupRepo, notification: notification}
 }
 
