@@ -55,6 +55,7 @@ func (biz *SendVerifyEmail) Send(ctx context.Context, receiverId string, isConcu
 	code := biz.getCode(receiverId)
 	// TODO: Create a config object
 	link := os.Getenv("VERIFY_EMAIL_URL") + code
+	log.Debug().Str("verify email link", link).Send()
 
 	err = biz.redisStore.SetVerifyEmailCode(ctx, code, receiverId)
 	if err != nil {
