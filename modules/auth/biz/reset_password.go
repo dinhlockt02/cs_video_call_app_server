@@ -45,7 +45,7 @@ func (biz *ResetPasswordBiz) Execute(ctx context.Context, data *authmodel.ResetP
 
 	email, err := biz.redisStore.GetForgetPasswordEmail(ctx, data.Code)
 	if err != nil {
-		return common.ErrInternal(err)
+		return common.ErrInternal(errors.Wrap(err, "can not get forget password email"))
 	}
 
 	if m := common.EmailRegexp.Match([]byte(email)); !m {
@@ -58,8 +58,11 @@ func (biz *ResetPasswordBiz) Execute(ctx context.Context, data *authmodel.ResetP
 	}
 	data.Password = hashedPassword
 
-	return biz.authstore.ResetPassword(ctx, map[string]interface{}{
+	err = biz.authstore.ResetPassword(ctx, map[string]interface{}{
 		"email": email,
 	}, data)
-
+	if err != nil {
+		return common.ErrInternal(errors.Wrap(err, "can not reset password"))
+	}
+	return nil
 }

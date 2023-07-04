@@ -7,4 +7,5 @@ var (
 	InvalidVerifyCode      = "invalid verify code"
 	InvalidEmail           = "invalid email"
 	InvalidCode            = "invalid code"
+	PasswordNotMatch       = "password not match"
 )
