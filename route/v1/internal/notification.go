@@ -13,5 +13,7 @@ func InitNotificationRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
 		notification.GET("", notigin.ListNotification(appCtx))
 		notification.DELETE("", notigin.DeleteAllNotifications(appCtx))
 		notification.DELETE("/:notificationId", notigin.DeleteNotificationById(appCtx))
+		notification.GET("/notification-setting", notigin.GetNotificationSetting(appCtx))
+		notification.PUT("/notification-setting", notigin.UpdateNotificationSetting(appCtx))
 	}
 }
