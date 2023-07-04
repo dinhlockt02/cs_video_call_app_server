@@ -42,6 +42,12 @@ func (biz *UpdatePasswordBiz) Update(ctx context.Context,
 		return common.ErrEntityNotFound(common.UserEntity, errors.New(authmodel.UserNotFound))
 	}
 
+	if ok, err := biz.passwordHasher.Compare(data.OldPassword, existedUser.Password); err != nil {
+		return common.ErrInternal(errors.Wrap(err, "can not check password equivalent"))
+	} else if !ok {
+		return common.ErrInvalidRequest(errors.New(authmodel.PasswordNotMatch))
+	}
+
 	hashedPassword, err := biz.passwordHasher.Hash(data.Password)
 	if err != nil {
 		return common.ErrInternal(errors.Wrap(err, "can not hash password"))
