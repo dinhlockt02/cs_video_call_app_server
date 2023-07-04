@@ -5,4 +5,6 @@ var (
 	UserExists             = "user exists"
 	UserNotFound           = "user not found"
 	InvalidVerifyCode      = "invalid verify code"
+	InvalidEmail           = "invalid email"
+	InvalidCode            = "invalid code"
 )
