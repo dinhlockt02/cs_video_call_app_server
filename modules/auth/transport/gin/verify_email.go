@@ -8,6 +8,7 @@ import (
 	authstore "github.com/dinhlockt02/cs_video_call_app_server/modules/auth/store"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"net/http"
 )
 
@@ -22,9 +23,10 @@ func VerifyEmail(appCtx appcontext.AppContext) gin.HandlerFunc {
 			appCtx.Redis(),
 		)).Verify(context.Request.Context(), code)
 		if err != nil {
-			panic(err)
+			log.Error().Stack().Err(err).Msg("verify email failed")
+			context.Redirect(http.StatusBadRequest, "/verify/failure")
+			return
 		}
-		// TODO: render an html page
-		context.JSONP(http.StatusOK, gin.H{"data": true})
+		context.Redirect(http.StatusFound, "/verify/success")
 	}
 }
