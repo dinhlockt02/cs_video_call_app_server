@@ -8,8 +8,6 @@ import (
 	callstore "github.com/dinhlockt02/cs_video_call_app_server/modules/call/store"
 	userstore "github.com/dinhlockt02/cs_video_call_app_server/modules/user/store"
 	"github.com/gin-gonic/gin"
-	"github.com/pkg/errors"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 )
 
@@ -19,7 +17,6 @@ func ListCalls(appCtx appcontext.AppContext) gin.HandlerFunc {
 		requester := u.(common.Requester)
 
 		requesterId := requester.GetId()
-		callId := context.Param("callId")
 
 		filter := make(map[string]interface{})
 		if status, ok := context.GetQuery("status"); ok {
@@ -27,10 +24,6 @@ func ListCalls(appCtx appcontext.AppContext) gin.HandlerFunc {
 		}
 		if callee, ok := context.GetQuery("callee"); ok {
 			filter["callee"] = callee
-		}
-
-		if !primitive.IsValidObjectID(callId) {
-			panic(common.ErrInvalidRequest(errors.Wrap(common.ErrInvalidObjectId, "invalid friend id")))
 		}
 		callStore := callstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		userStore := userstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
