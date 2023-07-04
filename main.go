@@ -146,7 +146,7 @@ func main() {
 	r.Use(middleware.Recover(appCtx))
 
 	v1.InitRoute(r, appCtx)
-	//r.StaticFile("/reset-password", "./templates/reset-password.html")
+	r.StaticFile("/reset-password", "./templates/reset-password.html")
 	r.StaticFile("/verify/success", "./templates/verify-success.html")
 	r.StaticFile("/verify/failure", "./templates/verify-failed.html")
 

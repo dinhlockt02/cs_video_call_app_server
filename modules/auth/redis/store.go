@@ -2,6 +2,7 @@ package authredis
 
 import (
 	"context"
+	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	"github.com/pkg/errors"
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog/log"
@@ -9,6 +10,7 @@ import (
 )
 
 const prefix = "verify-email:"
+const forgetPasswordPrefix = "forget-password:"
 
 type RedisStore struct {
 	client *redis.Client
@@ -37,4 +39,17 @@ func (s *RedisStore) GetVerifyEmailCode(ctx context.Context, code string) (strin
 		return "", errors.Wrap(err, "can not get verify email code")
 	}
 	return val, nil
+}
+
+func (s *RedisStore) SetForgetPasswordCode(ctx context.Context, code string, email string) error {
+	err := s.client.Set(ctx, forgetPasswordPrefix+code, email, 10*time.Minute).Err()
+	if err != nil {
+		return common.ErrInternal(err)
+	}
+	return nil
+}
+
+func (s *RedisStore) GetForgetPasswordEmail(ctx context.Context, code string) (string, error) {
+	val, err := s.client.Get(ctx, forgetPasswordPrefix+code).Result()
+	return val, err
 }
