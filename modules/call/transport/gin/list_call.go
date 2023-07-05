@@ -31,9 +31,11 @@ func ListCalls(appCtx appcontext.AppContext) gin.HandlerFunc {
 			userStore,
 			callStore,
 		)
-		requesterFilter, _ := common.GetIdFilter(requesterId)
+		requesterFilter := common.GetOrFilter(
+			callstore.GetCallerIdFilter(requesterId),
+			callstore.GetCalleeIdFilter(requesterId))
 		token, err := callbiz.NewListCallsBiz(callRepo).
-			List(context.Request.Context(), requesterFilter)
+			List(context.Request.Context(), common.GetAndFilter(requesterFilter, filter))
 		if err != nil {
 			panic(err)
 		}
