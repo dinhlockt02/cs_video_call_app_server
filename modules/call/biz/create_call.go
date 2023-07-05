@@ -62,7 +62,7 @@ func (biz *CreateCallBiz) Create(ctx context.Context,
 	}
 
 	if friend == nil {
-		return "", common.ErrEntityNotFound(common.UserEntity, errors.Wrap(err, "friend not found"))
+		return "", common.ErrEntityNotFound(common.UserEntity, errors.New("friend not found"))
 	}
 
 	// Create meeting
@@ -97,7 +97,7 @@ func (biz *CreateCallBiz) Create(ctx context.Context,
 	// Notify friend
 	go func() {
 		err = biz.notification.CreateIncomingCallNotification(
-			ctx,
+			context.Background(),
 			friend.Id,
 			&notimodel.NotificationObject{
 				Id:    requester.Id,

@@ -12,6 +12,8 @@ func InitCallRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
 	{
 		call.POST("/:friendId", callgin.CreateNewCall(appCtx))
 		call.GET("/:callRoomId", callgin.JoinCall(appCtx))
+		call.DELETE("/:callRoomId/abandon", callgin.AbandonCall(appCtx))
+		call.DELETE("/:callRoomId/reject", callgin.RejectCall(appCtx))
 		call.GET("", callgin.ListCalls(appCtx))
 	}
 }

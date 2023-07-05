@@ -5,12 +5,14 @@ import (
 	lkauth "github.com/livekit/protocol/auth"
 	livekit "github.com/livekit/protocol/livekit"
 	lksdk "github.com/livekit/server-sdk-go"
+	"github.com/pkg/errors"
 	"time"
 )
 
 type LiveKitService interface {
 	CreateRoom(ctx context.Context, roomName string) (*livekit.Room, error)
 	CreateJoinToken(room, identity string) (string, error)
+	CloseRoom(ctx context.Context, roomName string) error
 	AuthProvider() lkauth.KeyProvider
 }
 
@@ -79,4 +81,12 @@ func (s *liveKitService) AuthProvider() lkauth.KeyProvider {
 	return lkauth.NewSimpleKeyProvider(
 		s.apiKey, s.apiSecret,
 	)
+}
+
+func (s *liveKitService) CloseRoom(ctx context.Context, roomName string) error {
+	_, err := s.roomClient.DeleteRoom(ctx, &livekit.DeleteRoomRequest{Room: roomName})
+	if err != nil {
+		return errors.Wrap(err, "can not delete room")
+	}
+	return nil
 }
