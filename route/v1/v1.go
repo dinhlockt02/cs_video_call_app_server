@@ -19,5 +19,6 @@ func InitRoute(e *gin.Engine, appCtx appcontext.AppContext) {
 		internal.InitLiveKitWebhookRoute(v1, appCtx)
 		internal.InitSearchRoute(v1, appCtx)
 		internal.InitNotificationRoute(v1, appCtx)
+		internal.InitMessageRoute(v1, appCtx)
 	}
 }
