@@ -18,4 +18,5 @@ const (
 	CallCollectionName    = "calls"
 	MeetingCollectionName = "meetings"
 	DevicesCollectionName = "devices"
+	MessageCollectionName = "messages"
 )
