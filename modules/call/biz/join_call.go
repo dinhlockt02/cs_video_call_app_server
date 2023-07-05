@@ -45,6 +45,10 @@ func (biz *JoinCallBiz) Join(ctx context.Context, requester, callId string) (str
 		return "", common.ErrEntityNotFound(common.CallEntity, errors.New(meetingmodel.MeetingNotFound))
 	}
 
+	if call.Callee.Id != requester {
+		return "", common.ErrForbidden(errors.New("you not have permission to join call"))
+	}
+
 	token, err := biz.livekitService.CreateJoinToken(*call.Id, requester)
 	if err != nil {
 		return "", common.ErrInternal(errors.Wrap(err, "can not create join room token"))
