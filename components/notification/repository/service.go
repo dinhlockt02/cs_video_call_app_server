@@ -30,7 +30,21 @@ type INotificationService interface {
 		prep *notimodel.NotificationObject,
 	) error
 
-	// CreateIncomingCallNotification should be used when the Subject call the Direct (aka owner) in a room (Prep)
+	// CreateReceiveGroupRequestNotification is a method that will create, store and push notification
+	//
+	// It should be used when
+	// the Subject (aka owner) received the group request (Direct) to Group (Indirect) from Prep's
+	CreateReceiveGroupRequestNotification(
+		ctx context.Context,
+		owner string,
+		subject *notimodel.NotificationObject,
+		direct *notimodel.NotificationObject,
+		indirect *notimodel.NotificationObject,
+		prep *notimodel.NotificationObject,
+	) error
+
+	// CreateIncomingCallNotification should be used when
+	// the Subject call the Direct (aka owner) in a room (Prep)
 	CreateIncomingCallNotification(
 		ctx context.Context,
 		owner string,
@@ -39,7 +53,8 @@ type INotificationService interface {
 		prep *notimodel.NotificationObject,
 	) error
 
-	// CreateRejectIncomingCallNotification should be used when the Subject reject the Direct (aka owner) in a room (Prep)
+	// CreateRejectIncomingCallNotification should be used when
+	// the Subject reject the Direct (aka owner) in a room (Prep)
 	CreateRejectIncomingCallNotification(
 		ctx context.Context,
 		owner string,
@@ -65,7 +80,7 @@ type NotificationService struct {
 }
 
 func NewNotificationService(service notiservice.NotificationService,
-	store notistore.NotificationStore) *NotificationService {
+	store notistore.NotificationStore) INotificationService {
 	return &NotificationService{
 		service: service,
 		store:   store,
@@ -140,10 +155,22 @@ func (repo *NotificationService) CreateAbandonIncomingCallNotification(
 	prep *notimodel.NotificationObject,
 ) error {
 	noti := notimodel.
-		NewNotificationBuilder(notimodel.RejectCall, owner).
+		NewNotificationBuilder(notimodel.AbandonCall, owner).
 		SetSubject(subject).
 		SetPrep(prep).
 		SetDirect(direct).
+		Build()
+
+	return repo.createNotification(ctx, noti)
+}
+
+func (repo *NotificationService) CreateReceiveGroupRequestNotification(ctx context.Context, owner string, subject *notimodel.NotificationObject, direct *notimodel.NotificationObject, indirect *notimodel.NotificationObject, prep *notimodel.NotificationObject) error {
+	noti := notimodel.
+		NewNotificationBuilder(notimodel.ReceiveGroupRequest, owner).
+		SetSubject(subject).
+		SetDirect(direct).
+		SetIndirect(indirect).
+		SetPrep(prep).
 		Build()
 
 	return repo.createNotification(ctx, noti)

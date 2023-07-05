@@ -3,6 +3,7 @@ package groupbiz
 import (
 	"context"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
+	notimodel "github.com/dinhlockt02/cs_video_call_app_server/components/notification/model"
 	notirepo "github.com/dinhlockt02/cs_video_call_app_server/components/notification/repository"
 	friendmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
 	groupmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/group/model"
@@ -10,6 +11,7 @@ import (
 	requestmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/request/model"
 	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
 type SendGroupRequestBiz struct {
@@ -97,7 +99,40 @@ func (biz *SendGroupRequestBiz) SendRequest(ctx context.Context,
 	}
 
 	go func() {
-		// TODO: Push notification group request
+
+		groupName := ""
+		if group.Name != nil {
+			groupName = *group.Name
+		}
+
+		e := biz.notification.CreateReceiveGroupRequestNotification(context.Background(), user,
+			&notimodel.NotificationObject{
+				Id:    user,
+				Name:  receiver.Name,
+				Image: &receiver.Avatar,
+				Type:  notimodel.User,
+			},
+			&notimodel.NotificationObject{
+				Id:    *req.Id,
+				Name:  "",
+				Image: nil,
+				Type:  notimodel.Request,
+			},
+			&notimodel.NotificationObject{
+				Id:    *group.Id,
+				Name:  groupName,
+				Image: group.ImageURL,
+				Type:  notimodel.Group,
+			},
+			&notimodel.NotificationObject{
+				Id:    requesterId,
+				Name:  requester.Name,
+				Image: &requester.Avatar,
+				Type:  notimodel.User,
+			})
+		if e != nil {
+			log.Error().Stack().Err(e).Msg("create receive group notification failed")
+		}
 	}()
 
 	return nil

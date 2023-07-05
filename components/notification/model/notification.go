@@ -15,12 +15,14 @@ const (
 	IncomingCallId
 	RejectCallId
 	AbandonCallId
+	ReceiveGroupRequestId
 )
 
 type ChannelKey string
 
 const (
 	BasicChannel ChannelKey = "basic_channel"
+	CallChannel  ChannelKey = "call_channel"
 )
 
 type ActionKey string
@@ -35,13 +37,16 @@ type NotificationObjectType string
 const (
 	User     NotificationObjectType = "user"
 	CallRoom NotificationObjectType = "call-room"
+	Request  NotificationObjectType = "request"
+	Group    NotificationObjectType = "group"
 )
 
 type NotificationActionType string
 
 const (
 	AcceptRequest        NotificationActionType = "accept-request"
-	ReceiveFriendRequest NotificationActionType = "send-friend-request"
+	ReceiveFriendRequest NotificationActionType = "receive-friend-request"
+	ReceiveGroupRequest  NotificationActionType = "receive-group-request"
 	InComingCall         NotificationActionType = "incoming-call"
 	RejectCall           NotificationActionType = "reject-call"
 	AbandonCall          NotificationActionType = "abandon-call"
@@ -137,7 +142,8 @@ func (n *Notification) GetMessage() (title string, body string) {
 		return "Reject call", fmt.Sprintf("Reject call by %s", n.Subject.Name)
 	case AbandonCall:
 		return "Abandon call", fmt.Sprintf("You've missed call from %s", n.Subject.Name)
-
+	case ReceiveGroupRequest:
+		return "Group request received", fmt.Sprintf("%s asked you to join group %s", n.Prep.Name, n.Indirect.Name)
 	default:
 		return "", ""
 	}
@@ -190,10 +196,29 @@ func (n *Notification) GetContent() (map[string]interface{}, error) {
 			"body":     body,
 			"locked":   false,
 		}, nil
+	case ReceiveGroupRequest:
+		return map[string]interface{}{
+			"id":                  ReceiveGroupRequestId,
+			"channelKey":          BasicChannel,
+			"displayOnForeground": true,
+			"displayOnBackground": true,
+			"notificationLayout":  "Default",
+			"showWhen":            true,
+			"autoDismissible":     true,
+			"largeIcon":           n.Prep.Image,
+			"privacy":             "Private",
+			"payload": map[string]string{
+				"notification": string(marshaledNotification),
+			},
+			"category": "Social",
+			"title":    title,
+			"body":     body,
+			"locked":   false,
+		}, nil
 	case InComingCall:
 		return map[string]interface{}{
 			"id":                  RejectCallId,
-			"channelKey":          BasicChannel,
+			"channelKey":          CallChannel,
 			"displayOnForeground": true,
 			"displayOnBackground": true,
 			"notificationLayout":  "Default",
@@ -212,7 +237,7 @@ func (n *Notification) GetContent() (map[string]interface{}, error) {
 	case RejectCall:
 		return map[string]interface{}{
 			"id":                  IncomingCallId,
-			"channelKey":          BasicChannel,
+			"channelKey":          CallChannel,
 			"displayOnForeground": false,
 			"displayOnBackground": true,
 			"notificationLayout":  "Default",
@@ -231,7 +256,7 @@ func (n *Notification) GetContent() (map[string]interface{}, error) {
 	case AbandonCall:
 		return map[string]interface{}{
 			"id":                  AbandonCallId,
-			"channelKey":          BasicChannel,
+			"channelKey":          CallChannel,
 			"displayOnForeground": true,
 			"displayOnBackground": true,
 			"notificationLayout":  "Default",
@@ -256,9 +281,23 @@ func (n *Notification) GetContent() (map[string]interface{}, error) {
 // which each item ís an action button.
 func (n *Notification) GetActionButton() []map[string]interface{} {
 	switch n.Action {
-	case AcceptRequest:
-		return nil
 	case ReceiveFriendRequest:
+		return []map[string]interface{}{
+			{
+				"key":             Accept,
+				"label":           GetActionKeyLabel(Accept),
+				"autoDismissible": true,
+				"actionType":      "DismissAction",
+			},
+			{
+				"key":               Deny,
+				"label":             GetActionKeyLabel(Deny),
+				"isDangerousOption": true,
+				"autoDismissible":   true,
+				"actionType":        "DismissAction",
+			},
+		}
+	case ReceiveGroupRequest:
 		return []map[string]interface{}{
 			{
 				"key":             Accept,
