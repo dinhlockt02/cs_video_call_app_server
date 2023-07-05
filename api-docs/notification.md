@@ -5,7 +5,7 @@ There are 2 types of channel at the moment:
 1. basic_channel
 2. call_channel
 ### Notification Payload
-- Notification `payload` is a Json-Serialized of the Notification. Depends on which type of notification, it may contains `subject`, `direct`, `indirect` and `prep` key. Those key below are required
+- Notification `payload` is a Json-Serialized of the Notification. Those key below are required in payload
 ```json
 {
   "id": "the notification id",
@@ -14,7 +14,7 @@ There are 2 types of channel at the moment:
   "action": "the type of action, this is unique between each type of notification"
 }
 ```
-- In each key, e.g. `subject`, the data is
+- Depends on which type of notification, payload also may contains `subject`, `direct`, `indirect` and `prep` key. In each key, e.g. `subject`, the data is
 ```json
 {
   "id": "string",
