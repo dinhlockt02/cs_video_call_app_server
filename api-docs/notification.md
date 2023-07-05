@@ -11,7 +11,7 @@ There are 2 types of channel at the moment:
   "id": "the notification id",
   "created_at": "the time notification was created",
   "owner": "the id of user who will receive notification",
-  "action": "the type of action, this is unique between each type of notification",
+  "action": "the type of action, this is unique between each type of notification"
   // ... other optional keys ...
 }
 ```
