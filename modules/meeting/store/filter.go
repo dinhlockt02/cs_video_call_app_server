@@ -9,3 +9,7 @@ func GetGroupFilter(groupId string) map[string]interface{} {
 func GetStatusFilter(status meetingmodel.MeetingStatus) map[string]interface{} {
 	return map[string]interface{}{"status": status}
 }
+
+func GetParticipantIdFilter(participantId string) map[string]interface{} {
+	return map[string]interface{}{"participants.id": participantId}
+}
