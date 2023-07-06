@@ -10,7 +10,7 @@ type Group struct {
 	Name           *string  `bson:"name,omitempty" json:"name,omitempty"`
 	Members        []string `bson:"members,omitempty" json:"members,omitempty"`
 	ImageURL       *string  `json:"image_url,omitempty" bson:"image_url,omitempty"`
-	LatestMeeting  *string  `json:"latest_meeting" bson:"latest_meeting"`
+	LatestMeeting  *string  `json:"latest_meeting,omitempty" bson:"latest_meeting,omitempty"`
 }
 
 func (Group) CollectionName() string {

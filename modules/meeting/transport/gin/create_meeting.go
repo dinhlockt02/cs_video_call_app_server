@@ -65,7 +65,7 @@ func CreateMeeting(appCtx appcontext.AppContext) gin.HandlerFunc {
 
 		meetingStore := meetingstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		meetingRepo := meetingrepo.NewMeetingRepository(meetingStore)
-		createMeetingBiz := meetingbiz.NewCreateMeetingBiz(meetingRepo, appCtx.LiveKitService())
+		createMeetingBiz := meetingbiz.NewCreateMeetingBiz(meetingRepo, appCtx.LiveKitService(), appCtx.PubSub())
 
 		token, err := createMeetingBiz.Create(c.Request.Context(), requester.GetId(), &data)
 		if err != nil {

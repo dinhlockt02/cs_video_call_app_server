@@ -7,4 +7,5 @@ webhook:
         - 'http://localhost:8080/v1/livekit-webhook'
 room:
     auto_create: false
+    empty_timeout: 10
 
