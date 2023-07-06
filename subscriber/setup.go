@@ -14,4 +14,6 @@ func Setup(ctx context.Context, appCtx appcontext.AppContext) {
 	UpdateMeetingParticipantsWhenUserUpdateProfile(ctx, appCtx)
 	UpdateRequestsWhenUserUpdateProfile(ctx, appCtx)
 	UpdateRequestsWhenGroupUpdated(ctx, appCtx)
+	UpdateNotificationWhenUserUpdateProfile(ctx, appCtx)
+	UpdateNotificationWhenGroupUpdated(ctx, appCtx)
 }
