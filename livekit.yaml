@@ -5,3 +5,6 @@ webhook:
     api_key: devkey
     urls:
         - 'http://localhost:8080/v1/livekit-webhook'
+room:
+    auto_create: false
+

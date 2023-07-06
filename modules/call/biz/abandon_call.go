@@ -8,6 +8,7 @@ import (
 	notirepo "github.com/dinhlockt02/cs_video_call_app_server/components/notification/repository"
 	callmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/call/model"
 	callrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/call/repository"
+	callstore "github.com/dinhlockt02/cs_video_call_app_server/modules/call/store"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -54,6 +55,8 @@ func (biz *AbdandonCallBiz) Abandon(ctx context.Context,
 	if err != nil {
 		return common.ErrInvalidRequest(errors.Wrap(err, "invalid call id"))
 	}
+
+	callFilter = common.GetAndFilter(callFilter, callstore.GetCallStatusFilter(callmdl.OnGoing))
 
 	call, err := biz.callRepo.FindCall(ctx, callFilter)
 	if err != nil {
