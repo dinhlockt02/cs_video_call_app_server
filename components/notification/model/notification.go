@@ -12,10 +12,10 @@ type NotificationId byte
 const (
 	AcceptFriendRequestId NotificationId = iota + 1
 	ReceiveFriendRequestId
+	ReceiveGroupRequestId
 	IncomingCallId
 	RejectCallId
 	AbandonCallId
-	ReceiveGroupRequestId
 )
 
 type ChannelKey string
@@ -217,6 +217,25 @@ func (n *Notification) GetContent() (map[string]interface{}, error) {
 		}, nil
 	case InComingCall:
 		return map[string]interface{}{
+			"id":                  IncomingCallId,
+			"channelKey":          CallChannel,
+			"displayOnForeground": true,
+			"displayOnBackground": true,
+			"notificationLayout":  "Default",
+			"showWhen":            true,
+			"autoDismissible":     true,
+			"importance":          "High",
+			"privacy":             "Private",
+			"payload": map[string]string{
+				"notification": string(marshaledNotification),
+			},
+			"category": "Call",
+			"title":    title,
+			"body":     body,
+			"locked":   true,
+		}, nil
+	case RejectCall:
+		return map[string]interface{}{
 			"id":                  RejectCallId,
 			"channelKey":          CallChannel,
 			"displayOnForeground": true,
@@ -233,25 +252,6 @@ func (n *Notification) GetContent() (map[string]interface{}, error) {
 			"title":    title,
 			"body":     body,
 			"locked":   false,
-		}, nil
-	case RejectCall:
-		return map[string]interface{}{
-			"id":                  IncomingCallId,
-			"channelKey":          CallChannel,
-			"displayOnForeground": false,
-			"displayOnBackground": true,
-			"notificationLayout":  "Default",
-			"showWhen":            true,
-			"autoDismissible":     true,
-			"importance":          "High",
-			"privacy":             "Private",
-			"payload": map[string]string{
-				"notification": string(marshaledNotification),
-			},
-			"category": "Call",
-			"title":    title,
-			"body":     body,
-			"locked":   true,
 		}, nil
 	case AbandonCall:
 		return map[string]interface{}{
@@ -270,7 +270,7 @@ func (n *Notification) GetContent() (map[string]interface{}, error) {
 			"category": "Call",
 			"title":    title,
 			"body":     body,
-			"locked":   true,
+			"locked":   false,
 		}, nil
 	default:
 		return nil, nil
