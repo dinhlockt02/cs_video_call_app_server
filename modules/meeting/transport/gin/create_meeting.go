@@ -11,6 +11,7 @@ import (
 	meetingrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/meeting/repository"
 	meetingstore "github.com/dinhlockt02/cs_video_call_app_server/modules/meeting/store"
 	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
+	userstore "github.com/dinhlockt02/cs_video_call_app_server/modules/user/store"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"net/http"
@@ -64,8 +65,9 @@ func CreateMeeting(appCtx appcontext.AppContext) gin.HandlerFunc {
 		data.Participants = nil
 
 		meetingStore := meetingstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
-		meetingRepo := meetingrepo.NewMeetingRepository(meetingStore)
-		createMeetingBiz := meetingbiz.NewCreateMeetingBiz(meetingRepo, appCtx.LiveKitService(), appCtx.PubSub())
+		userStore := userstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
+		meetingRepo := meetingrepo.NewMeetingRepository(meetingStore, userStore)
+		createMeetingBiz := meetingbiz.NewCreateMeetingBiz(meetingRepo, appCtx.LiveKitService())
 
 		token, err := createMeetingBiz.Create(c.Request.Context(), requester.GetId(), &data)
 		if err != nil {

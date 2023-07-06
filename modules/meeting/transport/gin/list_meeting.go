@@ -10,6 +10,7 @@ import (
 	meetingrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/meeting/repository"
 	meetingstore "github.com/dinhlockt02/cs_video_call_app_server/modules/meeting/store"
 	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
+	userstore "github.com/dinhlockt02/cs_video_call_app_server/modules/user/store"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"net/http"
@@ -50,7 +51,8 @@ func ListMeetings(appCtx appcontext.AppContext) gin.HandlerFunc {
 		}
 
 		meetingStore := meetingstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
-		meetingRepo := meetingrepo.NewMeetingRepository(meetingStore)
+		userStore := userstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
+		meetingRepo := meetingrepo.NewMeetingRepository(meetingStore, userStore)
 		listMeetingsbiz := meetingbiz.NewListMeetingsBiz(meetingRepo)
 
 		data, err := listMeetingsbiz.List(c.Request.Context(), groupId)
