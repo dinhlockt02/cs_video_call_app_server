@@ -26,7 +26,7 @@ type Request struct {
 }
 
 func (*Request) CollectionName() string {
-	return "requests"
+	return common.RequestsCollectionName
 }
 func (r *Request) Process() {
 	now := time.Now()

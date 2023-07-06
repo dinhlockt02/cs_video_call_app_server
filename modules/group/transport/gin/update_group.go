@@ -58,7 +58,7 @@ func UpdateGroup(appCtx appcontext.AppContext) gin.HandlerFunc {
 			panic(common.ErrInvalidRequest(err))
 		}
 
-		err = groupbiz.NewUpdateGroupBiz(groupRepo).Update(c.Request.Context(), groupFilter, data)
+		err = groupbiz.NewUpdateGroupBiz(groupRepo, appCtx.PubSub()).Update(c.Request.Context(), groupFilter, data)
 		if err != nil {
 			panic(err)
 		}
