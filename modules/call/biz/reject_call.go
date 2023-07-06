@@ -33,7 +33,7 @@ func NewRejectCallBiz(
 
 func (biz *RejectCallBiz) Reject(ctx context.Context,
 	requesterId string, callId string) error {
-	log.Debug().Str("requesterId", requesterId).Str("callId", callId).Msg("abandon a call")
+	log.Debug().Str("requesterId", requesterId).Str("callId", callId).Msg("reject a call")
 
 	// Find requester
 	requesterFilter, err := common.GetIdFilter(requesterId)
