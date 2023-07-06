@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	lksv "github.com/dinhlockt02/cs_video_call_app_server/components/livekit_service"
+	"github.com/dinhlockt02/cs_video_call_app_server/components/pubsub"
 	meetingmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/meeting/model"
 	meetingrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/meeting/repository"
 	"github.com/pkg/errors"
@@ -13,15 +14,18 @@ import (
 type CreateMeetingBiz struct {
 	meetingRepo    meetingrepo.Repository
 	livekitService lksv.LiveKitService
+	pubsub         pubsub.PubSub
 }
 
 func NewCreateMeetingBiz(
 	meetingRepo meetingrepo.Repository,
 	livekitService lksv.LiveKitService,
+	pubsub pubsub.PubSub,
 ) *CreateMeetingBiz {
 	return &CreateMeetingBiz{
 		meetingRepo:    meetingRepo,
 		livekitService: livekitService,
+		pubsub:         pubsub,
 	}
 }
 
@@ -61,6 +65,11 @@ func (biz *CreateMeetingBiz) Create(ctx context.Context,
 	token, err := biz.livekitService.CreateJoinToken(*meeting.Id, requesterId)
 	if err != nil {
 		return "", common.ErrInternal(errors.Wrap(err, "can not create join token"))
+	}
+
+	err = biz.pubsub.Publish(ctx, common.TopicRoomCreated, *meeting.Id)
+	if err != nil {
+		log.Error().Err(err).Msg("can not publish TopicRoomCreated")
 	}
 	return token, nil
 }

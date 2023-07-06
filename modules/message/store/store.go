@@ -11,6 +11,7 @@ type Store interface {
 	DeleteOne(ctx context.Context, filter map[string]interface{}) error
 	List(ctx context.Context, filter map[string]interface{}) ([]messagemdl.Message, error)
 	Get(ctx context.Context, filter map[string]interface{}) (*messagemdl.Message, error)
+	UpdateMany(ctx context.Context, filter map[string]interface{}, data *messagemdl.UpdateMessage) error
 }
 
 type MongoStore struct {

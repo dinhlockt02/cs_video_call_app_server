@@ -13,7 +13,7 @@ func (s *MongoStore) FindGroup(
 	filter map[string]interface{},
 ) (*groupmdl.Group, error) {
 	log.Debug().Any("filter", filter).Msg("find a group")
-	var group *groupmdl.Group
+	var group groupmdl.Group
 
 	result := s.database.Collection(groupmdl.Group{}.CollectionName()).
 		FindOne(ctx, filter)
@@ -26,5 +26,5 @@ func (s *MongoStore) FindGroup(
 	if err := result.Decode(&group); err != nil {
 		return nil, errors.Wrap(err, "can not find group")
 	}
-	return group, nil
+	return &group, nil
 }

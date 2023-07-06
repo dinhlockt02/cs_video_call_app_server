@@ -15,6 +15,11 @@ type Store interface {
 	) error
 	ListMeeting(ctx context.Context, filter map[string]interface{}) ([]meetingmodel.Meeting, error)
 	FindMeeting(ctx context.Context, filter map[string]interface{}) (*meetingmodel.Meeting, error)
+	UpdateParticipants(
+		ctx context.Context,
+		filter map[string]interface{},
+		updateParticipant *meetingmodel.Participant,
+	) error
 }
 
 type MongoStore struct {
