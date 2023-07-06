@@ -18,7 +18,7 @@ type Meeting struct {
 	Description    string        `json:"description" bson:"description"`
 	TimeStart      *time.Time    `bson:"time_start" json:"time_start"`
 	TimeEnd        *time.Time    `json:"time_end,omitempty" bson:"time_end,omitempty"`
-	Participants   []string      `bson:"participants,omitempty" json:"participants,omitempty"`
+	Participants   []Participant `bson:"participants,omitempty" json:"participants,omitempty"`
 	GroupId        string        `json:"group" bson:"group"`
 	Status         MeetingStatus `bson:"status" json:"status"`
 }

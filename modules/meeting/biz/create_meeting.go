@@ -26,12 +26,30 @@ func NewCreateMeetingBiz(
 }
 
 func (biz *CreateMeetingBiz) Create(ctx context.Context,
-	requester string, meeting *meetingmodel.Meeting) (string, error) {
-	log.Debug().Str("requester", requester).Any("meeting", meeting).Msg("create meeting")
+	requesterId string, meeting *meetingmodel.Meeting) (string, error) {
+	log.Debug().Str("requesterId", requesterId).Any("meeting", meeting).Msg("create meeting")
+
+	// Find requester
+	requesterFilter, err := common.GetIdFilter(requesterId)
+	if err != nil {
+		return "", common.ErrInvalidRequest(errors.Wrap(err, "invalid requester id"))
+	}
+
+	requester, err := biz.meetingRepo.FindParticipant(ctx, requesterFilter)
+
+	if err != nil {
+		return "", common.ErrInternal(errors.Wrap(err, "can not find requester"))
+	}
+
+	if requester == nil {
+		return "", common.ErrEntityNotFound(common.UserEntity, errors.New("requester not found"))
+	}
+
 	// Create meeting
 	meeting.Status = meetingmodel.OnGoing
+	meeting.Participants = append(meeting.Participants, *requester)
 
-	err := biz.meetingRepo.CreateMeeting(ctx, meeting)
+	err = biz.meetingRepo.CreateMeeting(ctx, meeting)
 	if err != nil {
 		return "", common.ErrInternal(errors.Wrap(err, "can not create meeting"))
 	}
@@ -40,7 +58,7 @@ func (biz *CreateMeetingBiz) Create(ctx context.Context,
 		return "", common.ErrInternal(errors.Wrap(err, "can not create livekit room"))
 	}
 
-	token, err := biz.livekitService.CreateJoinToken(*meeting.Id, requester)
+	token, err := biz.livekitService.CreateJoinToken(*meeting.Id, requesterId)
 	if err != nil {
 		return "", common.ErrInternal(errors.Wrap(err, "can not create join token"))
 	}
