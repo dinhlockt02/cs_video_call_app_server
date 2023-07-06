@@ -9,4 +9,5 @@ func Setup(ctx context.Context, appCtx appcontext.AppContext) {
 	UpdateMeetingOrCallStateWhenRoomFinished(ctx, appCtx)
 	UpdateGroupWhenRoomFinished(ctx, appCtx)
 	UpdateGroupWhenRoomCreated(ctx, appCtx)
+	UpdateCallsWhenUserUpdateProfile(ctx, appCtx)
 }
