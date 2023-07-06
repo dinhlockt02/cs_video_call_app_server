@@ -26,8 +26,8 @@ func NewJoinMeetingBiz(
 	}
 }
 
-func (biz *JoinMeetingBiz) Join(ctx context.Context, requester, groupId, meetingId string) (string, error) {
-	log.Debug().Str("requester", requester).
+func (biz *JoinMeetingBiz) Join(ctx context.Context, requesterId, groupId, meetingId string) (string, error) {
+	log.Debug().Str("requesterId", requesterId).
 		Str("groupId", groupId).
 		Str("meetingId", meetingId).
 		Msg("join meeting")
@@ -49,7 +49,41 @@ func (biz *JoinMeetingBiz) Join(ctx context.Context, requester, groupId, meeting
 		return "", common.ErrInvalidRequest(errors.New(meetingmodel.MeetingEnded))
 	}
 
-	token, err := biz.livekitService.CreateJoinToken(*meeting.Id, requester)
+	// Add to participant if user has not joined
+	isJoined := false
+	for _, participant := range meeting.Participants {
+		if participant.Id == requesterId {
+			isJoined = true
+			break
+		}
+	}
+
+	if !isJoined {
+		// Find requester
+		requesterFilter, err := common.GetIdFilter(requesterId)
+		if err != nil {
+			return "", common.ErrInvalidRequest(errors.Wrap(err, "invalid requester id"))
+		}
+
+		requester, err := biz.meetingRepo.FindParticipant(ctx, requesterFilter)
+
+		if err != nil {
+			return "", common.ErrInternal(errors.Wrap(err, "can not find requester"))
+		}
+
+		if requester == nil {
+			return "", common.ErrEntityNotFound(common.UserEntity, errors.New("requester not found"))
+		}
+
+		err = biz.meetingRepo.UpdateMeeting(ctx, idFilter, &meetingmodel.UpdateMeeting{
+			Participants: append(meeting.Participants, *requester),
+		})
+		if err != nil {
+			return "", common.ErrInternal(errors.Wrap(err, "can not update meeting"))
+		}
+	}
+
+	token, err := biz.livekitService.CreateJoinToken(*meeting.Id, requesterId)
 	if err != nil {
 		return "", common.ErrInternal(errors.Wrap(err, "can not create join room token"))
 	}
