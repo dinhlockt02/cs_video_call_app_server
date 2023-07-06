@@ -19,7 +19,7 @@ func AbandonCall(appCtx appcontext.AppContext) gin.HandlerFunc {
 		requester := u.(common.Requester)
 
 		requesterId := requester.GetId()
-		callId := context.Param("callId")
+		callId := context.Param("callRoomId")
 
 		if !primitive.IsValidObjectID(callId) {
 			panic(common.ErrInvalidRequest(errors.Wrap(common.ErrInvalidObjectId, "invalid call id")))
