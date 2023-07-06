@@ -20,7 +20,7 @@ func (s *MongoStore) Update(ctx context.Context, filter map[string]interface{}, 
 }
 
 func (s *MongoStore) UpdateMany(ctx context.Context, filter map[string]interface{}, data *callmdl.UpdateCall) error {
-	log.Debug().Any("filter", filter).Any("data", data).Msg("update a call")
+	log.Debug().Any("filter", filter).Any("data", data).Msg("update calls")
 	update := bson.M{"$set": data}
 
 	_, err := s.database.Collection(data.CollectionName()).UpdateMany(ctx, filter, update)

@@ -10,4 +10,5 @@ func Setup(ctx context.Context, appCtx appcontext.AppContext) {
 	UpdateGroupWhenRoomFinished(ctx, appCtx)
 	UpdateGroupWhenRoomCreated(ctx, appCtx)
 	UpdateCallsWhenUserUpdateProfile(ctx, appCtx)
+	UpdateMessagesWhenUserUpdateProfile(ctx, appCtx)
 }
