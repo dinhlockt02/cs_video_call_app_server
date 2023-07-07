@@ -16,7 +16,7 @@ func Logout(appCtx appcontext.AppContext) gin.HandlerFunc {
 
 		u, _ := context.Get(common.CurrentUser)
 		requester := u.(common.Requester)
-		idFilter, _ := common.GetIdFilter(requester.GetId())
+		idFilter, _ := common.GetIdFilter(requester.GetDeviceId())
 		err := biz.Logout(context.Request.Context(), idFilter)
 		if err != nil {
 			panic(err)
