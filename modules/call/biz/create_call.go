@@ -35,6 +35,11 @@ func (biz *CreateCallBiz) Create(ctx context.Context,
 	requesterId string, friendId string) (string, error) {
 	log.Debug().Str("requesterId", requesterId).Any("friendId", friendId).Msg("create a call")
 
+	// can not call self
+	if requesterId == friendId {
+		return "", common.ErrInvalidRequest(errors.New("can not call self"))
+	}
+
 	// Find requester
 	requesterFilter, err := common.GetIdFilter(requesterId)
 	if err != nil {
