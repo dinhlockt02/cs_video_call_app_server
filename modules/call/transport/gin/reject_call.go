@@ -30,7 +30,7 @@ func RejectCall(appCtx appcontext.AppContext) gin.HandlerFunc {
 			userStore,
 			callStore,
 		)
-		err := callbiz.NewRejectCallBiz(callRepo, appCtx.LiveKitService(), appCtx.Notification()).
+		err := callbiz.NewRejectCallBiz(callRepo, appCtx.LiveKitService(), appCtx.Notification(), appCtx.PubSub()).
 			Reject(context.Request.Context(), requesterId, callId)
 		if err != nil {
 			panic(err)
