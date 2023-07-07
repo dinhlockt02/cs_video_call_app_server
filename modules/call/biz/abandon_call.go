@@ -6,6 +6,7 @@ import (
 	lksv "github.com/dinhlockt02/cs_video_call_app_server/components/livekit_service"
 	notimodel "github.com/dinhlockt02/cs_video_call_app_server/components/notification/model"
 	notirepo "github.com/dinhlockt02/cs_video_call_app_server/components/notification/repository"
+	"github.com/dinhlockt02/cs_video_call_app_server/components/pubsub"
 	callmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/call/model"
 	callrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/call/repository"
 	callstore "github.com/dinhlockt02/cs_video_call_app_server/modules/call/store"
@@ -17,17 +18,20 @@ type AbdandonCallBiz struct {
 	callRepo       callrepo.Repository
 	livekitService lksv.LiveKitService
 	notification   notirepo.INotificationService
+	ps             pubsub.PubSub
 }
 
 func NewAbandonCallBiz(
 	callRepo callrepo.Repository,
 	livekitService lksv.LiveKitService,
 	notification notirepo.INotificationService,
+	ps pubsub.PubSub,
 ) *AbdandonCallBiz {
 	return &AbdandonCallBiz{
 		callRepo:       callRepo,
 		livekitService: livekitService,
 		notification:   notification,
+		ps:             ps,
 	}
 }
 
@@ -106,5 +110,9 @@ func (biz *AbdandonCallBiz) Abandon(ctx context.Context,
 			},
 		)
 	}()
+	err = biz.ps.Publish(ctx, common.TopicCallReacted, *call.Id)
+	if err != nil {
+		log.Error().Stack().Err(err).Msg("can not publish event")
+	}
 	return nil
 }

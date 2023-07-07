@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	lksv "github.com/dinhlockt02/cs_video_call_app_server/components/livekit_service"
+	"github.com/dinhlockt02/cs_video_call_app_server/components/pubsub"
 	callmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/call/model"
 	callrepo "github.com/dinhlockt02/cs_video_call_app_server/modules/call/repository"
 	callstore "github.com/dinhlockt02/cs_video_call_app_server/modules/call/store"
@@ -15,15 +16,18 @@ import (
 type JoinCallBiz struct {
 	callRepo       callrepo.Repository
 	livekitService lksv.LiveKitService
+	ps             pubsub.PubSub
 }
 
 func NewJoinCallBiz(
 	callRepo callrepo.Repository,
 	livekitService lksv.LiveKitService,
+	ps pubsub.PubSub,
 ) *JoinCallBiz {
 	return &JoinCallBiz{
 		callRepo:       callRepo,
 		livekitService: livekitService,
+		ps:             ps,
 	}
 }
 
@@ -52,6 +56,10 @@ func (biz *JoinCallBiz) Join(ctx context.Context, requester, callId string) (str
 	token, err := biz.livekitService.CreateJoinToken(*call.Id, requester)
 	if err != nil {
 		return "", common.ErrInternal(errors.Wrap(err, "can not create join room token"))
+	}
+	err = biz.ps.Publish(ctx, common.TopicCallReacted, *call.Id)
+	if err != nil {
+		log.Error().Stack().Err(err).Msg("can not publish event")
 	}
 	return token, nil
 }
