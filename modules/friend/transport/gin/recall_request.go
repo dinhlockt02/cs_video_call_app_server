@@ -22,7 +22,7 @@ func RecallRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
 		friendStore := friendstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		requestStore := requeststore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		friendRepo := friendrepo.NewFriendRepository(friendStore, requestStore)
-		recallRequestBiz := friendbiz.NewRecallRequestBiz(friendRepo)
+		recallRequestBiz := friendbiz.NewRecallRequestBiz(friendRepo, appCtx.PubSub())
 		if err := recallRequestBiz.RecallRequest(context.Request.Context(), senderId, receiverId); err != nil {
 			panic(err)
 		}

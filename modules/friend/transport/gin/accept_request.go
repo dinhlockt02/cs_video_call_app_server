@@ -22,7 +22,7 @@ func AcceptRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
 		friendStore := friendstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		requestStore := requeststore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		friendRepo := friendrepo.NewFriendRepository(friendStore, requestStore)
-		acceptRequestBiz := friendbiz.NewAcceptRequestBiz(friendRepo, appCtx.Notification())
+		acceptRequestBiz := friendbiz.NewAcceptRequestBiz(friendRepo, appCtx.Notification(), appCtx.PubSub())
 		if err := acceptRequestBiz.AcceptRequest(context.Request.Context(), senderId, receiverId); err != nil {
 			panic(err)
 		}

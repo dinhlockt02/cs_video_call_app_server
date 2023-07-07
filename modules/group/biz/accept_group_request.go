@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/dinhlockt02/cs_video_call_app_server/common"
 	notirepo "github.com/dinhlockt02/cs_video_call_app_server/components/notification/repository"
+	"github.com/dinhlockt02/cs_video_call_app_server/components/pubsub"
 	friendmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/friend/model"
 	groupmdl "github.com/dinhlockt02/cs_video_call_app_server/modules/group/model"
 	grouprepo "github.com/dinhlockt02/cs_video_call_app_server/modules/group/repository"
@@ -15,11 +16,13 @@ import (
 type AcceptGroupRequestBiz struct {
 	groupRepo    grouprepo.Repository
 	notification notirepo.INotificationService
+	ps           pubsub.PubSub
 }
 
 func NewAcceptGroupRequestBiz(groupRepo grouprepo.Repository,
-	notification notirepo.INotificationService) *AcceptGroupRequestBiz {
-	return &AcceptGroupRequestBiz{groupRepo: groupRepo, notification: notification}
+	notification notirepo.INotificationService,
+	ps pubsub.PubSub) *AcceptGroupRequestBiz {
+	return &AcceptGroupRequestBiz{groupRepo: groupRepo, notification: notification, ps: ps}
 }
 
 // AcceptRequest send a group invitation request to user.
@@ -84,6 +87,10 @@ func (biz *AcceptGroupRequestBiz) AcceptRequest(ctx context.Context, requesterId
 	if err != nil {
 		return err
 	}
-	// TODO: send push notification new member joined
+
+	err = biz.ps.Publish(ctx, common.TopicRequestDeleted, *existedRequest.Id)
+	if err != nil {
+		log.Error().Stack().Err(err).Msg("can not publish event")
+	}
 	return nil
 }

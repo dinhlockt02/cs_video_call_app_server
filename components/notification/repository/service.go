@@ -22,11 +22,12 @@ type INotificationService interface {
 
 	// CreateReceiveFriendRequestNotification is a method that will create, store and push notification
 	//
-	// It should be used when the Subject (aka owner) received the friend request from Prep's
+	// It should be used when the Subject (aka owner) received the friend request (direct) from Prep's
 	CreateReceiveFriendRequestNotification(
 		ctx context.Context,
 		owner string,
 		subject *notimodel.NotificationObject,
+		direct *notimodel.NotificationObject,
 		prep *notimodel.NotificationObject,
 	) error
 
@@ -106,11 +107,13 @@ func (repo *NotificationService) CreateReceiveFriendRequestNotification(
 	ctx context.Context,
 	owner string,
 	subject *notimodel.NotificationObject,
+	direct *notimodel.NotificationObject,
 	prep *notimodel.NotificationObject,
 ) error {
 	noti := notimodel.
 		NewNotificationBuilder(notimodel.ReceiveFriendRequest, owner).
 		SetSubject(subject).
+		SetDirect(direct).
 		SetPrep(prep).
 		Build()
 
