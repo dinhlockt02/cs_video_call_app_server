@@ -103,7 +103,6 @@ func (biz *SendRequestBiz) SendRequest(ctx context.Context, senderId string, rec
 	}
 
 	go func() {
-		// TODO: change to pubsub model
 		e := biz.notification.CreateReceiveFriendRequestNotification(context.Background(), receiverId,
 			&notimodel.NotificationObject{
 				Id:    receiverId,
@@ -111,6 +110,12 @@ func (biz *SendRequestBiz) SendRequest(ctx context.Context, senderId string, rec
 				Image: &receiver.Avatar,
 				Type:  notimodel.User,
 			}, &notimodel.NotificationObject{
+				Id:    *request.Id,
+				Name:  "",
+				Image: new(string),
+				Type:  notimodel.Request,
+			},
+			&notimodel.NotificationObject{
 				Id:    senderId,
 				Name:  sender.Name,
 				Image: &sender.Avatar,

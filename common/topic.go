@@ -5,6 +5,7 @@ const (
 	TopicRoomCreated       = "TopicRoomCreated"
 	TopicUserUpdateProfile = "TopicUserUpdateProfile"
 	TopicGroupUpdated      = "TopicGroupUpdated"
+	TopicRequestDeleted    = "TopicRequestDeleted"
 )
 
 // Defined MarshaledType sent to pubsub

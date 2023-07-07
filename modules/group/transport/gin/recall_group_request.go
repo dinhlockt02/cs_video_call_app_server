@@ -35,8 +35,8 @@ func RecallRequest(appCtx appcontext.AppContext) gin.HandlerFunc {
 			groupStore,
 			requestStore,
 		)
-		recallRequestBiz := groupbiz.NewRecallGroupRequestBiz(groupRepo, appCtx.Notification())
-		if err := recallRequestBiz.RecallRequest(context.Request.Context(), requesterId, friendId, groupId); err != nil {
+		recallRequestBiz := groupbiz.NewRecallGroupRequestBiz(groupRepo, appCtx.Notification(), appCtx.PubSub())
+		if err := recallRequestBiz.RecallRequest(context.Request.Context(), requesterId, groupId); err != nil {
 			panic(err)
 		}
 		context.JSON(http.StatusOK, gin.H{"data": true})

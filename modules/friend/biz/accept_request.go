@@ -2,6 +2,7 @@ package friendbiz
 
 import (
 	"context"
+	"github.com/dinhlockt02/cs_video_call_app_server/components/pubsub"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -16,15 +17,18 @@ import (
 type AcceptRequestBiz struct {
 	friendRepository friendrepo.Repository
 	notification     notirepo.INotificationService
+	ps               pubsub.PubSub
 }
 
 func NewAcceptRequestBiz(
 	friendRepository friendrepo.Repository,
 	notification notirepo.INotificationService,
+	ps pubsub.PubSub,
 ) *AcceptRequestBiz {
 	return &AcceptRequestBiz{
 		friendRepository: friendRepository,
 		notification:     notification,
+		ps:               ps,
 	}
 }
 
@@ -93,7 +97,6 @@ func (biz *AcceptRequestBiz) AcceptRequest(ctx context.Context, senderId string,
 	}
 
 	go func() {
-		// TODO: change to pubsub model
 		e := biz.notification.CreateAcceptFriendNotification(ctx, senderId, &notimodel.NotificationObject{
 			Id:    senderId,
 			Name:  sender.Name,
@@ -109,5 +112,10 @@ func (biz *AcceptRequestBiz) AcceptRequest(ctx context.Context, senderId string,
 			log.Error().Err(e).Msg("create accept friend notification failed")
 		}
 	}()
+
+	err = biz.ps.Publish(ctx, common.TopicRequestDeleted, *existedRequest.Id)
+	if err != nil {
+		log.Error().Stack().Err(err).Msg("can not publish event")
+	}
 	return nil
 }
