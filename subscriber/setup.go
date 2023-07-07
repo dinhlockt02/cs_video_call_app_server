@@ -17,4 +17,5 @@ func Setup(ctx context.Context, appCtx appcontext.AppContext) {
 	UpdateNotificationWhenUserUpdateProfile(ctx, appCtx)
 	UpdateNotificationWhenGroupUpdated(ctx, appCtx)
 	DeleteNotificationWhenRequestDeleted(ctx, appCtx)
+	DeleteNotificationWhenCallReacted(ctx, appCtx)
 }

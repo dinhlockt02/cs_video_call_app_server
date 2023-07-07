@@ -9,6 +9,7 @@ import (
 	meetingmodel "github.com/dinhlockt02/cs_video_call_app_server/modules/meeting/model"
 	meetingstore "github.com/dinhlockt02/cs_video_call_app_server/modules/meeting/store"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"time"
 )
 
@@ -41,6 +42,11 @@ func UpdateMeetingOrCallStateWhenRoomFinished(ctx context.Context, appCtx appcon
 				})
 				if err != nil {
 					panic(errors.Wrap(err, "can not update calls"))
+				}
+
+				err = appCtx.PubSub().Publish(ctx, common.TopicCallReacted, roomId)
+				if err != nil {
+					log.Error().Stack().Err(err).Msg("can not publish event")
 				}
 			}(roomId)
 		}

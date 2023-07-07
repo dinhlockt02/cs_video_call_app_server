@@ -30,7 +30,7 @@ func JoinCall(appCtx appcontext.AppContext) gin.HandlerFunc {
 			userStore,
 			callStore,
 		)
-		token, err := callbiz.NewJoinCallBiz(callRepo, appCtx.LiveKitService()).
+		token, err := callbiz.NewJoinCallBiz(callRepo, appCtx.LiveKitService(), appCtx.PubSub()).
 			Join(context.Request.Context(), requesterId, callId)
 		if err != nil {
 			panic(err)
