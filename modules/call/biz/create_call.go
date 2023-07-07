@@ -32,42 +32,42 @@ func NewCreateCallBiz(
 }
 
 func (biz *CreateCallBiz) Create(ctx context.Context,
-	requesterId string, friendId string) (string, error) {
+	requesterId string, friendId string) (string, string, error) {
 	log.Debug().Str("requesterId", requesterId).Any("friendId", friendId).Msg("create a call")
 
 	// can not call self
 	if requesterId == friendId {
-		return "", common.ErrInvalidRequest(errors.New("can not call self"))
+		return "", "", common.ErrInvalidRequest(errors.New("can not call self"))
 	}
 
 	// Find requester
 	requesterFilter, err := common.GetIdFilter(requesterId)
 	if err != nil {
-		return "", common.ErrInvalidRequest(errors.Wrap(err, "invalid requester id"))
+		return "", "", common.ErrInvalidRequest(errors.Wrap(err, "invalid requester id"))
 	}
 
 	requester, err := biz.callRepo.FindUser(ctx, requesterFilter)
 	if err != nil {
-		return "", common.ErrInternal(errors.Wrap(err, "can not find requester"))
+		return "", "", common.ErrInternal(errors.Wrap(err, "can not find requester"))
 	}
 
 	if requester == nil {
-		return "", common.ErrEntityNotFound(common.UserEntity, errors.Wrap(err, "requester not found"))
+		return "", "", common.ErrEntityNotFound(common.UserEntity, errors.Wrap(err, "requester not found"))
 	}
 
 	// Find friend
 	friendFilter, err := common.GetIdFilter(friendId)
 	if err != nil {
-		return "", common.ErrInvalidRequest(errors.Wrap(err, "invalid friend id"))
+		return "", "", common.ErrInvalidRequest(errors.Wrap(err, "invalid friend id"))
 	}
 
 	friend, err := biz.callRepo.FindUser(ctx, friendFilter)
 	if err != nil {
-		return "", common.ErrInternal(errors.Wrap(err, "can not find friend"))
+		return "", "", common.ErrInternal(errors.Wrap(err, "can not find friend"))
 	}
 
 	if friend == nil {
-		return "", common.ErrEntityNotFound(common.UserEntity, errors.New("friend not found"))
+		return "", "", common.ErrEntityNotFound(common.UserEntity, errors.New("friend not found"))
 	}
 
 	// Create meeting
@@ -87,16 +87,16 @@ func (biz *CreateCallBiz) Create(ctx context.Context,
 	}
 	err = biz.callRepo.CreateCall(ctx, call)
 	if err != nil {
-		return "", common.ErrInternal(errors.Wrap(err, "can not create call"))
+		return "", "", common.ErrInternal(errors.Wrap(err, "can not create call"))
 	}
 	_, err = biz.livekitService.CreateRoom(ctx, *call.Id)
 	if err != nil {
-		return "", common.ErrInternal(errors.Wrap(err, "can not create livekit room"))
+		return "", "", common.ErrInternal(errors.Wrap(err, "can not create livekit room"))
 	}
 
 	token, err := biz.livekitService.CreateJoinToken(*call.Id, requesterId)
 	if err != nil {
-		return "", common.ErrInternal(errors.Wrap(err, "can not create join token"))
+		return "", "", common.ErrInternal(errors.Wrap(err, "can not create join token"))
 	}
 
 	// Notify friend
@@ -124,5 +124,5 @@ func (biz *CreateCallBiz) Create(ctx context.Context,
 			},
 		)
 	}()
-	return token, nil
+	return token, *call.Id, nil
 }

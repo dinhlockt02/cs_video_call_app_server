@@ -30,11 +30,14 @@ func CreateNewCall(appCtx appcontext.AppContext) gin.HandlerFunc {
 			userStore,
 			callStore,
 		)
-		token, err := callbiz.NewCreateCallBiz(callRepo, appCtx.LiveKitService(), appCtx.Notification()).
+		token, roomId, err := callbiz.NewCreateCallBiz(callRepo, appCtx.LiveKitService(), appCtx.Notification()).
 			Create(context.Request.Context(), requesterId, friendId)
 		if err != nil {
 			panic(err)
 		}
-		context.JSON(http.StatusOK, gin.H{"data": token})
+		context.JSON(http.StatusOK, gin.H{"data": map[string]string{
+			"token":   token,
+			"room_id": roomId,
+		}})
 	}
 }
