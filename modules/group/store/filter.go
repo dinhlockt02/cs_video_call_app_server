@@ -23,3 +23,9 @@ func GetUserIdInIdListFilter(ids ...string) map[string]interface{} {
 	}
 	return common.GetInFilter("_id", mongoIds...)
 }
+
+func GetMemberFilter(memberId string) map[string]interface{} {
+	return map[string]interface{}{
+		"members": memberId,
+	}
+}
