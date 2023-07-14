@@ -17,3 +17,7 @@ func GetCallRoomFilter(groupId string) map[string]interface{} {
 func GetCallStatusFilter(status callmdl.Status) map[string]interface{} {
 	return map[string]interface{}{"status": status}
 }
+
+func GetCallOwnerFilter(owner string) map[string]interface{} {
+	return map[string]interface{}{"owner": owner}
+}

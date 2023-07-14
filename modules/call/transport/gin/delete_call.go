@@ -11,7 +11,7 @@ import (
 	"net/http"
 )
 
-func ListCalls(appCtx appcontext.AppContext) gin.HandlerFunc {
+func DeleteCalls(appCtx appcontext.AppContext) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		u, _ := context.Get(common.CurrentUser)
 		requester := u.(common.Requester)
@@ -34,12 +34,11 @@ func ListCalls(appCtx appcontext.AppContext) gin.HandlerFunc {
 			userStore,
 			callStore,
 		)
-		requesterFilter := callstore.GetCallOwnerFilter(requesterId)
-		token, err := callbiz.NewListCallsBiz(callRepo).
-			List(context.Request.Context(), common.GetAndFilter(requesterFilter, filter))
+		err := callbiz.NewDeleteCallsBiz(callRepo).
+			DeleteCalls(context.Request.Context(), requesterId, filter)
 		if err != nil {
 			panic(err)
 		}
-		context.JSON(http.StatusOK, gin.H{"data": token})
+		context.JSON(http.StatusOK, gin.H{"data": true})
 	}
 }

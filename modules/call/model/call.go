@@ -22,6 +22,7 @@ type User struct {
 
 type Call struct {
 	common.MongoId `json:",inline" bson:",inline"`
+	Owner          []string   `json:"-" bson:"owner"`
 	Caller         *User      `bson:"caller" json:"caller"`
 	Callee         *User      `bson:"callee" json:"callee"`
 	Status         Status     `bson:"status" json:"status"`
