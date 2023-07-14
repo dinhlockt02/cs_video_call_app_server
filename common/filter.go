@@ -21,3 +21,12 @@ func GetIdFilter(id string) (map[string]interface{}, error) {
 	err := AddIdFilter(m, id)
 	return m, err
 }
+
+func MustGetIdFilter(id string) map[string]interface{} {
+	m := make(map[string]interface{})
+	err := AddIdFilter(m, id)
+	if err != nil {
+		panic(err)
+	}
+	return m
+}
