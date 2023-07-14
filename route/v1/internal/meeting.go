@@ -13,6 +13,7 @@ func InitMeetingRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
 		groupCall := call.Group("/:groupId")
 		{
 			groupCall.GET("", meetinggin.ListMeetings(appCtx))
+			groupCall.GET("/:meetingId", meetinggin.GetMeeting(appCtx))
 			groupCall.POST("", meetinggin.CreateMeeting(appCtx))
 			groupCall.POST("/:meetingId", meetinggin.JoinMeeting(appCtx))
 		}
