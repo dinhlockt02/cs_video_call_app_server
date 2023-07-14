@@ -84,4 +84,8 @@ func ErrForbidden(err error) *AppError {
 	return NewFullErrorResponse(http.StatusForbidden, err, "Forbidden Request", err.Error(), "ErrForbidden")
 }
 
+func ErrUnauthorized(err error) *AppError {
+	return NewFullErrorResponse(http.StatusUnauthorized, err, "Unauthorized", err.Error(), "ErrUnauthorized")
+}
+
 var ErrInvalidObjectId = errors.New("invalid object id")
