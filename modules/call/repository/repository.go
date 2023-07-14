@@ -16,6 +16,7 @@ type Repository interface {
 	FindCall(ctx context.Context, filter map[string]interface{}) (*callmdl.Call, error)
 	UpdateCall(ctx context.Context, filter map[string]interface{}, data *callmdl.UpdateCall) error
 	ListCalls(ctx context.Context, filter map[string]interface{}) ([]callmdl.Call, error)
+	RemoveOwner(ctx context.Context, filter map[string]interface{}, owner string) error
 }
 
 type CallRepository struct {

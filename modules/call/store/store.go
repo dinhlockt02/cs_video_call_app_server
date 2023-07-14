@@ -12,6 +12,7 @@ type Store interface {
 	Update(ctx context.Context, filter map[string]interface{}, data *callmdl.UpdateCall) error
 	UpdateMany(ctx context.Context, filter map[string]interface{}, data *callmdl.UpdateCall) error
 	ListCalls(ctx context.Context, filter map[string]interface{}) ([]callmdl.Call, error)
+	RemoveOwner(ctx context.Context, filter map[string]interface{}, owner string) error
 }
 
 type MongoStore struct {

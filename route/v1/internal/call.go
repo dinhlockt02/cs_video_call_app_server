@@ -15,5 +15,6 @@ func InitCallRoute(g *gin.RouterGroup, appCtx appcontext.AppContext) {
 		call.DELETE("/:callRoomId/abandon", callgin.AbandonCall(appCtx))
 		call.DELETE("/:callRoomId/reject", callgin.RejectCall(appCtx))
 		call.GET("", callgin.ListCalls(appCtx))
+		call.DELETE("", callgin.DeleteCalls(appCtx))
 	}
 }

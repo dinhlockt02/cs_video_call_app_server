@@ -84,6 +84,7 @@ func (biz *CreateCallBiz) Create(ctx context.Context,
 		},
 		Status:   callmdl.OnGoing,
 		CalledAt: common.Ptr(time.Now()),
+		Owner:    []string{requesterId, friendId},
 	}
 	err = biz.callRepo.CreateCall(ctx, call)
 	if err != nil {
