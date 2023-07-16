@@ -8,6 +8,7 @@ import (
 
 type FriendUser struct {
 	Id         *string    `json:"id" bson:"_id,omitempty"`
+	Email      string     `json:"email" bson:"email"`
 	Avatar     string     `json:"avatar" bson:"avatar"`
 	Name       string     `json:"name" bson:"name"`
 	LastSeenAt *time.Time `json:"last_seen_at" bson:"last_seen_at"`
