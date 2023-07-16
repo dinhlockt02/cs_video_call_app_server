@@ -316,14 +316,15 @@ func (n *Notification) GetActionButton() []map[string]interface{} {
 	case InComingCall:
 		return []map[string]interface{}{
 			{
-				"key":             "ACCEPT",
-				"label":           "Accept",
+				"key":             Accept,
+				"label":           GetActionKeyLabel(Accept),
 				"autoDismissible": true,
 			},
 			{
-				"key":             "DENY",
-				"label":           "Deny",
+				"key":             Deny,
+				"label":           GetActionKeyLabel(Deny),
 				"autoDismissible": true,
+				"actionType":      "DismissAction",
 			},
 		}
 	default:
