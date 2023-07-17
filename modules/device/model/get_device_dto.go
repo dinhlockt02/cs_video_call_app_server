@@ -11,6 +11,7 @@ type GetDeviceDto struct {
 	Name                  string `bson:"name" json:"name"`
 	UserId                string `bson:"user_id,omitempty" json:"-"`
 	PushNotificationToken string `json:"-" bson:"push_notification_token"`
+	IsCurrentDevice       *bool  `json:"is_current_device,omitempty"`
 }
 
 func (GetDeviceDto) CollectionName() string {
