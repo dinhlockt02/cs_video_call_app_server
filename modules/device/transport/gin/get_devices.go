@@ -20,6 +20,13 @@ func GetDevices(appCtx appcontext.AppContext) gin.HandlerFunc {
 		if err != nil {
 			panic(err)
 		}
+		for i := range devices {
+			if *devices[i].Id == requester.GetDeviceId() {
+				devices[i].IsCurrentDevice = common.Ptr(true)
+			} else {
+				devices[i].IsCurrentDevice = common.Ptr(false)
+			}
+		}
 		context.JSON(http.StatusOK, gin.H{"data": devices})
 	}
 }
