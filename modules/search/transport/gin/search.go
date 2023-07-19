@@ -69,7 +69,7 @@ func searchFriend(ctx context.Context, appCtx appcontext.AppContext,
 	findFriendBiz := friendbiz.NewFindFriendBiz(friendStore)
 
 	filter := map[string]interface{}{}
-	err := common.AddIdFilter(map[string]interface{}{}, requester.GetId())
+	err := common.AddIdFilter(filter, requester.GetId())
 	if err != nil {
 		return nil, errors.Wrap(err, "invalid requester id")
 	}
