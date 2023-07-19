@@ -15,6 +15,7 @@ func UpdateGroupWhenRoomFinished(ctx context.Context, appCtx appcontext.AppConte
 	ch := appCtx.PubSub().Subscribe(ctx, common.TopicRoomFinished)
 	meetingStore := meetingstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 	groupStore := groupstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
+
 	go func() {
 		for roomId := range ch {
 			go func(roomId string) {

@@ -14,6 +14,7 @@ import (
 	requeststore "github.com/dinhlockt02/cs_video_call_app_server/modules/request/store"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"net/http"
 	"sync"
 )
@@ -33,6 +34,8 @@ func Search(appCtx appcontext.AppContext) gin.HandlerFunc {
 			defer wg.Done()
 			friends, err := searchFriend(c.Request.Context(), appCtx, requester, searchTerm)
 			if err != nil {
+				log.Error().Err(err).Str("term", searchTerm).Str("requester", requester.GetId()).
+					Msg("error while searching friend")
 				panic(err)
 			}
 			rs["friends"] = friends
@@ -42,6 +45,8 @@ func Search(appCtx appcontext.AppContext) gin.HandlerFunc {
 			defer wg.Done()
 			groups, err := searchGroup(c.Request.Context(), appCtx, requester, searchTerm)
 			if err != nil {
+				log.Error().Err(err).Str("term", searchTerm).Str("requester", requester.GetId()).
+					Msg("error while searching friend")
 				panic(err)
 			}
 			rs["groups"] = groups
