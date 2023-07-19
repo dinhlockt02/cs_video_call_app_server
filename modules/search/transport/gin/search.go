@@ -17,6 +17,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"net/http"
 	"sync"
+	"time"
 )
 
 func Search(appCtx appcontext.AppContext) gin.HandlerFunc {
@@ -32,7 +33,9 @@ func Search(appCtx appcontext.AppContext) gin.HandlerFunc {
 		go func() {
 			defer common.Recovery()
 			defer wg.Done()
-			friends, err := searchFriend(c.Request.Context(), appCtx, requester, searchTerm)
+			ctx, cancel := context.WithTimeout(c.Request.Context(), 2*time.Second)
+			defer cancel()
+			friends, err := searchFriend(ctx, appCtx, requester, searchTerm)
 			if err != nil {
 				log.Error().Err(err).Str("term", searchTerm).Str("requester", requester.GetId()).
 					Msg("error while searching friend")
@@ -43,7 +46,9 @@ func Search(appCtx appcontext.AppContext) gin.HandlerFunc {
 		go func() {
 			defer common.Recovery()
 			defer wg.Done()
-			groups, err := searchGroup(c.Request.Context(), appCtx, requester, searchTerm)
+			ctx, cancel := context.WithTimeout(c.Request.Context(), 2*time.Second)
+			defer cancel()
+			groups, err := searchGroup(ctx, appCtx, requester, searchTerm)
 			if err != nil {
 				log.Error().Err(err).Str("term", searchTerm).Str("requester", requester.GetId()).
 					Msg("error while searching friend")
