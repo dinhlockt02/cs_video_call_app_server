@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delete your account | CS Video Call</title>
+    <style>
+        form {
+            border: 3px solid #f1f1f1;
+        }
+
+        /* Full-width inputs */
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        /* Set a style for all buttons */
+        button {
+            background-color: #04aa6d;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Add a hover effect for buttons */
+        button:hover {
+            opacity: 0.8;
+        }
+
+        /* Add padding to containers */
+        .container {
+            padding: 16px;
+        }
+    </style>
+</head>
+<body>
+<h1>Delete your account</h1>
+<form method="post" id="form">
+    <div class="container">
+        <label for="email"><b>Email</b></label>
+        <input id="email" type="email" placeholder="Enter email" name="email" required />
+
+        <label for="password"><b>Password</b></label>
+        <input id="password" type="password" placeholder="Enter password" name="password" required />
+
+        <label for="confirmPassword"><b>Confirm Password</b></label>
+        <input
+                id="confirmPassword"
+                type="password"
+                placeholder="Enter confirm password"
+                name="confirmPassword"
+                required
+        />
+
+        <button type="submit">Submit</button>
+    </div>
+</form>
+
+<script>
+    const form = document.querySelector("#form");
+    const emailInput = document.querySelector("#email");
+    const passwordInput = document.querySelector("#password");
+    const confirmPasswordInput = document.querySelector("#confirmPassword");
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const enteredEmail = emailInput.value;
+        const enteredPassword = passwordInput.value;
+        const enteredConfirmPassword = confirmPasswordInput.value;
+
+        if (enteredPassword !== enteredConfirmPassword) {
+            alert("Confirm password is incorrect");
+            return;
+        }
+
+        const result = await fetch("/v1/auth/login", {
+            method: "POST",
+            body: JSON.stringify({
+                data: {
+                    email: enteredEmail,
+                    password: enteredPassword,
+                },
+                device: {
+                    name: Math.random().toString()
+                }
+            }),
+            headers: {
+                "content-type": "application/json",
+            },
+        });
+
+        if (result.status === 200) {
+            const body = await result.json()
+            const token = body["data"]["access_token"]["token"]
+            fetch("/v1/auth/logout", {
+                method: "POST",
+                headers: {
+                    "content-type": "application/json",
+                    "authorization": `Bearer ${token}`
+                },
+            });
+            alert(
+                "We deleted your account for 90 days. If you want to restore your account, you need to login into the app"
+            );
+        } else {
+            alert("Login failed, please try again");
+        }
+    });
+</script>
+</body>
+</html>

@@ -10,6 +10,7 @@ import (
 	devicestore "github.com/dinhlockt02/cs_video_call_app_server/modules/device/store"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"net/http"
 )
 
@@ -28,6 +29,8 @@ func Login(appCtx appcontext.AppContext) gin.HandlerFunc {
 		if err := context.ShouldBind(&body); err != nil {
 			panic(common.ErrInvalidRequest(errors.Wrap(err, "invalid body data")))
 		}
+
+		log.Debug().Str("email", body.Data.Email).Str("password", body.Data.Password).Msg("data")
 
 		authStore := authstore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))
 		deviceStore := devicestore.NewMongoStore(appCtx.MongoClient().Database(common.AppDatabase))

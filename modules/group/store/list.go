@@ -12,6 +12,7 @@ func (s *MongoStore) List(
 	filter map[string]interface{},
 ) ([]groupmdl.Group, error) {
 	log.Debug().Any("filter", filter).Msg("list groups")
+
 	cursor, err := s.database.Collection(groupmdl.Group{}.CollectionName()).
 		Find(ctx, filter)
 	if err != nil {
